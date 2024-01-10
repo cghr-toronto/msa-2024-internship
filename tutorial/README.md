@@ -302,7 +302,7 @@ Feel free to take a break here or if you're up for it, dive straight into the ne
 
 Now that you have created a development environment like a pro and installed the required software, we can start the fun stuff!
 
-The [pandas](https://pandas.pydata.org/) package allows you to read, write, visualize, and manipulate non-spatial data, while the [geopandas](https://geopandas.org/en) package.
+The [pandas](https://pandas.pydata.org/) package allows you to read, write, visualize, and manipulate non-spatial data, while the [geopandas](https://geopandas.org/en) package extends these functions over to spatial data.
 
 ### Step 4.1: Loading Python Packages
 
@@ -332,6 +332,14 @@ rlc = gpd.read_file('toronto-rlc.geojson')
 
 Run this cell and ensure that the files are loaded into variables `nbh` and `rlc`.
 
+#### Some background on Spatial Data Structures
+
+Geopandas (`gpd`) will load these files as [GeoDataFrames](https://geopandas.org/en/stable/docs/reference/geodataframe.html), which are table structured objects in Python that can perform the same functions as a pandas (`pd`) [DataFrame](https://pandas.pydata.org/docs/reference/frame.html), but with extended spatial coordinates and functionality.
+
+Each column in a geopandas GeoDataFrame is either a [GeoSeries](https://geopandas.org/en/stable/docs/reference/geoseries.html) or pandas [Series](https://pandas.pydata.org/docs/reference/series.html).
+
+Thus, a GeoDataFrame is a collection of Series (non-spatial) and GeoSeries (spatial).
+
 ### Step 4.2: Viewing Spatial Data
 
 Create another code cell and preview the neighborhood data non-spatially:
@@ -346,7 +354,7 @@ Also, create another code cell and preview the red light camera data non-spatial
 rlc
 ```
 
-Now create a code cell and preview the neighborhood data spatially by plotting a map:
+Now create a code cell and preview the neighborhood data spatially by plotting a map using the [plot](https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.plot.html) method:
 
 ```py
 nbh.plot()
@@ -376,13 +384,25 @@ rlc.plot(
 )
 ```
 
+#### Checking the API Reference Documentation
+
+Here we used some options for the `plot` method such as `color`, `ax`, `legend`, but how do we know what the options are?
+
+If the package is properly documented, thats easy!
+
+We check the API documentation for the `plot` function from its reference page:
+
+https://geopandas.org/en/stable/docs/reference/api/geopandas.GeoDataFrame.plot.html
+
+You will see many other interesting options such as `cmap` and `scheme`.
+
 ### Step 4.3: Joining Spatial Data
 
 Next, we will do some data manipulation and spatially join the red light camera data to the neighborhood data.
 
 This will give us the ability to count the number of red light traffic camera intersections for each neighborhood.
 
-Add a cell with the following code to join spatial data:
+Add a cell with the following code to join spatial data (Notice that comments are code that are not executed, and these are denoted by the `#`):
 
 ```py
 # Spatially join rlc to nbh by intersecting rule
@@ -415,6 +435,24 @@ nbh_rlc.plot(
 )
 ```
 
+#### Other Spatial Tools
+
+In addition to spatial joins, there are a variety of other handy tools that you can use to do spatial processing, such as `clip`, `overlay`, and `sjoin_nearest`:
+
+https://geopandas.org/en/stable/docs/reference/tools.html
+
+And similarly, non-spatial processing tools from pandas such as `concat` and `merge`:
+
+https://pandas.pydata.org/docs/user_guide/merging.html
+
+And selecting and filtering data:
+
+https://pandas.pydata.org/docs/user_guide/indexing.html
+
+These are quite a lot to learn in a short period of time!
+
+Luckily, we have had advances in Artificial Intelligence (AI) and Large Langugage Models (LLM) like ChatGPT can accelerate you ahead and help you get the syntax right on these - of course you will need to double check the logic and see if the code is actually doing what you want it to!
+
 ### Step 4.4: Writing Spatial Data
 
 Finally, we'll save the joined data into the tutorials folder in another cell:
@@ -425,7 +463,7 @@ nbh_rlc.to_file('toronto-nbh-rlc.geojson', driver='GeoJSON')
 
 You should see a file called `toronto-nbh-rlc.geojson` in the `tutorial` folder.
 
-### Step 4.5: Checkpoint! Saving Once Again to Github
+### Step 4.5a: Checkpoint! Saving Once Again to Github
 
 > Good habits make time your ally. Bad habits make time your enemy.
 
@@ -447,7 +485,14 @@ https://github.com/cghr-toronto/msa-2024-internship/tree/dev
 
 You should see a very recent timestamp next to `X commits`.
 
-### Step 5: Restoring Your Development Environment
+### Step 4.5b: Checking Developer Documentation
+
+If you haven't already, check out (quickly glance and perhaps have some questions) the documentation pages for the pandas and geopandas packages, which will give you more details on the particular functions we used above:
+
+* `pandas`: https://pandas.pydata.org/docs/reference/index.html
+* `geopandas`: https://geopandas.org/en/stable/docs/reference.html
+
+## Step 5: Restoring Your Development Environment
 
 Now what happens when you lose your files on your computer or worse, your computer is broken!
 
@@ -491,7 +536,7 @@ What this does is move into your cloned folder, create the Python virtual enviro
 
 Now we can open this folder in VSCode, and proceed work as usual (and of course, always push your changes to Github when you've done some work!).
 
-### Step 6: Pat Yourself on the Back
+## Step 6: Pat Yourself on the Back
 
 Now that you have completed this tutorial, you are in a good position to further your knowledge in spatial data engineering!
 
@@ -505,3 +550,128 @@ Great Job! You should now be able to:
 During the course of the internship, you will begin to work and explore independently under my supervision and advice to figure out how to tackle certain tasks with the power of the internet (Google and ChatGPT really.. and likely lots and lots of trial and error).
 
 I hope you learned a lot and are excited to work with the data science team to improve Open Mortality - helping the living, study the dead!
+
+## Some Helpful Commands for Your Journey
+
+Reminder 1: Use `Run as Administrator` on your command line terminal on Windows (if you are not admin).
+
+Reminder 2: Commit, commit, commit! Remember to always save your local changes and push them to your remote Github repository once you have made some progress in your work.
+
+### OS Package Manager (Chocolatey or Homebrew)
+
+Install software for your OS (replace `<package` with the software name):
+
+*Windows*
+
+```bat
+choco install <package>
+```
+
+*Mac OS*
+
+```sh
+brew install <package>
+brew install --cask <package>
+```
+
+List software installed for your OS:
+
+*Windows*
+
+```bat
+choco list --local-only
+```
+
+*Mac OS*
+
+```sh
+brew list
+brew list --cask
+```
+
+Uninstall software for your OS (replace `<package` with the software name):
+
+*Windows*
+
+```bat
+choco uninstall <package>
+```
+
+*Mac OS*
+
+```sh
+brew uninstall <package>
+brew uninstall --cask <package>
+```
+
+### Python
+
+Activating your virtual environment:
+
+*Windows*
+
+```bat
+tmp\venv\Scripts\activate.bat
+```
+
+*Mac OS*
+
+```sh
+source tmp/venv/bin/activate
+```
+
+Deactivating your virtual environment:
+
+```sh
+deactivate
+```
+
+Installing a package (replace `<package>` with a package name to install):
+
+```sh
+pip install <package>
+```
+
+Note: Remember to `pip freeze` like below if you install or remove any new packages in your virtual environment.
+
+Saving a list of your currently installed packages:
+
+```sh
+pip freeze > requirements.txt
+```
+
+Installing packages from a previously saved list:
+
+```sh
+pip install -r requirements.txt
+```
+
+### Git
+
+Cloning (copying) a remote repository to your local computer (URL can be replaced for another repository):
+
+```sh
+git clone https://github.com/cghr-toronto/msa-2024-internship
+```
+
+Checking branches:
+
+```sh
+git branch
+```
+
+Switching branches (replace `<branch>` with your branch name):
+
+```sh
+git checkout <branch>
+```
+
+**Saving your local changes and pushing to remote Github repository:**
+
+```sh
+git add .
+git commit -a -m "Some meaningful message for changes"
+git push
+```
+
+Note: Replace `"Some meaningful message for changes"` with something meaningful.
