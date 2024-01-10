@@ -471,7 +471,7 @@ All your files are now in the folder, but wait - you still need to restore your 
 
 *Windows*
 
-```
+```bat
 cd msa-2024-internship
 python3.11 -m venv tmp/venv
 tmp\venv\Scripts\activate.bat
@@ -480,7 +480,7 @@ pip install -r requirements.txt
 
 *Mac Os*
 
-```
+```sh
 cd msa-2024-internship
 python3.11 -m venv tmp/venv
 source tmp/venv/bin/activate
