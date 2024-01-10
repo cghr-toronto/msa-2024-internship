@@ -441,7 +441,57 @@ git commit -a -m "Finished tutorial step 4.5!"
 git push
 ```
 
-### Step 5: Pay Yourself on the Back
+Now check that they are properly saved to Github:
+
+https://github.com/cghr-toronto/msa-2024-internship/tree/dev
+
+You should see a very recent timestamp next to `X commits`.
+
+### Step 5: Restoring Your Development Environment
+
+Now what happens when you lose your files on your computer or worse, your computer is broken!
+
+As long as you made a good habit of saving your code to Github, you can likely restore them (so as long as Github still exists!).
+
+Let's try this out by opening a command line terminal on your computer.
+
+Navigate to a location that is not the Desktop with `cd`.
+
+```sh
+cd some/location/not/desktop
+```
+
+Then clone the repository (ensuring you have `git` installed):
+
+```sh
+git clone https://github.com/cghr-toronto/msa-2024-internship
+```
+
+All your files are now in the folder, but wait - you still need to restore your virtual environment for things to work (ensure that you have Python 3 installed):
+
+*Windows*
+
+```
+cd msa-2024-internship
+python3.11 -m venv tmp/venv
+tmp\venv\Scripts\activate.bat
+pip install -r requirements.txt
+```
+
+*Mac Os*
+
+```
+cd msa-2024-internship
+python3.11 -m venv tmp/venv
+source tmp/venv/bin/activate
+pip install -r requirements.txt
+```
+
+What this does is move into your cloned folder, create the Python virtual environment, activate it, then install the required packages to make your code work with the `requirements.txt` file you previously created.
+
+Now we can open this folder in VSCode, and proceed work as usual (and of course, always push your changes to Github when you've done some work!).
+
+### Step 6: Pat Yourself on the Back
 
 Now that you have completed this tutorial, you are in a good position to further your knowledge in spatial data engineering!
 
