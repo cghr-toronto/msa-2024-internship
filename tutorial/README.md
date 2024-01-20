@@ -1,7 +1,7 @@
 # MSA 2024 Internship Tutorial
 
 * Supervisor: Richard Wen <rrwen.dev@gmail.com>
-* Last Updated: January 10, 2024
+* Last Updated: January 20, 2024
 
 ## Introduction
 
@@ -85,6 +85,34 @@ git --version
 
 For VSCode, you should be able to launch a program called `Visual Studio Code` using either the Windows [Start Menu](https://support.microsoft.com/en-us/windows/open-the-start-menu-4ed57ad7-ed1f-3cc9-c9e4-f329822f5aeb) or the Mac OS [Launchpad](https://support.apple.com/en-ca/guide/mac-help/mh35840/mac).
 
+**Note**: If the installation errors at any point, a common solution is try uninstalling and reinstalling the packages that are giving you errors.
+
+This can be simply done using the `uninstall` and `reinstall` commands in `choco` or `brew`:
+
+*Windows*
+
+```bat
+choco install python
+choco install git
+choco install vscode
+
+choco uninstall python
+choco uninstall git
+choco uninstall vscode
+```
+
+*Mac OS*
+
+```sh
+brew uninstall python
+brew uninstall git
+brew uninstall --cask visual-studio-code
+
+brew install python
+brew install git
+brew install --cask visual-studio-code
+```
+
 ## Step 2: Setup
 
 The second step is to setup a development environment with Git and VSCode by:
@@ -102,6 +130,8 @@ First, open a command line terminal and use the `cd` change directory command to
 ```bat
 cd C://Users/NAME/Desktop
 ```
+
+**Note**: Replace `C://Users/NAME/Desktop` with the actual path of to your desktop (e.g. `C://Users/Richard/Desktop`)
 
 *Mac OS*
 
@@ -171,13 +201,13 @@ Go to your terminal opened in VSCode, and create a python 3.11 environemnt in th
 *Windows*
 
 ```bat
-py -3.11 -m venv tmp/venv
+py -m venv tmp/venv
 ```
 
 *Mac OS*
 
 ```sh
-python3.11 -m venv tmp/venv
+python3 -m venv tmp/venv
 ```
 
 Once it is successfully created, you should see a folder `tmp` and a subfolder `venv` inside of it.
@@ -202,6 +232,16 @@ Now we need to let VSCode know that our virtual environment has been created.
 
 To do this, right click on the left pane and create a new folder called `.vscode`, then create a file called `settings.json` with the following contents:
 
+*Windows*
+
+```json
+{
+    "python.defaultInterpreterPath": "tmp/venv/Scripts/python",
+}
+```
+
+*Mac*
+
 ```json
 {
     "python.defaultInterpreterPath": "tmp/venv/bin/python",
@@ -212,7 +252,7 @@ If you did this correctly, you should have a file in `.vscode/settings.json`, wh
 
 To test this, in VSCode, go to `View --> Command Palette...`, find and click on `Python: Select Interpreter`.
 
-You should see a recommended interpreter similar to `Python 3.11.X ('venv': venv) ./tmp/venv/bin/python` - you do not need to set this yet, but it is a good test to see that VSCode has found your virtual environment.
+You should see a recommended interpreter similar to `Python 3.XX.X ('venv': venv) ./tmp/venv/bin/python` (`3.XX.X` is the version of Python in your virtual environment and varies depending on which one you installed) - you do not need to set this yet, but it is a good test to see that VSCode has found your virtual environment.
 
 If you do not see this, close and restart VSCode, and try to find the interpreter again.
 
@@ -579,7 +619,7 @@ List software installed for your OS:
 *Windows*
 
 ```bat
-choco list --local-only
+choco list
 ```
 
 *Mac OS*
