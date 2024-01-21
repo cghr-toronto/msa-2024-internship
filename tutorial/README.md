@@ -1,7 +1,7 @@
 # MSA 2024 Internship Tutorial
 
 * Supervisor: Richard Wen <rrwen.dev@gmail.com>
-* Last Updated: January 20, 2024
+* Last Updated: January 21, 2024
 
 ## Introduction
 
@@ -286,7 +286,7 @@ pip install geopandas
 pip install matplotlib
 ```
 
-The packages should install successfully without too many issues.
+The Python packages should install successfully without too many issues.
 
 ### Step 3.3: Creating a Reproducible List of Python Packages
 
@@ -512,6 +512,10 @@ nbh_rlc.to_file('toronto-nbh-rlc.geojson', driver='GeoJSON')
 ```
 
 You should see a file called `toronto-nbh-rlc.geojson` in the `tutorial` folder.
+
+Don't forget to save your `tutorial/main.ipynb` opened on the right pane!
+
+Click on it, and go to `File -> Save` to save your `main.ipynb` file before proceeding to the next step.
 
 ### Step 4.5a: Checkpoint! Saving Once Again to Github
 
