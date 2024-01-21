@@ -113,6 +113,16 @@ brew install git
 brew install --cask visual-studio-code
 ```
 
+### Step 1.3: Installing the Python Extension in VSCode
+
+In order to use Python in VSCode, we need the [Python Extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) installed in VSCode if it has not been installed already.
+
+Launch the `Visual Studio Code` program, on the left hand sidebar (with the icons), hover over the icons and you will see one named `Extensions`.
+
+Click on `Extensions`, look up `python`, find the `Python` extension from Microsoft, and click `Install` if it has not yet been installed.
+
+This extension allows VSCode to interact with your installed Python software.
+
 ## Step 2: Setup
 
 The second step is to setup a development environment with Git and VSCode by:
