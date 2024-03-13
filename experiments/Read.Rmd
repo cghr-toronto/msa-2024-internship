@@ -1,0 +1,34 @@
+---
+title: "Read Spatial Data"
+output: html_notebook
+---
+
+## Libraries
+
+```{r}
+# Loading packages for being able to manipulate and plot spatial data
+library(tidyverse)
+library(sf)
+library(ggplot2)
+```
+
+## Reading in Spatial Files
+
+```{r}
+# Reading in the Former Municipality Boundaries Data geojson file
+fmbd <- st_read('data/Former Municipality Boundaries Data.geojson')
+
+# Displaying file table
+head(fmbd)
+```
+## Displaying table column alone
+### Basic print function
+```{r}
+print(fmbd['AREA_NAME'])
+```
+### Print function with defining list
+```{r}
+name <- fmbd$AREA_NAME
+print(name)
+```
+

@@ -1752,31 +1752,117 @@ display: none;
 
 
 <!-- rnb-text-begin -->
-<p>This is an <a href="http://rmarkdown.rstudio.com">R Markdown</a>
-Notebook. When you execute code within the notebook, the results appear
-beneath the code.</p>
-<p>Try executing this chunk by clicking the <em>Run</em> button within
-the chunk or by placing your cursor inside it and pressing
-<em>Ctrl+Shift+Enter</em>.</p>
+<div id="libraries" class="section level2">
+<h2>Libraries</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBMb2FkaW5nIHBhY2thZ2VzIGZvciBiZWluZyBhYmxlIHRvIG1hbmlwdWxhdGUgYW5kIHBsb3Qgc3BhdGlhbCBkYXRhXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmxpYnJhcnkoc2YpXG5saWJyYXJ5KGdncGxvdDIpXG5gYGAifQ== -->
+<pre class="r"><code># Loading packages for being able to manipulate and plot spatial data
+library(tidyverse)
+library(sf)
+library(ggplot2)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the
-toolbar or by pressing <em>Ctrl+Alt+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and
-output will be saved alongside it (click the <em>Preview</em> button or
-press <em>Ctrl+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the
-editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not
-run any R code chunks. Instead, the output of the chunk when it was last
-run in the editor is displayed.</p>
+</div>
+<div id="reading-in-spatial-files" class="section level2">
+<h2>Reading in Spatial Files</h2>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkaW5nIGluIHRoZSBGb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YSBnZW9qc29uIGZpbGVcbmZtYmQgPC0gc3RfcmVhZCgnZGF0YS9Gb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YS5nZW9qc29uJylcbmBgYCJ9 -->
+<pre class="r"><code># Reading in the Former Municipality Boundaries Data geojson file
+fmbd &lt;- st_read(&#39;data/Former Municipality Boundaries Data.geojson&#39;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBsYXllciBgRm9ybWVyIE11bmljaXBhbGl0eSBCb3VuZGFyaWVzIERhdGEnIGZyb20gZGF0YSBzb3VyY2UgXG4gIGBDOlxcVXNlcnNcXGRhbnRlXFxtc2EtMjAyNC1pbnRlcm5zaGlwXFxleHBlcmltZW50c1xcZGF0YVxcRm9ybWVyIE11bmljaXBhbGl0eSBCb3VuZGFyaWVzIERhdGEuZ2VvanNvbicgXG4gIHVzaW5nIGRyaXZlciBgR2VvSlNPTidcblNpbXBsZSBmZWF0dXJlIGNvbGxlY3Rpb24gd2l0aCA2IGZlYXR1cmVzIGFuZCAxMCBmaWVsZHNcbkdlb21ldHJ5IHR5cGU6IE1VTFRJUE9MWUdPTlxuRGltZW5zaW9uOiAgICAgWFlcbkJvdW5kaW5nIGJveDogIHhtaW46IC03OS42MzkyNiB5bWluOiA0My41ODEgeG1heDogLTc5LjExNTQ1IHltYXg6IDQzLjg1NTQ2XG5HZW9kZXRpYyBDUlM6ICBXR1MgODRcbiJ9 -->
+<pre><code>Reading layer `Former Municipality Boundaries Data&#39; from data source 
+  `C:\Users\dante\msa-2024-internship\experiments\data\Former Municipality Boundaries Data.geojson&#39; 
+  using driver `GeoJSON&#39;
+Simple feature collection with 6 features and 10 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -79.63926 ymin: 43.581 xmax: -79.11545 ymax: 43.85546
+Geodetic CRS:  WGS 84</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBEaXNwbGF5aW5nIGZpbGUgdGFibGVcbmhlYWQoZm1iZClcbmBgYCJ9 -->
+<pre class="r"><code># Displaying file table
+head(fmbd)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiU2ltcGxlIGZlYXR1cmUgY29sbGVjdGlvbiB3aXRoIDYgZmVhdHVyZXMgYW5kIDEwIGZpZWxkc1xuR2VvbWV0cnkgdHlwZTogTVVMVElQT0xZR09OXG5EaW1lbnNpb246ICAgICBYWVxuQm91bmRpbmcgYm94OiAgeG1pbjogLTc5LjYzOTI2IHltaW46IDQzLjU4MSB4bWF4OiAtNzkuMTE1NDUgeW1heDogNDMuODU1NDZcbkdlb2RldGljIENSUzogIFdHUyA4NFxuICBYX2lkIEFSRUFfSUQgREFURV9FRkZFQ1RJVkUgQVJFQV9BVFRSX0lEIFBBUkVOVF9BUkVBX0lEXG4xICAgIDEgICA0OTg4NCAgICAgICAgICAgICAgICAgICAgICAgNDk4ODQgICAgICAgICAgNDk4ODZcbjIgICAgMiAgNjQzNzA0ICAgICAgICAgICAgICAgICAgICAgIDY0MzcwNCAgICAgICAgICA0OTg4NlxuMyAgICAzICAgNDk4ODcgICAgICAgICAgICAgICAgICAgICAgIDQ5ODg3ICAgICAgICAgIDQ5ODg2XG40ICAgIDQgIDQzNTczMyAgICAgICAgICAgICAgICAgICAgICA0MzU3MzMgICAgICAgICAgNDk4ODZcbjUgICAgNSAxMDk0MzQ5ICAgICAgICAgICAgICAgICAgICAgMTA5NDM0OSAgICAgICAgICA0OTg4NlxuNiAgICA2ICA3NjA2NDUgICAgICAgICAgICAgICAgICAgICAgNzYwNjQ1ICAgICAgICAgIDQ5ODg2XG4gIEFSRUFfU0hPUlRfQ09ERSBBUkVBX0xPTkdfQ09ERSAgIEFSRUFfTkFNRSAgIEFSRUFfREVTQyBPQkpFQ1RJRFxuMSAgICAgICAgICAgICAgMTQgICAgICAgICAgICAgMTQgICAgICAgIFlPUksgICAgICAgIFlPUksgMTEwOTM5MDVcbjIgICAgICAgICAgICAgIDA4ICAgICAgICAgICAgIDA4ICBOT1JUSCBZT1JLICBOT1JUSCBZT1JLIDExNjc4NDY1XG4zICAgICAgICAgICAgICAwNiAgICAgICAgICAgICAwNiAgIEVBU1QgWU9SSyAgIEVBU1QgWU9SSyAxMjI2NjkyOVxuNCAgICAgICAgICAgICAgMDEgICAgICAgICAgICAgMDEgU0NBUkJPUk9VR0ggU0NBUkJPUk9VR0ggMTI4NTI2MjVcbjUgICAgICAgICAgICAgIDE5ICAgICAgICAgICAgIDE5ICAgRVRPQklDT0tFICAgRVRPQklDT0tFIDE0MDM1MDI1XG42ICAgICAgICAgICAgICAwNCAgICAgICAgICAgICAwNCAgICAgVE9ST05UTyAgICAgVE9ST05UTyAxNDAzNTA0MVxuICAgICAgICAgICAgICAgICAgICAgICAgZ2VvbWV0cnlcbjEgTVVMVElQT0xZR09OICgoKC03OS40OTI2MiA0Li4uXG4yIE1VTFRJUE9MWUdPTiAoKCgtNzkuNTM1ODQgNC4uLlxuMyBNVUxUSVBPTFlHT04gKCgoLTc5LjI4Nzc2IDQuLi5cbjQgTVVMVElQT0xZR09OICgoKC03OS4yODc3NiA0Li4uXG41IE1VTFRJUE9MWUdPTiAoKCgtNzkuNDgxNjUgNC4uLlxuNiBNVUxUSVBPTFlHT04gKCgoLTc5LjM5NjUyIDQuLi5cbiJ9 -->
+<pre><code>Simple feature collection with 6 features and 10 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -79.63926 ymin: 43.581 xmax: -79.11545 ymax: 43.85546
+Geodetic CRS:  WGS 84
+  X_id AREA_ID DATE_EFFECTIVE AREA_ATTR_ID PARENT_AREA_ID
+1    1   49884                       49884          49886
+2    2  643704                      643704          49886
+3    3   49887                       49887          49886
+4    4  435733                      435733          49886
+5    5 1094349                     1094349          49886
+6    6  760645                      760645          49886
+  AREA_SHORT_CODE AREA_LONG_CODE   AREA_NAME   AREA_DESC OBJECTID
+1              14             14        YORK        YORK 11093905
+2              08             08  NORTH YORK  NORTH YORK 11678465
+3              06             06   EAST YORK   EAST YORK 12266929
+4              01             01 SCARBOROUGH SCARBOROUGH 12852625
+5              19             19   ETOBICOKE   ETOBICOKE 14035025
+6              04             04     TORONTO     TORONTO 14035041
+                        geometry
+1 MULTIPOLYGON (((-79.49262 4...
+2 MULTIPOLYGON (((-79.53584 4...
+3 MULTIPOLYGON (((-79.28776 4...
+4 MULTIPOLYGON (((-79.28776 4...
+5 MULTIPOLYGON (((-79.48165 4...
+6 MULTIPOLYGON (((-79.39652 4...</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="displaying-table-column-alone" class="section level2">
+<h2>Displaying table column alone</h2>
+<div id="basic-print-function" class="section level3">
+<h3>Basic print function</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJpbnQoZm1iZFsnQVJFQV9OQU1FJ10pXG5gYGAifQ== -->
+<pre class="r"><code>print(fmbd[&#39;AREA_NAME&#39;])</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiU2ltcGxlIGZlYXR1cmUgY29sbGVjdGlvbiB3aXRoIDYgZmVhdHVyZXMgYW5kIDEgZmllbGRcbkdlb21ldHJ5IHR5cGU6IE1VTFRJUE9MWUdPTlxuRGltZW5zaW9uOiAgICAgWFlcbkJvdW5kaW5nIGJveDogIHhtaW46IC03OS42MzkyNiB5bWluOiA0My41ODEgeG1heDogLTc5LjExNTQ1IHltYXg6IDQzLjg1NTQ2XG5HZW9kZXRpYyBDUlM6ICBXR1MgODRcbiAgICBBUkVBX05BTUUgICAgICAgICAgICAgICAgICAgICAgIGdlb21ldHJ5XG4xICAgICAgICBZT1JLIE1VTFRJUE9MWUdPTiAoKCgtNzkuNDkyNjIgNC4uLlxuMiAgTk9SVEggWU9SSyBNVUxUSVBPTFlHT04gKCgoLTc5LjUzNTg0IDQuLi5cbjMgICBFQVNUIFlPUksgTVVMVElQT0xZR09OICgoKC03OS4yODc3NiA0Li4uXG40IFNDQVJCT1JPVUdIIE1VTFRJUE9MWUdPTiAoKCgtNzkuMjg3NzYgNC4uLlxuNSAgIEVUT0JJQ09LRSBNVUxUSVBPTFlHT04gKCgoLTc5LjQ4MTY1IDQuLi5cbjYgICAgIFRPUk9OVE8gTVVMVElQT0xZR09OICgoKC03OS4zOTY1MiA0Li4uXG4ifQ== -->
+<pre><code>Simple feature collection with 6 features and 1 field
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -79.63926 ymin: 43.581 xmax: -79.11545 ymax: 43.85546
+Geodetic CRS:  WGS 84
+    AREA_NAME                       geometry
+1        YORK MULTIPOLYGON (((-79.49262 4...
+2  NORTH YORK MULTIPOLYGON (((-79.53584 4...
+3   EAST YORK MULTIPOLYGON (((-79.28776 4...
+4 SCARBOROUGH MULTIPOLYGON (((-79.28776 4...
+5   ETOBICOKE MULTIPOLYGON (((-79.48165 4...
+6     TORONTO MULTIPOLYGON (((-79.39652 4...</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="print-function-with-defining-list" class="section level3">
+<h3>Print function with defining list</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZSA8LSBmbWJkJEFSRUFfTkFNRVxucHJpbnQobmFtZSlcbmBgYCJ9 -->
+<pre class="r"><code>name &lt;- fmbd$AREA_NAME
+print(name)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiWU9SS1wiICAgICAgICBcIk5PUlRIIFlPUktcIiAgXCJFQVNUIFlPUktcIiAgIFwiU0NBUkJPUk9VR0hcIlxuWzVdIFwiRVRPQklDT0tFXCIgICBcIlRPUk9OVE9cIiAgICBcbiJ9 -->
+<pre><code>[1] &quot;YORK&quot;        &quot;NORTH YORK&quot;  &quot;EAST YORK&quot;   &quot;SCARBOROUGH&quot;
+[5] &quot;ETOBICOKE&quot;   &quot;TORONTO&quot;    </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+</div>
+</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlJlYWQgU3BhdGlhbCBEYXRhIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KVGhpcyBpcyBhbiBbUiBNYXJrZG93bl0oaHR0cDovL3JtYXJrZG93bi5yc3R1ZGlvLmNvbSkgTm90ZWJvb2suIFdoZW4geW91IGV4ZWN1dGUgY29kZSB3aXRoaW4gdGhlIG5vdGVib29rLCB0aGUgcmVzdWx0cyBhcHBlYXIgYmVuZWF0aCB0aGUgY29kZS4gDQoNClRyeSBleGVjdXRpbmcgdGhpcyBjaHVuayBieSBjbGlja2luZyB0aGUgKlJ1biogYnV0dG9uIHdpdGhpbiB0aGUgY2h1bmsgb3IgYnkgcGxhY2luZyB5b3VyIGN1cnNvciBpbnNpZGUgaXQgYW5kIHByZXNzaW5nICpDdHJsK1NoaWZ0K0VudGVyKi4gDQoNCmBgYHtyfQ0KcGxvdChjYXJzKQ0KYGBgDQoNCkFkZCBhIG5ldyBjaHVuayBieSBjbGlja2luZyB0aGUgKkluc2VydCBDaHVuayogYnV0dG9uIG9uIHRoZSB0b29sYmFyIG9yIGJ5IHByZXNzaW5nICpDdHJsK0FsdCtJKi4NCg0KV2hlbiB5b3Ugc2F2ZSB0aGUgbm90ZWJvb2ssIGFuIEhUTUwgZmlsZSBjb250YWluaW5nIHRoZSBjb2RlIGFuZCBvdXRwdXQgd2lsbCBiZSBzYXZlZCBhbG9uZ3NpZGUgaXQgKGNsaWNrIHRoZSAqUHJldmlldyogYnV0dG9uIG9yIHByZXNzICpDdHJsK1NoaWZ0K0sqIHRvIHByZXZpZXcgdGhlIEhUTUwgZmlsZSkuDQoNClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4NCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlJlYWQgU3BhdGlhbCBEYXRhIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyMgTGlicmFyaWVzDQoNCmBgYHtyfQ0KIyBMb2FkaW5nIHBhY2thZ2VzIGZvciBiZWluZyBhYmxlIHRvIG1hbmlwdWxhdGUgYW5kIHBsb3Qgc3BhdGlhbCBkYXRhDQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkoc2YpDQpsaWJyYXJ5KGdncGxvdDIpDQpgYGANCg0KIyMgUmVhZGluZyBpbiBTcGF0aWFsIEZpbGVzDQoNCmBgYHtyfQ0KIyBSZWFkaW5nIGluIHRoZSBGb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YSBnZW9qc29uIGZpbGUNCmZtYmQgPC0gc3RfcmVhZCgnZGF0YS9Gb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YS5nZW9qc29uJykNCg0KIyBEaXNwbGF5aW5nIGZpbGUgdGFibGUNCmhlYWQoZm1iZCkNCmBgYA0KIyMgRGlzcGxheWluZyB0YWJsZSBjb2x1bW4gYWxvbmUNCiMjIyBCYXNpYyBwcmludCBmdW5jdGlvbg0KYGBge3J9DQpwcmludChmbWJkWydBUkVBX05BTUUnXSkNCmBgYA0KIyMjIFByaW50IGZ1bmN0aW9uIHdpdGggZGVmaW5pbmcgbGlzdA0KYGBge3J9DQpuYW1lIDwtIGZtYmQkQVJFQV9OQU1FDQpwcmludChuYW1lKQ0KYGBgDQoNCg==</div>
 
 
 
