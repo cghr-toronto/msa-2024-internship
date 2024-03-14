@@ -99,4 +99,9 @@ ggplot() +
  geom_sf(data = buffers, color = 'blue') +
  geom_sf(data = shelters, color = 'red')
 ```
+## Joining two spatial files
+```{r}
+# Joining the waste file to the shelter file
+joined <- st_nearest_points(waste, shelters, left = TRUE, right = TRUE)
+```
 
