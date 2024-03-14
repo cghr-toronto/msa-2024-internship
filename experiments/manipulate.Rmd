@@ -25,10 +25,15 @@ shelters_old <- st_read("data/Shelter/shelters_wgs84.shp")
 shelters <- shelters_old  %>% st_set_crs(NA) %>% st_set_crs(3857)
 shelters <- shelters_old  %>% st_transform(3857)
 
-# Reading in the Waste Transfer Station shapefile
-waste_old <- st_read("data/Waste/SW_transfer_station_wgs84.shp")
-waste <- waste_old  %>% st_set_crs(NA) %>% st_set_crs(3857)
-waste <- waste_old  %>% st_transform(3857)
+# Reading in the Neighbourhoods GeoJson File
+ngh_old <- st_read("data/Neighbourhoods.geojson")
+ngh <- ngh_old  %>% st_set_crs(NA) %>% st_set_crs(3857)
+ngh <- ngh_old  %>% st_transform(3857)
+
+# Reading in the Neighbourhood Improvement Areas GeoJson File
+ngh_imp_old <- st_read("data/Neighbourhood Improvement Areas.geojson")
+ngh_imp <- ngh_imp_old  %>% st_set_crs(NA) %>% st_set_crs(3857)
+ngh_imp <- ngh_imp_old  %>% st_transform(3857)
 ```
 
 ## Summary Statistics
@@ -101,7 +106,7 @@ ggplot() +
 ```
 ## Joining two spatial files
 ```{r}
-# Joining the waste file to the shelter file
-joined <- st_nearest_points(waste, shelters, left = TRUE, right = TRUE)
+# Joining the ngh file to the ngh_imp file
+joined_data <- st_join(ngh, ngh_imp)
 ```
 
