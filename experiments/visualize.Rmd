@@ -17,8 +17,8 @@ library(tmap)
 
 ## Data
 ```{r}
-# Reading in the Former Municipality Boundaries Data GeoJson file
-fmbd <- st_read('data/Former Municipality Boundaries Data.geojson')
+# Reading in the Former Municipality Boundaries Data GeoJson file and reprojecting
+fmbd <- st_read('data/Former Municipality Boundaries Data.geojson') %>% st_transform(3857)
 ```
 ## Plotting one or more variables
 ```{r}
@@ -38,10 +38,9 @@ plot(st_geometry(fmbd))
 ```
 
 ## Plotting an interactive map
-
 ```{r}
 # Plotting an interactive map with the Former Municipality Boundaries Data file
 tmap_mode("view")
 tm_shape(fmbd) +
-  tm_polygons(fill = 'blue', alpha = 0.5, border.col = 'black', border.alpha = 0.5)
+  tm_polygons(fill = '#FF0000', alpha = 0.5, border.col = 'black', border.alpha = 0.5)
 ```
