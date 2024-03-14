@@ -1,0 +1,47 @@
+---
+title: "Visualizing spatial data"
+output: html_notebook
+---
+
+-   Dante Christopher-Alphonso [dantealphonso\@gmail.com](mailto:dantealphonso@gmail.com){.email}
+
+## Libraries
+
+```{r}
+# Loading packages for being able to manipulate and plot spatial data
+library(tidyverse)
+library(sf)
+library(ggplot2)
+library(tmap)
+```
+
+## Data
+```{r}
+# Reading in the Former Municipality Boundaries Data GeoJson file
+fmbd <- st_read('data/Former Municipality Boundaries Data.geojson')
+```
+## Plotting one or more variables
+```{r}
+# Creating a bar chart with the former municipality names as the x-axis and the area ID column as the y-axis
+ggplot(fmbd, aes(x = AREA_NAME, y = AREA_ID))+
+  geom_bar(stat = 'identity')+
+  labs(title = 'Former Municipality by Area ID', x = 'Name', y = 'ID')+
+  theme_minimal()+
+  scale_y_continuous(labels = scales::comma)
+```
+
+## Plotting a static map
+
+```{r}
+# Plotting the fmbd file as a static map
+plot(st_geometry(fmbd))
+```
+
+## Plotting an interactive map
+
+```{r}
+# Plotting an interactive map with the Former Municipality Boundaries Data file
+tmap_mode("view")
+tm_shape(fmbd) +
+  tm_polygons(fill = 'blue', alpha = 0.5, border.col = 'black', border.alpha = 0.5)
+```
