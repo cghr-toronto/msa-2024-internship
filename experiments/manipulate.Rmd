@@ -90,6 +90,13 @@ fmbd
 ```
 ## Creating buffers for a spatial file
 ```{r}
-plot(st_geometry(shelters))
+# Creates 1000 metre buffers for shelters file 
+buffers <- st_buffer(shelters, dist = 1000)
+
+
+# Plots buffers on a map, with the original shelters being coloured red
+ggplot() +
+ geom_sf(data = buffers, color = 'blue') +
+ geom_sf(data = shelters, color = 'red')
 ```
 
