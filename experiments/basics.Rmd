@@ -20,25 +20,24 @@ fmbd <- st_read('data/Former Municipality Boundaries Data.geojson') %>% st_trans
 # Reading in the Community Shelters shapefile and reprojecting
 shelters <- st_read("data/Shelter/shelters_wgs84.shp") %>% st_transform(3857)
 
-# Reading in the Neighbourhoods GeoJson File and reprojecting
-ngh <- st_read("data/Neighbourhoods.geojson") %>% st_transform(3857)
+# Reading in the Waste GeoJson File and reprojecting
+waste <- st_read("data/waste.geojson") %>% st_transform(3857)
 
-# Reading in the Neighbourhood Improvement Areas GeoJson File and reprojecting
-ngh_imp <- st_read("data/Neighbourhood Improvement Areas.geojson") %>% st_transform(3857)
+# Reading in the City Wards Data GeoJson File and reprojecting
+cwd <- st_read("data/City Wards Data.geojson") %>% st_transform(3857)
 ``` 
 
 ## Functions
 ### Buffer and spatial join function
 ```{r}
+#'Buffers geodataframe 1 and joins it to the nearest geometries in geodataframe 2.
+#'
+#'@param gdf1 A geodataframe with points.
+#'@param gdf2 A geodataframe with polygons.
+#'@param dist Buffer distance to apply. Default is 1000.
+#'
+#'@return The geodataframe after applying a buffer to gdf1 and joining to geometries of gdf2.
 buffer_sjoin <- function(gdf1, gdf2, dist = 1000){
-  
-  #'Buffers geodataframe 1 and joins it to the nearest geometries in geodataframe 2.
-  #'@param gdf1 A geodataframe with points.
-  #'@param gdf2 A geodataframe with polygons.
-  #'@param dist Buffer distance to apply. Default is 1000.
-  #'
-  #'@return The geodataframe after applying a buffer to gdf1 and joining to geometries of gdf2.
-  
   
   # Buffer gdf1 by dist
   gdf1_buff <- st_buffer(gdf1, dist)
@@ -51,21 +50,20 @@ buffer_sjoin <- function(gdf1, gdf2, dist = 1000){
 
 ### Spatial join and count function
 ```{r}
-buffer_sjoin <- function(gdf1, gdf2, dist = 1000){
+#'Takes geodataframe 1 and joins it to the geometries in geodataframe 2, then counts the number of points from      geodataframe 1.
+#'
+#'@param gdf1 A geodataframe with points.
+#'@param gdf2 A geodataframe with polygons.
+#'
+#'@return The geodataframe after joining gdf1 and gdf2 and counting the number of points from gdf1.
+sjoin_count <- function(gdf1, gdf2){
   
-  #'Takes geodataframe 2 and joins it to the geometries in geodataframe 1, then counts the number of points from      geodataframe 2.
-  #'@param gdf1 A geodataframe with points.
-  #'@param gdf2 A geodataframe with polygons.
-  #'
-  #'@return The geodataframe after joining gdf1 and gdf2 and counting the number of points from gdf2.
+  # Join the geometries of gdf1 with gdf2
+  sjoin_gdf1_gdf2 <- st_join(gdf1, gdf2, how="inner", predicate="within")
   
+  point_count <- sjoin_gdf1_gdf2 %>% group_by(polygon_id) %>% summarise(point_count = n())
   
-  # Buffer gdf1 by dist
-  gdf1_buff <- st_buffer(gdf1, dist)
-  
-  # Join the geometries of gdf2 with buffered gdf1
-  result <- st_join(gdf1_buff, gdf2)
-  return(result)
+  return(point_count)
 }
 ```
 
@@ -87,6 +85,25 @@ buffer_sjoin_shelters_fmbd
 
 Display spatial data
 ```{r}
+# Spatially plot the results of the buffer_sjoin function
 plot(st_geometry(buffer_sjoin_shelters_fmbd))
 ```
 
+### Sjoin_count demo
+Demo
+```{r}
+# Counting points from waste after joining it to cwd
+sjoin_count_waste_cwd <- sjoin_count(waste, cwd)
+```
+
+Display non-spatial data
+```{r}
+# Showing non-spatial results of sjoin_count
+sjoin_count_waste_cwd
+```
+
+Display spatial data
+```{r}
+# Spatially plot the results of the sjoin_count function
+plot(st_geometry(sjoin_count_waste_cwd))
+```
