@@ -2,6 +2,7 @@
 title: "Read Spatial Data"
 output: html_notebook
 ---
+* Dante Christopher-Alphonso <dantealphonso@gmail.com>
 
 ## Libraries
 ```{r}
@@ -29,4 +30,3 @@ print(fmbd['AREA_NAME'])
 name <- fmbd$AREA_NAME
 print(name)
 ```
-

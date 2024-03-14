@@ -2,6 +2,7 @@
 title: "Writing spatial data files"
 output: html_notebook
 ---
+* Dante Christopher-Alphonso <dantealphonso@gmail.com>
 
 ## Libraries
 ```{r}

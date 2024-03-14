@@ -1,18 +1,56 @@
 ---
-title: "R Notebook"
+title: "Spatial Data Manipulation"
 output: html_notebook
 ---
+* Dante Christopher-Alphonso <dantealphonso@gmail.com>
 
-This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
-
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
-
+## Libraries
 ```{r}
-plot(cars)
+# Loading packages for being able to manipulate and plot spatial data
+library(tidyverse)
+library(sf)
+library(ggplot2)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+## Data
+```{r}
+# Reading in the Former Municipality Boundaries Data GeoJson file
+fmbd <- st_read('data/Former Municipality Boundaries Data.geojson')
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+# Reading in the Community Shelters shapefile
+shelters <- st_read("data/Shelter/shelters_wgs84.shp")
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+# Reading in the Waste Transfer Station shapefile
+waste <- st_read("data/Waste/SW_transfer_station_wgs84.shp")
+```
+
+## Summary Statistics
+### Finding Maximum value
+```{r}
+max(fmbd$AREA_SHORT_CODE)
+```
+### Finding Mean value
+```{r}
+mean(shelters$CENTRELINE)
+```
+## Reprojecting a spatial file
+### Showing the current projection of a spatial file
+```{r}
+# Displaying the Former Municipality Boundaries Data file's current CRS
+st_crs(fmbd)
+
+# Plotting the Former Municipality Boundaries Data file as a map
+plot(st_geometry(fmbd))
+```
+### Reprojection of the spatial file
+```{r}
+# Wipe the CRS of fmbd and set it to WGS 84 / UTM zone 33N projection
+fmbd_new <- fmbd  %>% st_set_crs(NA) %>% st_set_crs(32633)
+
+# Coordinate transformation to WGS 84 / UTM zone 33N projection
+fmbd_new <- fmbd  %>% st_transform(32633)
+
+# Plotting re projected fmbd
+plot(st_geometry(fmbd_new))
+```
+
