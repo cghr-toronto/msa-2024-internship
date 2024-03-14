@@ -1,10 +1,48 @@
 ---
-title: "R Notebook"
+title: "Writing spatial data files"
 output: html_notebook
 ---
 
-
+## Libraries
 ```{r}
-plot(cars)
+# Loading packages for being able to manipulate and plot spatial data
+library(tidyverse)
+library(sf)
+library(ggplot2)
 ```
 
+## Data
+```{r}
+# Reading in the Former Municipality Boundaries Data GeoJson file
+fmbd <- st_read('data/Former Municipality Boundaries Data.geojson')
+
+# Reading in the Community Shelters shapefile
+shelters <- st_read("data/Shelter/shelters_wgs84.shp")
+
+# Reading in the Waste Transfer Station shapefile
+waste <- st_read("data/Waste/SW_transfer_station_wgs84.shp")
+
+# Reading in the City Wards Data GeoJson file
+cwd <- st_read("data/City Wards Data.geojson")
+```
+## GeoJson file to a shapefile
+```{r}
+# Writes the Former Municipality Boundaries Data geojson file into a shapefile
+st_write(fmbd, "data/fmbd_new/fmbd.shp")
+```
+## Shapefiles into GeoJson files
+### Shelters shp to geojson
+```{r}
+# Writes the shelters shapefile into a geojson file
+st_write(shelters, "data/shelters_new.geojson", driver='GeoJSON')
+```
+### Waste shp to geojson
+```{r}
+# Writes the waste locations shapefile into a geojson file
+st_write(waste, "data/waste_new.geojson", driver='GeoJSON')
+```
+## GeoJson into a csv file
+```{r}
+# Writes the City Wards Data geojson file into a csv file
+st_write(cwd, "data/cwd_new.csv")
+```

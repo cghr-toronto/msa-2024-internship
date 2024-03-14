@@ -4,7 +4,6 @@ output: html_notebook
 ---
 
 ## Libraries
-
 ```{r}
 # Loading packages for being able to manipulate and plot spatial data
 library(tidyverse)
@@ -13,7 +12,6 @@ library(ggplot2)
 ```
 
 ## Reading in Spatial Files
-
 ```{r}
 # Reading in the Former Municipality Boundaries Data geojson file
 fmbd <- st_read('data/Former Municipality Boundaries Data.geojson')

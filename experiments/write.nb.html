@@ -11,7 +11,7 @@
 
 
 
-<title>R Notebook</title>
+<title>Writing spatial data files</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -1746,22 +1746,154 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">R Notebook</h1>
+<h1 class="title toc-ignore">Writing spatial data files</h1>
 
 </div>
 
 
 <!-- rnb-text-begin -->
+<div id="libraries" class="section level2">
+<h2>Libraries</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjYXJzKVxuYGBgIn0= -->
-<pre class="r"><code>plot(cars)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBMb2FkaW5nIHBhY2thZ2VzIGZvciBiZWluZyBhYmxlIHRvIG1hbmlwdWxhdGUgYW5kIHBsb3Qgc3BhdGlhbCBkYXRhXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmxpYnJhcnkoc2YpXG5saWJyYXJ5KGdncGxvdDIpXG5gYGAifQ== -->
+<pre class="r"><code># Loading packages for being able to manipulate and plot spatial data
+library(tidyverse)
+library(sf)
+library(ggplot2)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+</div>
+<div id="data" class="section level2">
+<h2>Data</h2>
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkaW5nIGluIHRoZSBGb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YSBHZW9Kc29uIGZpbGVcbmZtYmQgPC0gc3RfcmVhZCgnZGF0YS9Gb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YS5nZW9qc29uJylcbmBgYCJ9 -->
+<pre class="r"><code># Reading in the Former Municipality Boundaries Data GeoJson file
+fmbd &lt;- st_read(&#39;data/Former Municipality Boundaries Data.geojson&#39;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBsYXllciBgRm9ybWVyIE11bmljaXBhbGl0eSBCb3VuZGFyaWVzIERhdGEnIGZyb20gZGF0YSBzb3VyY2UgXG4gIGBDOlxcVXNlcnNcXGRhbnRlXFxtc2EtMjAyNC1pbnRlcm5zaGlwXFxleHBlcmltZW50c1xcZGF0YVxcRm9ybWVyIE11bmljaXBhbGl0eSBCb3VuZGFyaWVzIERhdGEuZ2VvanNvbicgXG4gIHVzaW5nIGRyaXZlciBgR2VvSlNPTidcblNpbXBsZSBmZWF0dXJlIGNvbGxlY3Rpb24gd2l0aCA2IGZlYXR1cmVzIGFuZCAxMCBmaWVsZHNcbkdlb21ldHJ5IHR5cGU6IE1VTFRJUE9MWUdPTlxuRGltZW5zaW9uOiAgICAgWFlcbkJvdW5kaW5nIGJveDogIHhtaW46IC03OS42MzkyNiB5bWluOiA0My41ODEgeG1heDogLTc5LjExNTQ1IHltYXg6IDQzLjg1NTQ2XG5HZW9kZXRpYyBDUlM6ICBXR1MgODRcbiJ9 -->
+<pre><code>Reading layer `Former Municipality Boundaries Data&#39; from data source 
+  `C:\Users\dante\msa-2024-internship\experiments\data\Former Municipality Boundaries Data.geojson&#39; 
+  using driver `GeoJSON&#39;
+Simple feature collection with 6 features and 10 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -79.63926 ymin: 43.581 xmax: -79.11545 ymax: 43.85546
+Geodetic CRS:  WGS 84</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkaW5nIGluIHRoZSBDb21tdW5pdHkgU2hlbHRlcnMgc2hhcGVmaWxlXG5zaGVsdGVycyA8LSBzdF9yZWFkKFwiZGF0YS9TaGVsdGVyL3NoZWx0ZXJzX3dnczg0LnNocFwiKVxuYGBgIn0= -->
+<pre class="r"><code># Reading in the Community Shelters shapefile
+shelters &lt;- st_read(&quot;data/Shelter/shelters_wgs84.shp&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBsYXllciBgc2hlbHRlcnNfd2dzODQnIGZyb20gZGF0YSBzb3VyY2UgXG4gIGBDOlxcVXNlcnNcXGRhbnRlXFxtc2EtMjAyNC1pbnRlcm5zaGlwXFxleHBlcmltZW50c1xcZGF0YVxcU2hlbHRlclxcc2hlbHRlcnNfd2dzODQuc2hwJyBcbiAgdXNpbmcgZHJpdmVyIGBFU1JJIFNoYXBlZmlsZSdcblNpbXBsZSBmZWF0dXJlIGNvbGxlY3Rpb24gd2l0aCA1OSBmZWF0dXJlcyBhbmQgMTggZmllbGRzXG5HZW9tZXRyeSB0eXBlOiBQT0lOVFxuRGltZW5zaW9uOiAgICAgWFlcbkJvdW5kaW5nIGJveDogIHhtaW46IC03OS41ODA0OCB5bWluOiA0My42MTgyMSB4bWF4OiAtNzkuMTcyOTIgeW1heDogNDMuNzk4MTFcbkdlb2RldGljIENSUzogIFdHUyA4NFxuIn0= -->
+<pre><code>Reading layer `shelters_wgs84&#39; from data source 
+  `C:\Users\dante\msa-2024-internship\experiments\data\Shelter\shelters_wgs84.shp&#39; 
+  using driver `ESRI Shapefile&#39;
+Simple feature collection with 59 features and 18 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -79.58048 ymin: 43.61821 xmax: -79.17292 ymax: 43.79811
+Geodetic CRS:  WGS 84</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkaW5nIGluIHRoZSBXYXN0ZSBUcmFuc2ZlciBTdGF0aW9uIHNoYXBlZmlsZVxud2FzdGUgPC0gc3RfcmVhZChcImRhdGEvV2FzdGUvU1dfdHJhbnNmZXJfc3RhdGlvbl93Z3M4NC5zaHBcIilcbmBgYCJ9 -->
+<pre class="r"><code># Reading in the Waste Transfer Station shapefile
+waste &lt;- st_read(&quot;data/Waste/SW_transfer_station_wgs84.shp&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBsYXllciBgU1dfdHJhbnNmZXJfc3RhdGlvbl93Z3M4NCcgZnJvbSBkYXRhIHNvdXJjZSBcbiAgYEM6XFxVc2Vyc1xcZGFudGVcXG1zYS0yMDI0LWludGVybnNoaXBcXGV4cGVyaW1lbnRzXFxkYXRhXFxXYXN0ZVxcU1dfdHJhbnNmZXJfc3RhdGlvbl93Z3M4NC5zaHAnIFxuICB1c2luZyBkcml2ZXIgYEVTUkkgU2hhcGVmaWxlJ1xuU2ltcGxlIGZlYXR1cmUgY29sbGVjdGlvbiB3aXRoIDcgZmVhdHVyZXMgYW5kIDMgZmllbGRzXG5HZW9tZXRyeSB0eXBlOiBQT0lOVFxuRGltZW5zaW9uOiAgICAgWFlcbkJvdW5kaW5nIGJveDogIHhtaW46IC03OS42MDI1IHltaW46IDQzLjY1MTk4IHhtYXg6IC03OS4yNDI2MiB5bWF4OiA0My44MDMxN1xuR2VvZGV0aWMgQ1JTOiAgV0dTIDg0XG4ifQ== -->
+<pre><code>Reading layer `SW_transfer_station_wgs84&#39; from data source 
+  `C:\Users\dante\msa-2024-internship\experiments\data\Waste\SW_transfer_station_wgs84.shp&#39; 
+  using driver `ESRI Shapefile&#39;
+Simple feature collection with 7 features and 3 fields
+Geometry type: POINT
+Dimension:     XY
+Bounding box:  xmin: -79.6025 ymin: 43.65198 xmax: -79.24262 ymax: 43.80317
+Geodetic CRS:  WGS 84</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkaW5nIGluIHRoZSBDaXR5IFdhcmRzIERhdGEgR2VvSnNvbiBmaWxlXG5jd2QgPC0gc3RfcmVhZChcImRhdGEvQ2l0eSBXYXJkcyBEYXRhLmdlb2pzb25cIilcbmBgYCJ9 -->
+<pre class="r"><code># Reading in the City Wards Data GeoJson file
+cwd &lt;- st_read(&quot;data/City Wards Data.geojson&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVhZGluZyBsYXllciBgQ2l0eSBXYXJkcyBEYXRhJyBmcm9tIGRhdGEgc291cmNlIFxuICBgQzpcXFVzZXJzXFxkYW50ZVxcbXNhLTIwMjQtaW50ZXJuc2hpcFxcZXhwZXJpbWVudHNcXGRhdGFcXENpdHkgV2FyZHMgRGF0YS5nZW9qc29uJyB1c2luZyBkcml2ZXIgYEdlb0pTT04nXG5TaW1wbGUgZmVhdHVyZSBjb2xsZWN0aW9uIHdpdGggMjUgZmVhdHVyZXMgYW5kIDE5IGZpZWxkc1xuR2VvbWV0cnkgdHlwZTogTVVMVElQT0xZR09OXG5EaW1lbnNpb246ICAgICBYWVxuQm91bmRpbmcgYm94OiAgeG1pbjogLTc5LjYzOTI2IHltaW46IDQzLjU4MSB4bWF4OiAtNzkuMTE1NDUgeW1heDogNDMuODU1NDZcbkdlb2RldGljIENSUzogIFdHUyA4NFxuIn0= -->
+<pre><code>Reading layer `City Wards Data&#39; from data source 
+  `C:\Users\dante\msa-2024-internship\experiments\data\City Wards Data.geojson&#39; using driver `GeoJSON&#39;
+Simple feature collection with 25 features and 19 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: -79.63926 ymin: 43.581 xmax: -79.11545 ymax: 43.85546
+Geodetic CRS:  WGS 84</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="geojson-file-to-a-shapefile" class="section level2">
+<h2>GeoJson file to a shapefile</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXcml0ZXMgdGhlIEZvcm1lciBNdW5pY2lwYWxpdHkgQm91bmRhcmllcyBEYXRhIGdlb2pzb24gZmlsZSBpbnRvIGEgc2hhcGVmaWxlXG5zdF93cml0ZShmbWJkLCBcImRhdGEvZm1iZF9uZXcvZm1iZC5zaHBcIilcbmBgYCJ9 -->
+<pre class="r"><code># Writes the Former Municipality Boundaries Data geojson file into a shapefile
+st_write(fmbd, &quot;data/fmbd_new/fmbd.shp&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZzogRmllbGQgbmFtZXMgYWJicmV2aWF0ZWQgZm9yIEVTUkkgU2hhcGVmaWxlIGRyaXZlclxuIn0= -->
+<pre><code>Warning: Field names abbreviated for ESRI Shapefile driver</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV3JpdGluZyBsYXllciBgZm1iZCcgdG8gZGF0YSBzb3VyY2UgYGRhdGEvZm1iZF9uZXcvZm1iZC5zaHAnIHVzaW5nIGRyaXZlciBgRVNSSSBTaGFwZWZpbGUnXG5Xcml0aW5nIDYgZmVhdHVyZXMgd2l0aCAxMCBmaWVsZHMgYW5kIGdlb21ldHJ5IHR5cGUgTXVsdGkgUG9seWdvbi5cbiJ9 -->
+<pre><code>Writing layer `fmbd&#39; to data source `data/fmbd_new/fmbd.shp&#39; using driver `ESRI Shapefile&#39;
+Writing 6 features with 10 fields and geometry type Multi Polygon.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="shapefiles-into-geojson-files" class="section level2">
+<h2>Shapefiles into GeoJson files</h2>
+<div id="shelters-shp-to-geojson" class="section level3">
+<h3>Shelters shp to geojson</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGlzIGJsb2NrIG9mIGNvZGUgd3JpdGVzIHRoZSBzaGVsdGVycyBzaGFwZWZpbGUgaW50byBhIGdlb2pzb24gZmlsZVxuc3Rfd3JpdGUoc2hlbHRlcnMsIFwiZGF0YS9zaGVsdGVyc19uZXcuZ2VvanNvblwiLCBkcml2ZXI9J0dlb0pTT04nKVxuYGBgIn0= -->
+<pre class="r"><code># This block of code writes the shelters shapefile into a geojson file
+st_write(shelters, &quot;data/shelters_new.geojson&quot;, driver=&#39;GeoJSON&#39;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV3JpdGluZyBsYXllciBgc2hlbHRlcnNfbmV3JyB0byBkYXRhIHNvdXJjZSBgZGF0YS9zaGVsdGVyc19uZXcuZ2VvanNvbicgdXNpbmcgZHJpdmVyIGBHZW9KU09OJ1xuV3JpdGluZyA1OSBmZWF0dXJlcyB3aXRoIDE4IGZpZWxkcyBhbmQgZ2VvbWV0cnkgdHlwZSBQb2ludC5cbiJ9 -->
+<pre><code>Writing layer `shelters_new&#39; to data source `data/shelters_new.geojson&#39; using driver `GeoJSON&#39;
+Writing 59 features with 18 fields and geometry type Point.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="waste-shp-to-geojson" class="section level3">
+<h3>Waste shp to geojson</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBUaGlzIGJsb2NrIG9mIGNvZGUgd3JpdGVzIHRoZSB3YXN0ZSBsb2NhdGlvbnMgc2hhcGVmaWxlIGludG8gYSBnZW9qc29uIGZpbGVcbnN0X3dyaXRlKHdhc3RlLCBcImRhdGEvd2FzdGVfbmV3Lmdlb2pzb25cIiwgZHJpdmVyPSdHZW9KU09OJylcbmBgYCJ9 -->
+<pre class="r"><code># This block of code writes the waste locations shapefile into a geojson file
+st_write(waste, &quot;data/waste_new.geojson&quot;, driver=&#39;GeoJSON&#39;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV3JpdGluZyBsYXllciBgd2FzdGVfbmV3JyB0byBkYXRhIHNvdXJjZSBgZGF0YS93YXN0ZV9uZXcuZ2VvanNvbicgdXNpbmcgZHJpdmVyIGBHZW9KU09OJ1xuV3JpdGluZyA3IGZlYXR1cmVzIHdpdGggMyBmaWVsZHMgYW5kIGdlb21ldHJ5IHR5cGUgUG9pbnQuXG4ifQ== -->
+<pre><code>Writing layer `waste_new&#39; to data source `data/waste_new.geojson&#39; using driver `GeoJSON&#39;
+Writing 7 features with 3 fields and geometry type Point.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+</div>
+<div id="geojson-into-a-csv-file" class="section level2">
+<h2>GeoJson into a csv file</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXcml0ZXMgdGhlIENpdHkgV2FyZHMgRGF0YSBnZW9qc29uIGZpbGUgaW50byBhIGNzdiBmaWxlXG5zdF93cml0ZShjd2QsIFwiZGF0YS9jd2RfbmV3LmNzdlwiKVxuYGBgIn0= -->
+<pre class="r"><code># Writes the City Wards Data geojson file into a csv file
+st_write(cwd, &quot;data/cwd_new.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV3JpdGluZyBsYXllciBgY3dkX25ldycgdG8gZGF0YSBzb3VyY2UgYGRhdGEvY3dkX25ldy5jc3YnIHVzaW5nIGRyaXZlciBgQ1NWJ1xuV3JpdGluZyAyNSBmZWF0dXJlcyB3aXRoIDE5IGZpZWxkcyBhbmQgZ2VvbWV0cnkgdHlwZSBNdWx0aSBQb2x5Z29uLlxuIn0= -->
+<pre><code>Writing layer `cwd_new&#39; to data source `data/cwd_new.csv&#39; using driver `CSV&#39;
+Writing 25 features with 19 fields and geometry type Multi Polygon.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+</div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQoNCmBgYHtyfQ0KcGxvdChjYXJzKQ0KYGBgDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIldyaXRpbmcgc3BhdGlhbCBkYXRhIGZpbGVzIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyMgTGlicmFyaWVzDQpgYGB7cn0NCiMgTG9hZGluZyBwYWNrYWdlcyBmb3IgYmVpbmcgYWJsZSB0byBtYW5pcHVsYXRlIGFuZCBwbG90IHNwYXRpYWwgZGF0YQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KHNmKQ0KbGlicmFyeShnZ3Bsb3QyKQ0KYGBgDQoNCiMjIERhdGENCmBgYHtyfQ0KIyBSZWFkaW5nIGluIHRoZSBGb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YSBHZW9Kc29uIGZpbGUNCmZtYmQgPC0gc3RfcmVhZCgnZGF0YS9Gb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YS5nZW9qc29uJykNCg0KIyBSZWFkaW5nIGluIHRoZSBDb21tdW5pdHkgU2hlbHRlcnMgc2hhcGVmaWxlDQpzaGVsdGVycyA8LSBzdF9yZWFkKCJkYXRhL1NoZWx0ZXIvc2hlbHRlcnNfd2dzODQuc2hwIikNCg0KIyBSZWFkaW5nIGluIHRoZSBXYXN0ZSBUcmFuc2ZlciBTdGF0aW9uIHNoYXBlZmlsZQ0Kd2FzdGUgPC0gc3RfcmVhZCgiZGF0YS9XYXN0ZS9TV190cmFuc2Zlcl9zdGF0aW9uX3dnczg0LnNocCIpDQoNCiMgUmVhZGluZyBpbiB0aGUgQ2l0eSBXYXJkcyBEYXRhIEdlb0pzb24gZmlsZQ0KY3dkIDwtIHN0X3JlYWQoImRhdGEvQ2l0eSBXYXJkcyBEYXRhLmdlb2pzb24iKQ0KYGBgDQojIyBHZW9Kc29uIGZpbGUgdG8gYSBzaGFwZWZpbGUNCmBgYHtyfQ0KIyBXcml0ZXMgdGhlIEZvcm1lciBNdW5pY2lwYWxpdHkgQm91bmRhcmllcyBEYXRhIGdlb2pzb24gZmlsZSBpbnRvIGEgc2hhcGVmaWxlDQpzdF93cml0ZShmbWJkLCAiZGF0YS9mbWJkX25ldy9mbWJkLnNocCIpDQpgYGANCiMjIFNoYXBlZmlsZXMgaW50byBHZW9Kc29uIGZpbGVzDQojIyMgU2hlbHRlcnMgc2hwIHRvIGdlb2pzb24NCmBgYHtyfQ0KIyBXcml0ZXMgdGhlIHNoZWx0ZXJzIHNoYXBlZmlsZSBpbnRvIGEgZ2VvanNvbiBmaWxlDQpzdF93cml0ZShzaGVsdGVycywgImRhdGEvc2hlbHRlcnNfbmV3Lmdlb2pzb24iLCBkcml2ZXI9J0dlb0pTT04nKQ0KYGBgDQojIyMgV2FzdGUgc2hwIHRvIGdlb2pzb24NCmBgYHtyfQ0KIyBXcml0ZXMgdGhlIHdhc3RlIGxvY2F0aW9ucyBzaGFwZWZpbGUgaW50byBhIGdlb2pzb24gZmlsZQ0Kc3Rfd3JpdGUod2FzdGUsICJkYXRhL3dhc3RlX25ldy5nZW9qc29uIiwgZHJpdmVyPSdHZW9KU09OJykNCmBgYA0KIyMgR2VvSnNvbiBpbnRvIGEgY3N2IGZpbGUNCmBgYHtyfQ0KIyBXcml0ZXMgdGhlIENpdHkgV2FyZHMgRGF0YSBnZW9qc29uIGZpbGUgaW50byBhIGNzdiBmaWxlDQpzdF93cml0ZShjd2QsICJkYXRhL2N3ZF9uZXcuY3N2IikNCmBgYA==</div>
 
 
 
