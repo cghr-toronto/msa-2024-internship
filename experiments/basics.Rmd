@@ -1,0 +1,60 @@
+---
+title: "Spatial Data Basics"
+output: html_notebook
+---
+* Dante Christopher-Alphonso <dantealphonso@gmail.com>
+
+## Libraries
+```{r}
+# Loading packages for being able to manipulate and plot spatial data
+library(tidyverse)
+library(sf)
+library(ggplot2)
+```
+
+## Data
+```{r}
+# Reading in the Former Municipality Boundaries Data GeoJson file and reprojecting
+fmbd <- st_read('data/Former Municipality Boundaries Data.geojson') %>% st_transform(3857)
+
+# Reading in the Community Shelters shapefile and reprojecting
+shelters <- st_read("data/Shelter/shelters_wgs84.shp") %>% st_transform(3857)
+
+# Reading in the Neighbourhoods GeoJson File and reprojecting
+ngh <- st_read("data/Neighbourhoods.geojson") %>% st_transform(3857)
+
+# Reading in the Neighbourhood Improvement Areas GeoJson File and reprojecting
+ngh_imp <- st_read("data/Neighbourhood Improvement Areas.geojson") %>% st_transform(3857)
+``` 
+
+## Functions
+### Buffer and spatial join function
+```{r}
+buffer_sjoin <- function(gdf1, gdf2, dist = 1000){
+    '''
+    Buffers geodataframe 1 and joins it to the nearest geometries in geodataframe 2.
+    
+    Parameters
+    ----------
+    gdf1 : geopandas.GeoDataFrame
+        A geodataframe with points.
+    gdf2 : geopandas.GeoDataFrame
+        A geodataframe with polygons.
+    dist : int or float
+        Buffer distance to apply. Default is 1000.
+    
+    Returns
+    -------
+    geopandas.GeoDataFrame
+        The geodataframe after applying a buffer to gdf1 and joining to geometries of gdf2.
+    '''
+  
+  # Buffer gdf1 by dist
+  gdf1_buff <- st_buffer(shelter, dist = 1000)
+  
+  # Join the geometries of gdf2 with buffered gdf1
+  result <- st_join(gdf1_buff, gdf2)
+  return(result)
+}
+```
+
