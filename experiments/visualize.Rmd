@@ -42,5 +42,5 @@ plot(st_geometry(fmbd))
 # Plotting an interactive map with the Former Municipality Boundaries Data file
 tmap_mode("view")
 tm_shape(fmbd) +
-  tm_polygons(fill = '#FF0000', alpha = 0.5, border.col = 'black', border.alpha = 0.5)
+  tm_polygons(col = 'red', alpha = 0.5, border.col = 'black', border.alpha = 0.5)
 ```
