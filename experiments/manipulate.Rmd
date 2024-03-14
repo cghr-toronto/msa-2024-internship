@@ -2,9 +2,11 @@
 title: "Spatial Data Manipulation"
 output: html_notebook
 ---
-* Dante Christopher-Alphonso <dantealphonso@gmail.com>
+
+-   Dante Christopher-Alphonso [dantealphonso\@gmail.com](mailto:dantealphonso@gmail.com){.email}
 
 ## Libraries
+
 ```{r}
 # Loading packages for being able to manipulate and plot spatial data
 library(tidyverse)
@@ -13,28 +15,40 @@ library(ggplot2)
 ```
 
 ## Data
+
 ```{r}
 # Reading in the Former Municipality Boundaries Data GeoJson file
 fmbd <- st_read('data/Former Municipality Boundaries Data.geojson')
 
 # Reading in the Community Shelters shapefile
-shelters <- st_read("data/Shelter/shelters_wgs84.shp")
+shelters_old <- st_read("data/Shelter/shelters_wgs84.shp")
+shelters <- shelters_old  %>% st_set_crs(NA) %>% st_set_crs(3857)
+shelters <- shelters_old  %>% st_transform(3857)
 
 # Reading in the Waste Transfer Station shapefile
-waste <- st_read("data/Waste/SW_transfer_station_wgs84.shp")
+waste_old <- st_read("data/Waste/SW_transfer_station_wgs84.shp")
+waste <- waste_old  %>% st_set_crs(NA) %>% st_set_crs(3857)
+waste <- waste_old  %>% st_transform(3857)
 ```
 
 ## Summary Statistics
+
 ### Finding Maximum value
+
 ```{r}
 max(fmbd$AREA_SHORT_CODE)
 ```
+
 ### Finding Mean value
+
 ```{r}
 mean(shelters$CENTRELINE)
 ```
+
 ## Reprojecting a spatial file
+
 ### Showing the current projection of a spatial file
+
 ```{r}
 # Displaying the Former Municipality Boundaries Data file's current CRS
 st_crs(fmbd)
@@ -42,7 +56,9 @@ st_crs(fmbd)
 # Plotting the Former Municipality Boundaries Data file as a map
 plot(st_geometry(fmbd))
 ```
+
 ### Reprojection of the spatial file
+
 ```{r}
 # Wipe the CRS of fmbd and set it to WGS 84 / UTM zone 33N projection
 fmbd_new <- fmbd  %>% st_set_crs(NA) %>% st_set_crs(32633)
@@ -52,5 +68,28 @@ fmbd_new <- fmbd  %>% st_transform(32633)
 
 # Plotting re projected fmbd
 plot(st_geometry(fmbd_new))
+```
+### Trying a different reprojection
+```{r}
+# Wipe the CRS of fmbd and set it to NAD83(CSRS) / Statistics Canada Lambert
+fmbd_new2 <- fmbd  %>% st_set_crs(NA) %>% st_set_crs(3348)
+
+# Coordinate transformation to NAD83(CSRS) / Statistics Canada Lambert
+fmbd_new2 <- fmbd  %>% st_transform(3348)
+
+# Plotting re projected fmbd
+plot(st_geometry(fmbd_new2))
+```
+## Creating a new column by combining two existing columns
+```{r}
+# Combining the AREA_SHORT_CODE column and the AREA_LONG_CODE column together to create the AREA_NEW_CODE column
+fmbd$AREA_NEW_CODE <- paste(fmbd$AREA_SHORT_CODE, fmbd$AREA_LONG_CODE)
+
+# Reading the new table of the same fmbd file
+fmbd
+```
+## Creating buffers for a spatial file
+```{r}
+plot(st_geometry(shelters))
 ```
 
