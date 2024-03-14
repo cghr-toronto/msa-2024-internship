@@ -31,30 +31,62 @@ ngh_imp <- st_read("data/Neighbourhood Improvement Areas.geojson") %>% st_transf
 ### Buffer and spatial join function
 ```{r}
 buffer_sjoin <- function(gdf1, gdf2, dist = 1000){
-    '''
-    Buffers geodataframe 1 and joins it to the nearest geometries in geodataframe 2.
-    
-    Parameters
-    ----------
-    gdf1 : geopandas.GeoDataFrame
-        A geodataframe with points.
-    gdf2 : geopandas.GeoDataFrame
-        A geodataframe with polygons.
-    dist : int or float
-        Buffer distance to apply. Default is 1000.
-    
-    Returns
-    -------
-    geopandas.GeoDataFrame
-        The geodataframe after applying a buffer to gdf1 and joining to geometries of gdf2.
-    '''
+  
+  #'Buffers geodataframe 1 and joins it to the nearest geometries in geodataframe 2.
+  #'@param gdf1 A geodataframe with points.
+  #'@param gdf2 A geodataframe with polygons.
+  #'@param dist Buffer distance to apply. Default is 1000.
+  #'
+  #'@return The geodataframe after applying a buffer to gdf1 and joining to geometries of gdf2.
+  
   
   # Buffer gdf1 by dist
-  gdf1_buff <- st_buffer(shelter, dist = 1000)
+  gdf1_buff <- st_buffer(gdf1, dist)
   
   # Join the geometries of gdf2 with buffered gdf1
   result <- st_join(gdf1_buff, gdf2)
   return(result)
 }
+```
+
+### Spatial join and count function
+```{r}
+buffer_sjoin <- function(gdf1, gdf2, dist = 1000){
+  
+  #'Takes geodataframe 2 and joins it to the geometries in geodataframe 1, then counts the number of points from      geodataframe 2.
+  #'@param gdf1 A geodataframe with points.
+  #'@param gdf2 A geodataframe with polygons.
+  #'
+  #'@return The geodataframe after joining gdf1 and gdf2 and counting the number of points from gdf2.
+  
+  
+  # Buffer gdf1 by dist
+  gdf1_buff <- st_buffer(gdf1, dist)
+  
+  # Join the geometries of gdf2 with buffered gdf1
+  result <- st_join(gdf1_buff, gdf2)
+  return(result)
+}
+```
+
+
+### Buffer_sjoin demo
+Demo
+```{r}
+# Join shelters and fmbd together after buffering shelters
+# Note the default distance is 1000, but it can be changed
+# e.g. buffer_sjoin(shelters, fmbd, dist = 100) for a 100 meter buffer
+buffer_sjoin_shelters_fmbd <- buffer_sjoin(shelters, fmbd)
+```
+
+Display non-spatial data
+```{r}
+# Showing non-spatial results of buffer_sjoin
+buffer_sjoin_shelters_fmbd
+```
+
+Display spatial data
+```{r}
+plot(st_geometry(buffer_sjoin_shelters_fmbd))
 ```
 

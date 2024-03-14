@@ -1759,29 +1759,11 @@ display: none;
 <h2>Libraries</h2>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBMb2FkaW5nIHBhY2thZ2VzIGZvciBiZWluZyBhYmxlIHRvIG1hbmlwdWxhdGUgYW5kIHBsb3Qgc3BhdGlhbCBkYXRhXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBMb2FkaW5nIHBhY2thZ2VzIGZvciBiZWluZyBhYmxlIHRvIG1hbmlwdWxhdGUgYW5kIHBsb3Qgc3BhdGlhbCBkYXRhXG5saWJyYXJ5KHRpZHl2ZXJzZSlcbmxpYnJhcnkoc2YpXG5saWJyYXJ5KGdncGxvdDIpXG5gYGAifQ== -->
 <pre class="r"><code># Loading packages for being able to manipulate and plot spatial data
-library(tidyverse)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoi4pSA4pSAIEF0dGFjaGluZyBjb3JlIHRpZHl2ZXJzZSBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDIuMC4wIOKUgOKUgFxu4pyUIGRwbHlyICAgICAxLjEuNCAgICAg4pyUIHJlYWRyICAgICAyLjEuNVxu4pyUIGZvcmNhdHMgICAxLjAuMCAgICAg4pyUIHN0cmluZ3IgICAxLjUuMVxu4pyUIGdncGxvdDIgICAzLjUuMCAgICAg4pyUIHRpYmJsZSAgICAzLjIuMVxu4pyUIGx1YnJpZGF0ZSAxLjkuMyAgICAg4pyUIHRpZHlyICAgICAxLjMuMVxu4pyUIHB1cnJyICAgICAxLjAuMiAgICAg4pSA4pSAIENvbmZsaWN0cyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlX2NvbmZsaWN0cygpIOKUgOKUgFxu4pyWIGRwbHlyOjpmaWx0ZXIoKSBtYXNrcyBzdGF0czo6ZmlsdGVyKClcbuKcliBkcGx5cjo6bGFnKCkgICAgbWFza3Mgc3RhdHM6OmxhZygpXG7ihLkgVXNlIHRoZSBcdTAwMWJdODs7aHR0cDovL2NvbmZsaWN0ZWQuci1saWIub3JnL1x1MDAwN2NvbmZsaWN0ZWQgcGFja2FnZVx1MDAxYl04OztcdTAwMDcgdG8gZm9yY2UgYWxsIGNvbmZsaWN0cyB0byBiZWNvbWUgZXJyb3JzXG4ifQ== -->
-<pre><code>── Attaching core tidyverse packages ───────────────────────────────────────────────────── tidyverse 2.0.0 ──
-✔ dplyr     1.1.4     ✔ readr     2.1.5
-✔ forcats   1.0.0     ✔ stringr   1.5.1
-✔ ggplot2   3.5.0     ✔ tibble    3.2.1
-✔ lubridate 1.9.3     ✔ tidyr     1.3.1
-✔ purrr     1.0.2     ── Conflicts ─────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the ]8;;http://conflicted.r-lib.org/conflicted package]8;; to force all conflicts to become errors</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzZilcbmBgYCJ9 -->
-<pre class="r"><code>library(sf)</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiTGlua2luZyB0byBHRU9TIDMuMTEuMiwgR0RBTCAzLjguMiwgUFJPSiA5LjMuMTsgc2ZfdXNlX3MyKCkgaXMgVFJVRVxuIn0= -->
-<pre><code>Linking to GEOS 3.11.2, GDAL 3.8.2, PROJ 9.3.1; sf_use_s2() is TRUE</code></pre>
-<!-- rnb-output-end -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShnZ3Bsb3QyKVxuYGBgIn0= -->
-<pre class="r"><code>library(ggplot2)</code></pre>
+library(tidyverse)
+library(sf)
+library(ggplot2)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -1853,38 +1835,165 @@ Geodetic CRS:  WGS 84</code></pre>
 <h3>Buffer and spatial join function</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnVmZmVyX3Nqb2luIDwtIGZ1bmN0aW9uKGdkZjEsIGdkZjIsIGRpc3QgPSAxMDAwKXtcbiAgICAnJydcbiAgICBCdWZmZXJzIGdlb2RhdGFmcmFtZSAxIGFuZCBqb2lucyBpdCB0byB0aGUgbmVhcmVzdCBnZW9tZXRyaWVzIGluIGdlb2RhdGFmcmFtZSAyLlxuICAgIFxuICAgIFBhcmFtZXRlcnNcbiAgICAtLS0tLS0tLS0tXG4gICAgZ2RmMSA6IGdlb3BhbmRhcy5HZW9EYXRhRnJhbWVcbiAgICAgICAgQSBnZW9kYXRhZnJhbWUgd2l0aCBwb2ludHMuXG4gICAgZ2RmMiA6IGdlb3BhbmRhcy5HZW9EYXRhRnJhbWVcbiAgICAgICAgQSBnZW9kYXRhZnJhbWUgd2l0aCBwb2x5Z29ucy5cbiAgICBkaXN0IDogaW50IG9yIGZsb2F0XG4gICAgICAgIEJ1ZmZlciBkaXN0YW5jZSB0byBhcHBseS4gRGVmYXVsdCBpcyAxMDAwLlxuICAgIFxuICAgIFJldHVybnNcbiAgICAtLS0tLS0tXG4gICAgZ2VvcGFuZGFzLkdlb0RhdGFGcmFtZVxuICAgICAgICBUaGUgZ2VvZGF0YWZyYW1lIGFmdGVyIGFwcGx5aW5nIGEgYnVmZmVyIHRvIGdkZjEgYW5kIGpvaW5pbmcgdG8gZ2VvbWV0cmllcyBvZiBnZGYyLlxuICAgICcnJ1xuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnVmZmVyX3Nqb2luIDwtIGZ1bmN0aW9uKGdkZjEsIGdkZjIsIGRpc3QgPSAxMDAwKXtcbiAgXG4gICMnQnVmZmVycyBnZW9kYXRhZnJhbWUgMSBhbmQgam9pbnMgaXQgdG8gdGhlIG5lYXJlc3QgZ2VvbWV0cmllcyBpbiBnZW9kYXRhZnJhbWUgMi5cbiAgIydAcGFyYW0gZ2RmMSBBIGdlb2RhdGFmcmFtZSB3aXRoIHBvaW50cy5cbiAgIydAcGFyYW0gZ2RmMiBBIGdlb2RhdGFmcmFtZSB3aXRoIHBvbHlnb25zLlxuICAjJ0BwYXJhbSBkaXN0IEJ1ZmZlciBkaXN0YW5jZSB0byBhcHBseS4gRGVmYXVsdCBpcyAxMDAwLlxuICAjJ1xuICAjJ0ByZXR1cm4gVGhlIGdlb2RhdGFmcmFtZSBhZnRlciBhcHBseWluZyBhIGJ1ZmZlciB0byBnZGYxIGFuZCBqb2luaW5nIHRvIGdlb21ldHJpZXMgb2YgZ2RmMi5cbiAgXG4gIFxuICAjIEJ1ZmZlciBnZGYxIGJ5IGRpc3RcbiAgZ2RmMV9idWZmIDwtIHN0X2J1ZmZlcihnZGYxLCBkaXN0KVxuICBcbiAgIyBKb2luIHRoZSBnZW9tZXRyaWVzIG9mIGdkZjIgd2l0aCBidWZmZXJlZCBnZGYxXG4gIHJlc3VsdCA8LSBzdF9qb2luKGdkZjFfYnVmZiwgZ2RmMilcbiAgcmV0dXJuKHJlc3VsdClcbn1cbmBgYCJ9 -->
 <pre class="r"><code>buffer_sjoin &lt;- function(gdf1, gdf2, dist = 1000){
-    &#39;&#39;&#39;
-    Buffers geodataframe 1 and joins it to the nearest geometries in geodataframe 2.
-    
-    Parameters
-    ----------
-    gdf1 : geopandas.GeoDataFrame
-        A geodataframe with points.
-    gdf2 : geopandas.GeoDataFrame
-        A geodataframe with polygons.
-    dist : int or float
-        Buffer distance to apply. Default is 1000.
-    
-    Returns
-    -------
-    geopandas.GeoDataFrame
-        The geodataframe after applying a buffer to gdf1 and joining to geometries of gdf2.
-    &#39;&#39;&#39;</code></pre>
+  
+  #&#39;Buffers geodataframe 1 and joins it to the nearest geometries in geodataframe 2.
+  #&#39;@param gdf1 A geodataframe with points.
+  #&#39;@param gdf2 A geodataframe with polygons.
+  #&#39;@param dist Buffer distance to apply. Default is 1000.
+  #&#39;
+  #&#39;@return The geodataframe after applying a buffer to gdf1 and joining to geometries of gdf2.
+  
+  
+  # Buffer gdf1 by dist
+  gdf1_buff &lt;- st_buffer(gdf1, dist)
+  
+  # Join the geometries of gdf2 with buffered gdf1
+  result &lt;- st_join(gdf1_buff, gdf2)
+  return(result)
+}</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiRXJyb3I6IHVuZXhwZWN0ZWQgc3RyaW5nIGNvbnN0YW50IGluOlxuXCIgICAgICAgIFRoZSBnZW9kYXRhZnJhbWUgYWZ0ZXIgYXBwbHlpbmcgYSBidWZmZXIgdG8gZ2RmMSBhbmQgam9pbmluZyB0byBnZW9tZXRyaWVzIG9mIGdkZjIuXG4gICAgJ1wiXG4ifQ== -->
-<pre><code>Error: unexpected string constant in:
-&quot;        The geodataframe after applying a buffer to gdf1 and joining to geometries of gdf2.
-    &#39;&quot;</code></pre>
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="spatial-join-and-count-function" class="section level3">
+<h3>Spatial join and count function</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYnVmZmVyX3Nqb2luIDwtIGZ1bmN0aW9uKGdkZjEsIGdkZjIsIGRpc3QgPSAxMDAwKXtcbiAgXG4gICMnVGFrZXMgZ2VvZGF0YWZyYW1lIDIgYW5kIGpvaW5zIGl0IHRvIHRoZSBnZW9tZXRyaWVzIGluIGdlb2RhdGFmcmFtZSAxLCB0aGVuIGNvdW50cyB0aGUgbnVtYmVyIG9mIHBvaW50cyBmcm9tICAgICAgZ2VvZGF0YWZyYW1lIDIuXG4gICMnQHBhcmFtIGdkZjEgQSBnZW9kYXRhZnJhbWUgd2l0aCBwb2ludHMuXG4gICMnQHBhcmFtIGdkZjIgQSBnZW9kYXRhZnJhbWUgd2l0aCBwb2x5Z29ucy5cbiAgIydcbiAgIydAcmV0dXJuIFRoZSBnZW9kYXRhZnJhbWUgYWZ0ZXIgam9pbmluZyBnZGYxIGFuZCBnZGYyIGFuZCBjb3VudGluZyB0aGUgbnVtYmVyIG9mIHBvaW50cyBmcm9tIGdkZjIuXG4gIFxuICBcbiAgIyBCdWZmZXIgZ2RmMSBieSBkaXN0XG4gIGdkZjFfYnVmZiA8LSBzdF9idWZmZXIoZ2RmMSwgZGlzdClcbiAgXG4gICMgSm9pbiB0aGUgZ2VvbWV0cmllcyBvZiBnZGYyIHdpdGggYnVmZmVyZWQgZ2RmMVxuICByZXN1bHQgPC0gc3Rfam9pbihnZGYxX2J1ZmYsIGdkZjIpXG4gIHJldHVybihyZXN1bHQpXG59XG5gYGAifQ== -->
+<pre class="r"><code>buffer_sjoin &lt;- function(gdf1, gdf2, dist = 1000){
+  
+  #&#39;Takes geodataframe 2 and joins it to the geometries in geodataframe 1, then counts the number of points from      geodataframe 2.
+  #&#39;@param gdf1 A geodataframe with points.
+  #&#39;@param gdf2 A geodataframe with polygons.
+  #&#39;
+  #&#39;@return The geodataframe after joining gdf1 and gdf2 and counting the number of points from gdf2.
+  
+  
+  # Buffer gdf1 by dist
+  gdf1_buff &lt;- st_buffer(gdf1, dist)
+  
+  # Join the geometries of gdf2 with buffered gdf1
+  result &lt;- st_join(gdf1_buff, gdf2)
+  return(result)
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="buffer_sjoin-demo" class="section level3">
+<h3>Buffer_sjoin demo</h3>
+<p>Demo</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBKb2luIHNoZWx0ZXJzIGFuZCBmbWJkIHRvZ2V0aGVyIGFmdGVyIGJ1ZmZlcmluZyBzaGVsdGVyc1xuIyBOb3RlIHRoZSBkZWZhdWx0IGRpc3RhbmNlIGlzIDEwMDAsIGJ1dCBpdCBjYW4gYmUgY2hhbmdlZFxuIyBlLmcuIGJ1ZmZlcl9zam9pbihzaGVsdGVycywgZm1iZCwgZGlzdCA9IDEwMCkgZm9yIGEgMTAwIG1ldGVyIGJ1ZmZlclxuYnVmZmVyX3Nqb2luX3NoZWx0ZXJzX2ZtYmQgPC0gYnVmZmVyX3Nqb2luKHNoZWx0ZXJzLCBmbWJkKVxuYGBgIn0= -->
+<pre class="r"><code># Join shelters and fmbd together after buffering shelters
+# Note the default distance is 1000, but it can be changed
+# e.g. buffer_sjoin(shelters, fmbd, dist = 100) for a 100 meter buffer
+buffer_sjoin_shelters_fmbd &lt;- buffer_sjoin(shelters, fmbd)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Display non-spatial data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTaG93aW5nIG5vbi1zcGF0aWFsIHJlc3VsdHMgb2YgYnVmZmVyX3Nqb2luXG5idWZmZXJfc2pvaW5fc2hlbHRlcnNfZm1iZFxuYGBgIn0= -->
+<pre class="r"><code># Showing non-spatial results of buffer_sjoin
+buffer_sjoin_shelters_fmbd</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiU2ltcGxlIGZlYXR1cmUgY29sbGVjdGlvbiB3aXRoIDY0IGZlYXR1cmVzIGFuZCAyOCBmaWVsZHNcbkdlb21ldHJ5IHR5cGU6IFBPTFlHT05cbkRpbWVuc2lvbjogICAgIFhZXG5Cb3VuZGluZyBib3g6ICB4bWluOiAtODg1OTg1OCB5bWluOiA1NDA1NTQ5IHhtYXg6IC04ODEyNDg5IHltYXg6IDU0MzUyNTJcblByb2plY3RlZCBDUlM6IFdHUyA4NCAvIFBzZXVkby1NZXJjYXRvclxuRmlyc3QgMTAgZmVhdHVyZXM6XG4gICBBRERSRVNTX1BPICAgICAgICBBRERSRVNTX0ZVIFBPU1RBTF9DT0QgICAgIE1VTklDSVBBTEkgICAgQ0lUWSBDRU5UUkVMSU5FIE9CSkVDVElELnhcbjEgICAgICA4MDgyNjAgICA3MCBHZXJyYXJkIFN0IEUgICAgIE01QjFHNiBmb3JtZXIgVE9ST05UTyBUb3JvbnRvICAgIDExNDM4MDAgICAgICAgICA0NFxuMiAgICAgOTUzMTY4NCAgMzQxMCBCYXl2aWV3IEF2ZSAgICAgTTJNM1MzICAgICBOT1JUSCBZT1JLIFRvcm9udG8gICAgOTUzMTY3NCAgICAgICAgIDQ1XG4zICAgICAyNTkxNjM0ICAgIDg3IFBlbWJyb2tlIFN0ICAgICBNNUEyTjkgZm9ybWVyIFRPUk9OVE8gVG9yb250byAgIDE0MDIwNTI2ICAgICAgICAgNDZcbjQgICAgIDgwNjc3OTYgICAgICAxMjkgUGV0ZXIgU3QgICAgIE01VjJIMyBmb3JtZXIgVE9ST05UTyBUb3JvbnRvICAgMjAxMzk2MzcgICAgICAgICA0N1xuNSAgICAgNjM2Mjg3NyAgICAxOTEgU3BhZGluYSBSZCAgICAgTTVSMlQ5IGZvcm1lciBUT1JPTlRPIFRvcm9udG8gICAgNjM2MjgzNyAgICAgICAgIDQ4XG42ICAgICAzMjAyMzAzICAgICAxMDc2IFBhcGUgQXZlICAgICBNNEszVzUgICAgICBFQVNUIFlPUksgVG9yb250byAgICAzMjAyMjkyICAgICAgICAgNDlcbjcgICAgMTM5Njc5MzIgOTUgV2VsbGVzbGV5IFN0IEUgICAgIE00WTJYOSBmb3JtZXIgVE9ST05UTyBUb3JvbnRvICAgIDc3MzEzNjUgICAgICAgICA1MFxuOCAgICAxNDIwODgwNCAgICAgIDIzIEdyYW5nZSBSZCAgICBNNVQgMUMzIGZvcm1lciBUT1JPTlRPIFRvcm9udG8gICAgNzc5NjE4OSAgICAgICAgIDUxXG45ICAgICAgNzcwMTcxICA2MyBCZWxsd29vZHMgQXZlICAgICBNNkozTjQgZm9ybWVyIFRPUk9OVE8gVG9yb250byAgIDE0MDE4MTMxICAgICAgICAgNTJcbjEwICAgICA3OTY2NTAgICA2NzQgRHVuZGFzIFN0IFcgICAgIE01VDFIOSBmb3JtZXIgVE9ST05UTyBUb3JvbnRvICAgIDExNDUxNzAgICAgICAgICA1M1xuICAgICAgICAgICAgICAgICAgICAgICAgICAgV0FSRCBORUlHSEJPVVJIICAgICAgICAgICAgICAgICAgICAgICAgIE5FSUdIQk9VXzFcbjEgIFRvcm9udG8gQ2VudHJlLVJvc2VkYWxlICgyNykgICAgICAgICA3NSAgICAgICAgICAgICAgQ2h1cmNoLVlvbmdlIENvcnJpZG9yXG4yICAgICAgICAgICAgICAgV2lsbG93ZGFsZSAoMjQpICAgICAgICAgNTAgICAgICAgICAgICAgICAgICAgTmV3dG9uYnJvb2sgRWFzdFxuMyAgVG9yb250byBDZW50cmUtUm9zZWRhbGUgKDI3KSAgICAgICAgIDczICAgICAgICAgICAgICAgICAgICAgICAgICBNb3NzIFBhcmtcbjQgICAgICAgICAgVHJpbml0eS1TcGFkaW5hICgyMCkgICAgICAgICA3NyBXYXRlcmZyb250IENvbW11bml0aWVzLVRoZSBJc2xhbmRzXG41ICAgICAgICAgIFRyaW5pdHktU3BhZGluYSAoMjApICAgICAgICAgOTUgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBBbm5leFxuNiAgICAgICAgIFRvcm9udG8tRGFuZm9ydGggKDI5KSAgICAgICAgIDU3ICAgICAgICAgICAgICAgICAgICBCcm9hZHZpZXcgTm9ydGhcbjcgIFRvcm9udG8gQ2VudHJlLVJvc2VkYWxlICgyNykgICAgICAgICA3NSAgICAgICAgICAgICAgQ2h1cmNoLVlvbmdlIENvcnJpZG9yXG44ICAgICAgICAgIFRyaW5pdHktU3BhZGluYSAoMjApICAgICAgICAgNzggICAgICAgICAgICAgICBLZW5zaW5ndG9uLUNoaW5hdG93blxuOSAgICAgICAgICBUcmluaXR5LVNwYWRpbmEgKDE5KSAgICAgICAgIDgxICAgICAgICAgICAgICAgICAgVHJpbml0eS1CZWxsd29vZHNcbjEwICAgICAgICAgVHJpbml0eS1TcGFkaW5hICgyMCkgICAgICAgICA3OCAgICAgICAgICAgICAgIEtlbnNpbmd0b24tQ2hpbmF0b3duXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIENPTU1VTklUWV8gQ09ORklERU5USSBNT1RFTCBDQVBBQ0lUWVxuMSAgVE9ST05UTyBBTkQgRUFTVCBZT1JLIENPTU1VTklUWSBDT1VOQ0lMICAgICAgICAgIE4gIDxOQT4gICAgICAgMzhcbjIgICAgICAgICAgICAgTk9SVEggWU9SSyBDT01NVU5JVFkgQ09VTkNJTCAgICAgICAgICBOICA8TkE+ICAgICAgIDMwXG4zICBUT1JPTlRPIEFORCBFQVNUIFlPUksgQ09NTVVOSVRZIENPVU5DSUwgICAgICAgICAgTiAgPE5BPiAgICAgICAzM1xuNCAgVE9ST05UTyBBTkQgRUFTVCBZT1JLIENPTU1VTklUWSBDT1VOQ0lMICAgICAgICAgIE4gIDxOQT4gICBWQVJJRVNcbjUgIFRPUk9OVE8gQU5EIEVBU1QgWU9SSyBDT01NVU5JVFkgQ09VTkNJTCAgICAgICAgICBOICA8TkE+ICAgICAgIDI0XG42ICBUT1JPTlRPIEFORCBFQVNUIFlPUksgQ09NTVVOSVRZIENPVU5DSUwgICAgICAgICAgTiAgPE5BPiAgICAgICAzMlxuNyAgVE9ST05UTyBBTkQgRUFTVCBZT1JLIENPTU1VTklUWSBDT1VOQ0lMICAgICAgICAgIE4gIDxOQT4gICAgICAgMzVcbjggIFRPUk9OVE8gQU5EIEVBU1QgWU9SSyBDT01NVU5JVFkgQ09VTkNJTCAgICAgICAgICBOICA8TkE+ICAgICAgIDY1XG45ICBUT1JPTlRPIEFORCBFQVNUIFlPUksgQ09NTVVOSVRZIENPVU5DSUwgICAgICAgICAgTiAgPE5BPiAgICAgICAxMFxuMTAgVE9ST05UTyBBTkQgRUFTVCBZT1JLIENPTU1VTklUWSBDT1VOQ0lMICAgICAgICAgIE4gIDxOQT4gICAgICAxMDBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgTkFNRSAgIFRZUEUgICAgICAgIFRZUEUyIENJVFlfT1AgWF9pZCBBUkVBX0lEIERBVEVfRUZGRUNUSVZFXG4xICAgICAgICAgICAgICBTdC4gVmluY2VudCBEZSBQYXVsIC0gTWFyeSdzIEhvbWUgU2luZ2xlIFNpbmdsZSBXb21lbiAgICA8TkE+ICAgIDYgIDc2MDY0NSAgICAgICAgICAgICAgIFxuMiAgICBTdC4gVmluY2VudCBEZSBQYXVsIC0gU3QuIENsYXJlJ3MgUmVzaWRlbmNlIFNpbmdsZSBTaW5nbGUgV29tZW4gICAgPE5BPiAgICAyICA2NDM3MDQgICAgICAgICAgICAgICBcbjMgICAgICAgICAgICAgICAgIFN0cmVldCBIYXZlbiBhdCB0aGUgQ3Jvc3Nyb2FkcyBTaW5nbGUgU2luZ2xlIFdvbWVuICAgIDxOQT4gICAgNiAgNzYwNjQ1ICAgICAgICAgICAgICAgXG40ICBTdHJlZXRzIHRvIEhvbWVzIEFzc2Vzc21lbnQgJiBSZWZlcnJhbCBDZW50cmUgU2luZ2xlICBNaXhlZCBBZHVsdCAgICAgICBZICAgIDYgIDc2MDY0NSAgICAgICAgICAgICAgIFxuNSAgICAgICAgICAgICAgICAgICAgICAgVG9yb250byBDb21tdW5pdHkgSG9zdGVsIEZhbWlseSAgICAgICBGYW1pbHkgICAgPE5BPiAgICA2ICA3NjA2NDUgICAgICAgICAgICAgICBcbjYgICAgICAgICAgICAgICAgICAgICAgIFRvdWNoc3RvbmUgWW91dGggU2hlbHRlciBTaW5nbGUgICAgICAgIFlvdXRoICAgIDxOQT4gICAgMyAgIDQ5ODg3ICAgICAgICAgICAgICAgXG43ICAgICAgICAgICAgICAgICAgIFR1cm5pbmcgUG9pbnQgWW91dGggU2VydmljZXMgU2luZ2xlICAgICAgICBZb3V0aCAgICA8TkE+ICAgIDYgIDc2MDY0NSAgICAgICAgICAgICAgIFxuOCAgICAgIFVuaXZlcnNpdHkgU2V0dGxlbWVudCAtIFBhcnQgdGltZSBTaGVsdGVyIFNpbmdsZSAgTWl4ZWQgQWR1bHQgICAgPE5BPiAgICA2ICA3NjA2NDUgICAgICAgICAgICAgICBcbjkgICAgICAgICAgICBXb21lbidzIFJlc2lkZW5jZSAtIEJlbGx3b29kcyBIb3VzZSBTaW5nbGUgU2luZ2xlIFdvbWVuICAgICAgIFkgICAgNiAgNzYwNjQ1ICAgICAgICAgICAgICAgXG4xMCAgICAgICAgICAgICAgICAgV29tZW4ncyBSZXNpZGVuY2UgLSBNYWluIFNpdGUgU2luZ2xlIFNpbmdsZSBXb21lbiAgICAgICBZICAgIDYgIDc2MDY0NSAgICAgICAgICAgICAgIFxuICAgQVJFQV9BVFRSX0lEIFBBUkVOVF9BUkVBX0lEIEFSRUFfU0hPUlRfQ09ERSBBUkVBX0xPTkdfQ09ERSAgQVJFQV9OQU1FICBBUkVBX0RFU0MgT0JKRUNUSUQueVxuMSAgICAgICAgNzYwNjQ1ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwNCAgICAgICAgICAgICAwNCAgICBUT1JPTlRPICAgIFRPUk9OVE8gICAxNDAzNTA0MVxuMiAgICAgICAgNjQzNzA0ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwOCAgICAgICAgICAgICAwOCBOT1JUSCBZT1JLIE5PUlRIIFlPUksgICAxMTY3ODQ2NVxuMyAgICAgICAgNzYwNjQ1ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwNCAgICAgICAgICAgICAwNCAgICBUT1JPTlRPICAgIFRPUk9OVE8gICAxNDAzNTA0MVxuNCAgICAgICAgNzYwNjQ1ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwNCAgICAgICAgICAgICAwNCAgICBUT1JPTlRPICAgIFRPUk9OVE8gICAxNDAzNTA0MVxuNSAgICAgICAgNzYwNjQ1ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwNCAgICAgICAgICAgICAwNCAgICBUT1JPTlRPICAgIFRPUk9OVE8gICAxNDAzNTA0MVxuNiAgICAgICAgIDQ5ODg3ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwNiAgICAgICAgICAgICAwNiAgRUFTVCBZT1JLICBFQVNUIFlPUksgICAxMjI2NjkyOVxuNyAgICAgICAgNzYwNjQ1ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwNCAgICAgICAgICAgICAwNCAgICBUT1JPTlRPICAgIFRPUk9OVE8gICAxNDAzNTA0MVxuOCAgICAgICAgNzYwNjQ1ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwNCAgICAgICAgICAgICAwNCAgICBUT1JPTlRPICAgIFRPUk9OVE8gICAxNDAzNTA0MVxuOSAgICAgICAgNzYwNjQ1ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwNCAgICAgICAgICAgICAwNCAgICBUT1JPTlRPICAgIFRPUk9OVE8gICAxNDAzNTA0MVxuMTAgICAgICAgNzYwNjQ1ICAgICAgICAgIDQ5ODg2ICAgICAgICAgICAgICAwNCAgICAgICAgICAgICAwNCAgICBUT1JPTlRPICAgIFRPUk9OVE8gICAxNDAzNTA0MVxuICAgICAgICAgICAgICAgICAgICAgICAgIGdlb21ldHJ5XG4xICBQT0xZR09OICgoLTg4MzUzNjQgNTQxMjk5OSwuLi5cbjIgIFBPTFlHT04gKCgtODgzNzI2MCA1NDM0MjUyLC4uLlxuMyAgUE9MWUdPTiAoKC04ODM0Njk4IDU0MTI4NjAsLi4uXG40ICBQT0xZR09OICgoLTg4MzcwMTUgNTQxMTI0NSwuLi5cbjUgIFBPTFlHT04gKCgtODgzODQ2NyA1NDE1MDcyLC4uLlxuNiAgUE9MWUdPTiAoKC04ODMyMTYzIDU0MTc3MzcsLi4uXG43ICBQT0xZR09OICgoLTg4MzU0NTQgNTQxMzg3OSwuLi5cbjggIFBPTFlHT04gKCgtODgzNjgxOCA1NDExNzUzLC4uLlxuOSAgUE9MWUdPTiAoKC04ODM5MDM0IDU0MTExMzIsLi4uXG4xMCBQT0xZR09OICgoLTg4MzgxNzkgNTQxMTc0MiwuLi5cbiJ9 -->
+<pre><code>Simple feature collection with 64 features and 28 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: -8859858 ymin: 5405549 xmax: -8812489 ymax: 5435252
+Projected CRS: WGS 84 / Pseudo-Mercator
+First 10 features:
+   ADDRESS_PO        ADDRESS_FU POSTAL_COD     MUNICIPALI    CITY CENTRELINE OBJECTID.x
+1      808260   70 Gerrard St E     M5B1G6 former TORONTO Toronto    1143800         44
+2     9531684  3410 Bayview Ave     M2M3S3     NORTH YORK Toronto    9531674         45
+3     2591634    87 Pembroke St     M5A2N9 former TORONTO Toronto   14020526         46
+4     8067796      129 Peter St     M5V2H3 former TORONTO Toronto   20139637         47
+5     6362877    191 Spadina Rd     M5R2T9 former TORONTO Toronto    6362837         48
+6     3202303     1076 Pape Ave     M4K3W5      EAST YORK Toronto    3202292         49
+7    13967932 95 Wellesley St E     M4Y2X9 former TORONTO Toronto    7731365         50
+8    14208804      23 Grange Rd    M5T 1C3 former TORONTO Toronto    7796189         51
+9      770171  63 Bellwoods Ave     M6J3N4 former TORONTO Toronto   14018131         52
+10     796650   674 Dundas St W     M5T1H9 former TORONTO Toronto    1145170         53
+                           WARD NEIGHBOURH                         NEIGHBOU_1
+1  Toronto Centre-Rosedale (27)         75              Church-Yonge Corridor
+2               Willowdale (24)         50                   Newtonbrook East
+3  Toronto Centre-Rosedale (27)         73                          Moss Park
+4          Trinity-Spadina (20)         77 Waterfront Communities-The Islands
+5          Trinity-Spadina (20)         95                              Annex
+6         Toronto-Danforth (29)         57                    Broadview North
+7  Toronto Centre-Rosedale (27)         75              Church-Yonge Corridor
+8          Trinity-Spadina (20)         78               Kensington-Chinatown
+9          Trinity-Spadina (19)         81                  Trinity-Bellwoods
+10         Trinity-Spadina (20)         78               Kensington-Chinatown
+                                COMMUNITY_ CONFIDENTI MOTEL CAPACITY
+1  TORONTO AND EAST YORK COMMUNITY COUNCIL          N  &lt;NA&gt;       38
+2             NORTH YORK COMMUNITY COUNCIL          N  &lt;NA&gt;       30
+3  TORONTO AND EAST YORK COMMUNITY COUNCIL          N  &lt;NA&gt;       33
+4  TORONTO AND EAST YORK COMMUNITY COUNCIL          N  &lt;NA&gt;   VARIES
+5  TORONTO AND EAST YORK COMMUNITY COUNCIL          N  &lt;NA&gt;       24
+6  TORONTO AND EAST YORK COMMUNITY COUNCIL          N  &lt;NA&gt;       32
+7  TORONTO AND EAST YORK COMMUNITY COUNCIL          N  &lt;NA&gt;       35
+8  TORONTO AND EAST YORK COMMUNITY COUNCIL          N  &lt;NA&gt;       65
+9  TORONTO AND EAST YORK COMMUNITY COUNCIL          N  &lt;NA&gt;       10
+10 TORONTO AND EAST YORK COMMUNITY COUNCIL          N  &lt;NA&gt;      100
+                                            NAME   TYPE        TYPE2 CITY_OP X_id AREA_ID DATE_EFFECTIVE
+1              St. Vincent De Paul - Mary&#39;s Home Single Single Women    &lt;NA&gt;    6  760645               
+2    St. Vincent De Paul - St. Clare&#39;s Residence Single Single Women    &lt;NA&gt;    2  643704               
+3                 Street Haven at the Crossroads Single Single Women    &lt;NA&gt;    6  760645               
+4  Streets to Homes Assessment &amp; Referral Centre Single  Mixed Adult       Y    6  760645               
+5                       Toronto Community Hostel Family       Family    &lt;NA&gt;    6  760645               
+6                       Touchstone Youth Shelter Single        Youth    &lt;NA&gt;    3   49887               
+7                   Turning Point Youth Services Single        Youth    &lt;NA&gt;    6  760645               
+8      University Settlement - Part time Shelter Single  Mixed Adult    &lt;NA&gt;    6  760645               
+9            Women&#39;s Residence - Bellwoods House Single Single Women       Y    6  760645               
+10                 Women&#39;s Residence - Main Site Single Single Women       Y    6  760645               
+   AREA_ATTR_ID PARENT_AREA_ID AREA_SHORT_CODE AREA_LONG_CODE  AREA_NAME  AREA_DESC OBJECTID.y
+1        760645          49886              04             04    TORONTO    TORONTO   14035041
+2        643704          49886              08             08 NORTH YORK NORTH YORK   11678465
+3        760645          49886              04             04    TORONTO    TORONTO   14035041
+4        760645          49886              04             04    TORONTO    TORONTO   14035041
+5        760645          49886              04             04    TORONTO    TORONTO   14035041
+6         49887          49886              06             06  EAST YORK  EAST YORK   12266929
+7        760645          49886              04             04    TORONTO    TORONTO   14035041
+8        760645          49886              04             04    TORONTO    TORONTO   14035041
+9        760645          49886              04             04    TORONTO    TORONTO   14035041
+10       760645          49886              04             04    TORONTO    TORONTO   14035041
+                         geometry
+1  POLYGON ((-8835364 5412999,...
+2  POLYGON ((-8837260 5434252,...
+3  POLYGON ((-8834698 5412860,...
+4  POLYGON ((-8837015 5411245,...
+5  POLYGON ((-8838467 5415072,...
+6  POLYGON ((-8832163 5417737,...
+7  POLYGON ((-8835454 5413879,...
+8  POLYGON ((-8836818 5411753,...
+9  POLYGON ((-8839034 5411132,...
+10 POLYGON ((-8838179 5411742,...</code></pre>
 <!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Display spatial data</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChzdF9nZW9tZXRyeShidWZmZXJfc2pvaW5fc2hlbHRlcnNfZm1iZCkpXG5gYGAifQ== -->
+<pre class="r"><code>plot(st_geometry(buffer_sjoin_shelters_fmbd))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-plot-begin eyJoZWlnaHQiOjQzMi42MzI5LCJ3aWR0aCI6NzAwLCJzaXplX2JlaGF2aW9yIjowLCJjb25kaXRpb25zIjpbXX0= -->
+<p><img src="data:image/png;base64,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" /></p>
+<!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlNwYXRpYWwgRGF0YSBCYXNpY3MiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KKiBEYW50ZSBDaHJpc3RvcGhlci1BbHBob25zbyA8ZGFudGVhbHBob25zb0BnbWFpbC5jb20+DQoNCiMjIExpYnJhcmllcw0KYGBge3J9DQojIExvYWRpbmcgcGFja2FnZXMgZm9yIGJlaW5nIGFibGUgdG8gbWFuaXB1bGF0ZSBhbmQgcGxvdCBzcGF0aWFsIGRhdGENCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShzZikNCmxpYnJhcnkoZ2dwbG90MikNCmBgYA0KDQojIyBEYXRhDQpgYGB7cn0NCiMgUmVhZGluZyBpbiB0aGUgRm9ybWVyIE11bmljaXBhbGl0eSBCb3VuZGFyaWVzIERhdGEgR2VvSnNvbiBmaWxlIGFuZCByZXByb2plY3RpbmcNCmZtYmQgPC0gc3RfcmVhZCgnZGF0YS9Gb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YS5nZW9qc29uJykgJT4lIHN0X3RyYW5zZm9ybSgzODU3KQ0KDQojIFJlYWRpbmcgaW4gdGhlIENvbW11bml0eSBTaGVsdGVycyBzaGFwZWZpbGUgYW5kIHJlcHJvamVjdGluZw0Kc2hlbHRlcnMgPC0gc3RfcmVhZCgiZGF0YS9TaGVsdGVyL3NoZWx0ZXJzX3dnczg0LnNocCIpICU+JSBzdF90cmFuc2Zvcm0oMzg1NykNCg0KIyBSZWFkaW5nIGluIHRoZSBOZWlnaGJvdXJob29kcyBHZW9Kc29uIEZpbGUgYW5kIHJlcHJvamVjdGluZw0KbmdoIDwtIHN0X3JlYWQoImRhdGEvTmVpZ2hib3VyaG9vZHMuZ2VvanNvbiIpICU+JSBzdF90cmFuc2Zvcm0oMzg1NykNCg0KIyBSZWFkaW5nIGluIHRoZSBOZWlnaGJvdXJob29kIEltcHJvdmVtZW50IEFyZWFzIEdlb0pzb24gRmlsZSBhbmQgcmVwcm9qZWN0aW5nDQpuZ2hfaW1wIDwtIHN0X3JlYWQoImRhdGEvTmVpZ2hib3VyaG9vZCBJbXByb3ZlbWVudCBBcmVhcy5nZW9qc29uIikgJT4lIHN0X3RyYW5zZm9ybSgzODU3KQ0KYGBgIA0KDQojIyBGdW5jdGlvbnMNCiMjIyBCdWZmZXIgYW5kIHNwYXRpYWwgam9pbiBmdW5jdGlvbg0KYGBge3J9DQpidWZmZXJfc2pvaW4gPC0gZnVuY3Rpb24oZ2RmMSwgZ2RmMiwgZGlzdCA9IDEwMDApew0KICAgICcnJw0KICAgIEJ1ZmZlcnMgZ2VvZGF0YWZyYW1lIDEgYW5kIGpvaW5zIGl0IHRvIHRoZSBuZWFyZXN0IGdlb21ldHJpZXMgaW4gZ2VvZGF0YWZyYW1lIDIuDQogICAgDQogICAgUGFyYW1ldGVycw0KICAgIC0tLS0tLS0tLS0NCiAgICBnZGYxIDogZ2VvcGFuZGFzLkdlb0RhdGFGcmFtZQ0KICAgICAgICBBIGdlb2RhdGFmcmFtZSB3aXRoIHBvaW50cy4NCiAgICBnZGYyIDogZ2VvcGFuZGFzLkdlb0RhdGFGcmFtZQ0KICAgICAgICBBIGdlb2RhdGFmcmFtZSB3aXRoIHBvbHlnb25zLg0KICAgIGRpc3QgOiBpbnQgb3IgZmxvYXQNCiAgICAgICAgQnVmZmVyIGRpc3RhbmNlIHRvIGFwcGx5LiBEZWZhdWx0IGlzIDEwMDAuDQogICAgDQogICAgUmV0dXJucw0KICAgIC0tLS0tLS0NCiAgICBnZW9wYW5kYXMuR2VvRGF0YUZyYW1lDQogICAgICAgIFRoZSBnZW9kYXRhZnJhbWUgYWZ0ZXIgYXBwbHlpbmcgYSBidWZmZXIgdG8gZ2RmMSBhbmQgam9pbmluZyB0byBnZW9tZXRyaWVzIG9mIGdkZjIuDQogICAgJycnDQogIA0KICAjIEJ1ZmZlciBnZGYxIGJ5IGRpc3QNCiAgZ2RmMV9idWZmIDwtIHN0X2J1ZmZlcihzaGVsdGVyLCBkaXN0ID0gMTAwMCkNCiAgDQogICMgSm9pbiB0aGUgZ2VvbWV0cmllcyBvZiBnZGYyIHdpdGggYnVmZmVyZWQgZ2RmMQ0KICByZXN1bHQgPC0gc3Rfam9pbihnZGYxX2J1ZmYsIGdkZjIpDQogIHJldHVybihyZXN1bHQpDQp9DQpgYGANCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlNwYXRpYWwgRGF0YSBCYXNpY3MiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KKiBEYW50ZSBDaHJpc3RvcGhlci1BbHBob25zbyA8ZGFudGVhbHBob25zb0BnbWFpbC5jb20+DQoNCiMjIExpYnJhcmllcw0KYGBge3J9DQojIExvYWRpbmcgcGFja2FnZXMgZm9yIGJlaW5nIGFibGUgdG8gbWFuaXB1bGF0ZSBhbmQgcGxvdCBzcGF0aWFsIGRhdGENCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShzZikNCmxpYnJhcnkoZ2dwbG90MikNCmBgYA0KDQojIyBEYXRhDQpgYGB7cn0NCiMgUmVhZGluZyBpbiB0aGUgRm9ybWVyIE11bmljaXBhbGl0eSBCb3VuZGFyaWVzIERhdGEgR2VvSnNvbiBmaWxlIGFuZCByZXByb2plY3RpbmcNCmZtYmQgPC0gc3RfcmVhZCgnZGF0YS9Gb3JtZXIgTXVuaWNpcGFsaXR5IEJvdW5kYXJpZXMgRGF0YS5nZW9qc29uJykgJT4lIHN0X3RyYW5zZm9ybSgzODU3KQ0KDQojIFJlYWRpbmcgaW4gdGhlIENvbW11bml0eSBTaGVsdGVycyBzaGFwZWZpbGUgYW5kIHJlcHJvamVjdGluZw0Kc2hlbHRlcnMgPC0gc3RfcmVhZCgiZGF0YS9TaGVsdGVyL3NoZWx0ZXJzX3dnczg0LnNocCIpICU+JSBzdF90cmFuc2Zvcm0oMzg1NykNCg0KIyBSZWFkaW5nIGluIHRoZSBOZWlnaGJvdXJob29kcyBHZW9Kc29uIEZpbGUgYW5kIHJlcHJvamVjdGluZw0KbmdoIDwtIHN0X3JlYWQoImRhdGEvTmVpZ2hib3VyaG9vZHMuZ2VvanNvbiIpICU+JSBzdF90cmFuc2Zvcm0oMzg1NykNCg0KIyBSZWFkaW5nIGluIHRoZSBOZWlnaGJvdXJob29kIEltcHJvdmVtZW50IEFyZWFzIEdlb0pzb24gRmlsZSBhbmQgcmVwcm9qZWN0aW5nDQpuZ2hfaW1wIDwtIHN0X3JlYWQoImRhdGEvTmVpZ2hib3VyaG9vZCBJbXByb3ZlbWVudCBBcmVhcy5nZW9qc29uIikgJT4lIHN0X3RyYW5zZm9ybSgzODU3KQ0KYGBgIA0KDQojIyBGdW5jdGlvbnMNCiMjIyBCdWZmZXIgYW5kIHNwYXRpYWwgam9pbiBmdW5jdGlvbg0KYGBge3J9DQpidWZmZXJfc2pvaW4gPC0gZnVuY3Rpb24oZ2RmMSwgZ2RmMiwgZGlzdCA9IDEwMDApew0KICANCiAgIydCdWZmZXJzIGdlb2RhdGFmcmFtZSAxIGFuZCBqb2lucyBpdCB0byB0aGUgbmVhcmVzdCBnZW9tZXRyaWVzIGluIGdlb2RhdGFmcmFtZSAyLg0KICAjJ0BwYXJhbSBnZGYxIEEgZ2VvZGF0YWZyYW1lIHdpdGggcG9pbnRzLg0KICAjJ0BwYXJhbSBnZGYyIEEgZ2VvZGF0YWZyYW1lIHdpdGggcG9seWdvbnMuDQogICMnQHBhcmFtIGRpc3QgQnVmZmVyIGRpc3RhbmNlIHRvIGFwcGx5LiBEZWZhdWx0IGlzIDEwMDAuDQogICMnDQogICMnQHJldHVybiBUaGUgZ2VvZGF0YWZyYW1lIGFmdGVyIGFwcGx5aW5nIGEgYnVmZmVyIHRvIGdkZjEgYW5kIGpvaW5pbmcgdG8gZ2VvbWV0cmllcyBvZiBnZGYyLg0KICANCiAgDQogICMgQnVmZmVyIGdkZjEgYnkgZGlzdA0KICBnZGYxX2J1ZmYgPC0gc3RfYnVmZmVyKGdkZjEsIGRpc3QpDQogIA0KICAjIEpvaW4gdGhlIGdlb21ldHJpZXMgb2YgZ2RmMiB3aXRoIGJ1ZmZlcmVkIGdkZjENCiAgcmVzdWx0IDwtIHN0X2pvaW4oZ2RmMV9idWZmLCBnZGYyKQ0KICByZXR1cm4ocmVzdWx0KQ0KfQ0KYGBgDQoNCiMjIyBTcGF0aWFsIGpvaW4gYW5kIGNvdW50IGZ1bmN0aW9uDQpgYGB7cn0NCmJ1ZmZlcl9zam9pbiA8LSBmdW5jdGlvbihnZGYxLCBnZGYyLCBkaXN0ID0gMTAwMCl7DQogIA0KICAjJ1Rha2VzIGdlb2RhdGFmcmFtZSAyIGFuZCBqb2lucyBpdCB0byB0aGUgZ2VvbWV0cmllcyBpbiBnZW9kYXRhZnJhbWUgMSwgdGhlbiBjb3VudHMgdGhlIG51bWJlciBvZiBwb2ludHMgZnJvbSAgICAgIGdlb2RhdGFmcmFtZSAyLg0KICAjJ0BwYXJhbSBnZGYxIEEgZ2VvZGF0YWZyYW1lIHdpdGggcG9pbnRzLg0KICAjJ0BwYXJhbSBnZGYyIEEgZ2VvZGF0YWZyYW1lIHdpdGggcG9seWdvbnMuDQogICMnDQogICMnQHJldHVybiBUaGUgZ2VvZGF0YWZyYW1lIGFmdGVyIGpvaW5pbmcgZ2RmMSBhbmQgZ2RmMiBhbmQgY291bnRpbmcgdGhlIG51bWJlciBvZiBwb2ludHMgZnJvbSBnZGYyLg0KICANCiAgDQogICMgQnVmZmVyIGdkZjEgYnkgZGlzdA0KICBnZGYxX2J1ZmYgPC0gc3RfYnVmZmVyKGdkZjEsIGRpc3QpDQogIA0KICAjIEpvaW4gdGhlIGdlb21ldHJpZXMgb2YgZ2RmMiB3aXRoIGJ1ZmZlcmVkIGdkZjENCiAgcmVzdWx0IDwtIHN0X2pvaW4oZ2RmMV9idWZmLCBnZGYyKQ0KICByZXR1cm4ocmVzdWx0KQ0KfQ0KYGBgDQoNCg0KIyMjIEJ1ZmZlcl9zam9pbiBkZW1vDQpEZW1vDQpgYGB7cn0NCiMgSm9pbiBzaGVsdGVycyBhbmQgZm1iZCB0b2dldGhlciBhZnRlciBidWZmZXJpbmcgc2hlbHRlcnMNCiMgTm90ZSB0aGUgZGVmYXVsdCBkaXN0YW5jZSBpcyAxMDAwLCBidXQgaXQgY2FuIGJlIGNoYW5nZWQNCiMgZS5nLiBidWZmZXJfc2pvaW4oc2hlbHRlcnMsIGZtYmQsIGRpc3QgPSAxMDApIGZvciBhIDEwMCBtZXRlciBidWZmZXINCmJ1ZmZlcl9zam9pbl9zaGVsdGVyc19mbWJkIDwtIGJ1ZmZlcl9zam9pbihzaGVsdGVycywgZm1iZCkNCmBgYA0KDQpEaXNwbGF5IG5vbi1zcGF0aWFsIGRhdGENCmBgYHtyfQ0KIyBTaG93aW5nIG5vbi1zcGF0aWFsIHJlc3VsdHMgb2YgYnVmZmVyX3Nqb2luDQpidWZmZXJfc2pvaW5fc2hlbHRlcnNfZm1iZA0KYGBgDQoNCkRpc3BsYXkgc3BhdGlhbCBkYXRhDQpgYGB7cn0NCnBsb3Qoc3RfZ2VvbWV0cnkoYnVmZmVyX3Nqb2luX3NoZWx0ZXJzX2ZtYmQpKQ0KYGBgDQoNCg==</div>
 
 
 
