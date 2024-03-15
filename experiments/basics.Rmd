@@ -27,7 +27,6 @@ waste <- st_read("data/waste.geojson") %>% st_transform(3857)
 # Reading in the City Wards Data GeoJson File and reprojecting
 cwd <- st_read("data/City Wards Data.geojson") %>% st_transform(3857)
 ``` 
-
 ## Functions
 ### Buffer and spatial join function
 ```{r}
@@ -45,6 +44,7 @@ buffer_sjoin <- function(gdf1, gdf2, dist = 1000){
   
   # Join the geometries of gdf2 with buffered gdf1
   result <- st_join(gdf1_buff, gdf2)
+  
   return(result)
 }
 ```
@@ -96,9 +96,7 @@ buffer_sjoin_shelters_fmbd
 # Spatially plot the results of the buffer_sjoin function
 plot(st_geometry(buffer_sjoin_shelters_fmbd))
 ```
-
 ### Sjoin_count demo
-
 #### Demo
 ```{r}
 # Counting points from waste after joining it to cwd
@@ -110,7 +108,6 @@ sjoin_count_waste_cwd <- sjoin_count(waste, cwd)
 # Showing non-spatial results of sjoin_count
 sjoin_count_waste_cwd
 ```
-
 #### Display spatial data
 ```{r}
 # Spatially plot the results of the sjoin_count function
@@ -119,3 +116,102 @@ ggplot() +
   scale_fill_viridis_c(name = "Count", na.value = "grey50") +
   labs(title = "Count of Observations by City Ward")
 ```
+## Data Structures
+### Creating list and dictionary
+```{r}
+# Creating a list with the Former Municipalities Boundary Data and City Wards Data geodataframes
+gdf_list <- list(fmbd, cwd)
+
+# Creating dictionary with the shelters and waste dataframes
+gdf_dict <- list(shelters = shelters, waste = waste)
+```
+
+### Plotting geodataframes from the list
+```{r}
+# Plotting the Former Municipalities Boundary Data dataframe from list
+ggplot()+
+  geom_sf(data = gdf_list[[1]])
+
+# Plotting the City Wards Data dataframe from list
+ggplot()+
+  geom_sf(data = gdf_list[[2]])
+```
+### Plotting geodataframes from the dictionary
+```{r}
+# Plotting the Shelters dataframe from dictionary
+ggplot()+
+  geom_sf(data = gdf_dict[["shelters"]])
+
+# Plotting the Waste dataframe from dictionary
+ggplot()+
+  geom_sf(data = gdf_dict[["waste"]])
+```
+## For Loops
+### Spatially plotting every list item
+```{r}
+# Using a For Loop for every dataframe in the list
+for (gdf in gdf_list) {
+ 
+  # Plotting every geodataframe in the list
+  list_plot <- ggplot() +
+    geom_sf(data = gdf)
+  
+  # Displaying spatial plots for every dataframe in the list
+  print(list_plot)
+}
+```
+### Spatially plotting every dictionary item
+```{r}
+# Using a For Loop for every dataframe in the dictionary
+for (key in names(gdf_dict)) {
+  
+  # Plotting every dataframe in the dictionary
+  dict_plot <- ggplot() +
+    geom_sf(data = gdf_dict[[key]])
+  
+  # Displaying spatial plots for every dataframe in the dictionary
+  print(dict_plot)
+}
+```
+### Apply buffer in every list item and spatially plot them
+```{r}
+# Using a For Loop for every dataframe in the list
+for (gdf in gdf_list) {
+ 
+  # Apply a 1000 metre buffer to every item in the list
+  gdf_buffer1 <- st_buffer(gdf, dist = 1000)
+  
+  # Plotting every buffered dataframe in the list
+  list_plot <- ggplot() +
+    geom_sf(data = gdf_buffer1)
+  
+  # Displaying spatial plots for every buffered dataframe in the list
+  print(list_plot)
+}
+```
+### Apply buffer to all dictionary items, spatially plot them and save them
+```{r}
+# Define folder paths where you want to save the buffered dataframes
+output_folder <- "data/buffers/"
+
+# Using a For Loop for every dataframe in the dictionary
+for (key in names(gdf_dict)) {
+  
+  # Apply a 1000 metre buffer to every item in the dictionary
+  gdf_buffer2 <- st_buffer(gdf_dict[[key]], dist = 1000)
+  
+  # Plotting every buffered dataframe in the dictionary
+  dict_plot <- ggplot() +
+    geom_sf(data = gdf_buffer2)
+  
+  # Displaying spatial plots for every buffered dataframe in the dictionary
+  print(dict_plot)
+  
+  # Define the path where the buffered dataframe will be saved
+  output_path <- paste0(output_folder, key, "_buffers.geojson")
+  
+  # Saves the buffered dataframes to the buffers folder
+  st_write(gdf_buffer2, output_path)
+}
+```
+
