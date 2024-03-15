@@ -2,9 +2,11 @@
 title: "Spatial Data Basics"
 output: html_notebook
 ---
-* Dante Christopher-Alphonso <dantealphonso@gmail.com>
+
+-   Dante Christopher-Alphonso [dantealphonso\@gmail.com](mailto:dantealphonso@gmail.com){.email}
 
 ## Libraries
+
 ```{r}
 # Loading packages for being able to manipulate and plot spatial data
 library(tidyverse)
@@ -14,6 +16,7 @@ library(dplyr)
 ```
 
 ## Data
+
 ```{r}
 # Reading in the Former Municipality Boundaries Data GeoJson file and reprojecting
 fmbd <- st_read('data/Former Municipality Boundaries Data.geojson') %>% st_transform(3857)
@@ -26,9 +29,12 @@ waste <- st_read("data/waste.geojson") %>% st_transform(3857)
 
 # Reading in the City Wards Data GeoJson File and reprojecting
 cwd <- st_read("data/City Wards Data.geojson") %>% st_transform(3857)
-``` 
+```
+
 ## Functions
+
 ### Buffer and spatial join function
+
 ```{r}
 #'Buffers geodataframe 1 and joins it to the nearest geometries in geodataframe 2.
 #'
@@ -50,6 +56,7 @@ buffer_sjoin <- function(gdf1, gdf2, dist = 1000){
 ```
 
 ### Spatial join and count function
+
 ```{r}
 #'Takes geodataframe 1 and joins it to the geometries in geodataframe 2, then counts the number of points from      geodataframe 1.
 #'
@@ -75,9 +82,10 @@ sjoin_count <- function(gdf1, gdf2){
 }
 ```
 
-
 ### Buffer_sjoin demo
+
 #### Demo
+
 ```{r}
 # Join shelters and fmbd together after buffering shelters
 # Note the default distance is 1000, but it can be changed
@@ -86,29 +94,37 @@ buffer_sjoin_shelters_fmbd <- buffer_sjoin(shelters, fmbd)
 ```
 
 #### Display non-spatial data
+
 ```{r}
 # Showing non-spatial results of buffer_sjoin
 buffer_sjoin_shelters_fmbd
 ```
 
 #### Display spatial data
+
 ```{r}
 # Spatially plot the results of the buffer_sjoin function
 plot(st_geometry(buffer_sjoin_shelters_fmbd))
 ```
+
 ### Sjoin_count demo
+
 #### Demo
+
 ```{r}
 # Counting points from waste after joining it to cwd
 sjoin_count_waste_cwd <- sjoin_count(waste, cwd)
 ```
 
 #### Display non-spatial data
+
 ```{r}
 # Showing non-spatial results of sjoin_count
 sjoin_count_waste_cwd
 ```
+
 #### Display spatial data
+
 ```{r}
 # Spatially plot the results of the sjoin_count function
 ggplot() +
@@ -116,8 +132,11 @@ ggplot() +
   scale_fill_viridis_c(name = "Count", na.value = "grey50") +
   labs(title = "Count of Observations by City Ward")
 ```
+
 ## Data Structures
+
 ### Creating list and dictionary
+
 ```{r}
 # Creating a list with the Former Municipalities Boundary Data and City Wards Data geodataframes
 gdf_list <- list(fmbd, cwd)
@@ -127,6 +146,7 @@ gdf_dict <- list(shelters = shelters, waste = waste)
 ```
 
 ### Plotting geodataframes from the list
+
 ```{r}
 # Plotting the Former Municipalities Boundary Data dataframe from list
 ggplot()+
@@ -136,7 +156,9 @@ ggplot()+
 ggplot()+
   geom_sf(data = gdf_list[[2]])
 ```
+
 ### Plotting geodataframes from the dictionary
+
 ```{r}
 # Plotting the Shelters dataframe from dictionary
 ggplot()+
@@ -146,8 +168,11 @@ ggplot()+
 ggplot()+
   geom_sf(data = gdf_dict[["waste"]])
 ```
+
 ## For Loops
+
 ### Spatially plotting every list item
+
 ```{r}
 # Using a For Loop for every dataframe in the list
 for (gdf in gdf_list) {
@@ -160,7 +185,9 @@ for (gdf in gdf_list) {
   print(list_plot)
 }
 ```
+
 ### Spatially plotting every dictionary item
+
 ```{r}
 # Using a For Loop for every dataframe in the dictionary
 for (key in names(gdf_dict)) {
@@ -173,7 +200,9 @@ for (key in names(gdf_dict)) {
   print(dict_plot)
 }
 ```
+
 ### Apply buffer in every list item and spatially plot them
+
 ```{r}
 # Using a For Loop for every dataframe in the list
 for (gdf in gdf_list) {
@@ -189,7 +218,9 @@ for (gdf in gdf_list) {
   print(list_plot)
 }
 ```
+
 ### Apply buffer to all dictionary items, spatially plot them and save them
+
 ```{r}
 # Define folder paths where you want to save the buffered dataframes
 output_folder <- "data/buffers/"
@@ -214,4 +245,3 @@ for (key in names(gdf_dict)) {
   st_write(gdf_buffer2, output_path)
 }
 ```
-
