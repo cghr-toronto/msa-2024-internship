@@ -10,6 +10,7 @@ output: html_notebook
 library(tidyverse)
 library(sf)
 library(ggplot2)
+library(dplyr)
 ```
 
 ## Data
@@ -59,17 +60,24 @@ buffer_sjoin <- function(gdf1, gdf2, dist = 1000){
 sjoin_count <- function(gdf1, gdf2){
   
   # Join the geometries of gdf1 with gdf2
-  sjoin_gdf1_gdf2 <- st_join(gdf1, gdf2, how="inner", predicate="within")
+  sjoin_gdf1_gdf2 <- st_join(gdf1, gdf2)
   
-  point_count <- sjoin_gdf1_gdf2 %>% group_by(polygon_id) %>% summarise(point_count = n())
+  # Count the number of points per AREA_NAME
+  points_count <- count(as_tibble(sjoin_gdf1_gdf2), AREA_NAME)
   
-  return(point_count)
+  # Rename the count column
+  points_count <- rename(points_count, points_count = n)
+  
+  # Left join gdf2 with the points_count dataframe
+  result <- left_join(gdf2, points_count, by =  "AREA_NAME")
+                                  
+  return(result)
 }
 ```
 
 
 ### Buffer_sjoin demo
-Demo
+#### Demo
 ```{r}
 # Join shelters and fmbd together after buffering shelters
 # Note the default distance is 1000, but it can be changed
@@ -77,33 +85,37 @@ Demo
 buffer_sjoin_shelters_fmbd <- buffer_sjoin(shelters, fmbd)
 ```
 
-Display non-spatial data
+#### Display non-spatial data
 ```{r}
 # Showing non-spatial results of buffer_sjoin
 buffer_sjoin_shelters_fmbd
 ```
 
-Display spatial data
+#### Display spatial data
 ```{r}
 # Spatially plot the results of the buffer_sjoin function
 plot(st_geometry(buffer_sjoin_shelters_fmbd))
 ```
 
 ### Sjoin_count demo
-Demo
+
+#### Demo
 ```{r}
 # Counting points from waste after joining it to cwd
 sjoin_count_waste_cwd <- sjoin_count(waste, cwd)
 ```
 
-Display non-spatial data
+#### Display non-spatial data
 ```{r}
 # Showing non-spatial results of sjoin_count
 sjoin_count_waste_cwd
 ```
 
-Display spatial data
+#### Display spatial data
 ```{r}
 # Spatially plot the results of the sjoin_count function
-plot(st_geometry(sjoin_count_waste_cwd))
+ggplot() +
+  geom_sf(data = sjoin_count_waste_cwd, aes(fill = points_count)) +
+  scale_fill_viridis_c(name = "Count", na.value = "grey50") +
+  labs(title = "Count of Observations by City Ward")
 ```
