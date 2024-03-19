@@ -99,5 +99,8 @@ ggplot() +
 ```{r}
 # Joining the ngh file to the ngh_imp file
 joined_data <- st_join(ngh, ngh_imp)
+
+# Displaying the joined data
+joined_data
 ```
 
