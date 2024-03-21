@@ -1,0 +1,13 @@
+{
+"type": "FeatureCollection",
+"name": "waste_new",
+"features": [
+{ "type": "Feature", "properties": { "WARD": "York West (8)", "Address": "35 Vanley Cres, M3J2B7", "Name": "Dufferin Transfer Station Resource Recovery Centre" }, "geometry": { "type": "Point", "coordinates": [ -79.47074492, 43.76173436 ] } },
+{ "type": "Feature", "properties": { "WARD": "Don Valley East (34)", "Address": "188 Bermondsey Rd, M4A1Y1", "Name": "Bermondsey Transfer Station" }, "geometry": { "type": "Point", "coordinates": [ -79.31832175, 43.72204128 ] } },
+{ "type": "Feature", "properties": { "WARD": "Etobicoke North (2)", "Address": "120 Disco Rd, M9W1M4", "Name": "Disco Transfer Station" }, "geometry": { "type": "Point", "coordinates": [ -79.6024962, 43.70065056 ] } },
+{ "type": "Feature", "properties": { "WARD": "York South-Weston (12)", "Address": "50 Ingram Dr, M6M2L6", "Name": "Ingram Transfer Station" }, "geometry": { "type": "Point", "coordinates": [ -79.4713064, 43.7006645 ] } },
+{ "type": "Feature", "properties": { "WARD": "Willowdale (24)", "Address": "3350 Victoria Park Ave, M2H3K5", "Name": "Victoria Park Transfer Station" }, "geometry": { "type": "Point", "coordinates": [ -79.33729609, 43.8031726 ] } },
+{ "type": "Feature", "properties": { "WARD": "Scarborough-Rouge River (41)", "Address": "1 Transfer Pl, M1S5H8", "Name": "Scarborough Transfer Station" }, "geometry": { "type": "Point", "coordinates": [ -79.24261705, 43.79652058 ] } },
+{ "type": "Feature", "properties": { "WARD": "Toronto-Danforth (30)", "Address": "400 Commissioners St, M4M3K2", "Name": "Commissioners St. Transfer Station" }, "geometry": { "type": "Point", "coordinates": [ -79.33930071, 43.65197935 ] } }
+]
+}
