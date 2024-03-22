@@ -27,6 +27,13 @@ mapping <- data.frame(
 
 filter(mapping, str_detect(can_aggregate, "mean"))
 
+after <- filter(mapping, str_detect(can_aggregate, "mean"))
+
+pull(mapping, column)
+
+View(mapping) # before
+View(after) # after
+
 # Apply function
 ngh_agg <- spatial_agg(
   ngh,
