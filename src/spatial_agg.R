@@ -26,11 +26,11 @@ mapping <- data.frame(
 )
 
 average <- function(mapping, ...) {
-  out <- filter(mapping, can_aggregate)
+  out <- filter(can_aggregate = mean)
 }
 
 # Apply function
-out <- spatial_agg(
+ngh_agg <- spatial_agg(
   ngh,
   ngh_imp,
   ngh_imp_id = "X_id",
