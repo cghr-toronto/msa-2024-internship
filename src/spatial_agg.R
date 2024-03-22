@@ -15,6 +15,9 @@ spatial_agg <- function(gdf, gdf_agg, id_col, mappings){
   # Join gdf and gdf_agg
   sjoin_gdf = st_join(gdf, gdf_agg)
   
+  # Group the spatial joins
+  grouped_sjoin = group_by(sjoin_gdf, gdf_agg_id)
+  
   # Set mappings
   mappings <- list(
     list(
