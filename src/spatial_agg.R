@@ -25,14 +25,12 @@ mapping <- data.frame(
   can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
 
-filter(mapping, str_detect(can_aggregate, "mean"))
-
-after <- filter(mapping, str_detect(can_aggregate, "mean"))
-
-pull(mapping, column)
+filt <- mapping %>%
+  filter(can_aggregate == "mean") %>%
+  pull(column)
 
 View(mapping) # before
-View(after) # after
+View(filt) # after
 
 # Apply function
 ngh_agg <- spatial_agg(
