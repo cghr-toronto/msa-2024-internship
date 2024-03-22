@@ -16,7 +16,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_agg_id, mappings){
   sjoin_gdf = st_join(gdf, gdf_agg)
   
   # Group the spatial joins
-  grouped_sjoin = group_by(sjoin_gdf, gdf_agg_id)
+  grouped_sjoin = group_by(sjoin_gdf, gdf_agg_id) 
 
 }
 
@@ -25,9 +25,7 @@ mapping <- data.frame(
   can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
 
-average <- function(mapping, ...) {
-  out <- filter(can_aggregate = mean)
-}
+filter(mapping, str_detect(can_aggregate, "mean"))
 
 # Apply function
 ngh_agg <- spatial_agg(
