@@ -18,19 +18,22 @@ spatial_agg <- function(gdf, gdf_agg, gdf_agg_id, mappings){
   # Group the spatial joins
   grouped_sjoin = group_by(sjoin_gdf, gdf_agg_id)
   
+  average <- function(mapping, ...) {
+    out <- filter(mapping, mean)
+  }
+  
+  return(out)
 }
 
 mapping <- data.frame(
-  column = c("cause"),
-  can_aggregate = c("count,mode,mean") 
+  column = c("cause", "age"),
+  can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
 
 # Apply function
 out <- spatial_agg(
   ngh,
   ngh_imp,
-  ngh_imp = "X_id",
-  mappings = mappings
 )
 
 # Check the result
