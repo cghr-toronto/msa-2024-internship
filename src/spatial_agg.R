@@ -26,7 +26,7 @@ mapping <- data.frame(
 )
 
 filt <- mapping %>%
-  filter(can_aggregate == "mean") %>%
+  filter(str_detect(can_aggregate, "mean")) %>%
   pull(column)
 
 View(mapping) # before
