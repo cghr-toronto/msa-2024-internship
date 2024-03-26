@@ -32,6 +32,13 @@ filt <- mapping %>%
 View(mapping) # before
 View(filt) # after
 
+agg <- list(
+  mean = c("age"),
+  sum = c("age"),
+  count = c("cause"),
+  mode = c("cause")
+)
+
 # Apply function
 ngh_agg <- spatial_agg(
   ngh,
