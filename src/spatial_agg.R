@@ -25,29 +25,18 @@ mapping <- data.frame(
   can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
 
-filt <- mapping %>%
-  filter(str_detect(can_aggregate, "mean")) %>%
-  pull(column)
+agg_funcs <- c("mean", "sum", "median", "count")
 
-View(mapping) # before
-View(filt) # after
+mappings_funcs <- list()
+for (func in agg_funcs) {
+  # Fill your list where each key is func and each value is the columns having the relevant aggregate function
+  filt <- mapping %>%
+    filter(str_detect(can_aggregate, "mean")) %>%
+    pull(column)
+  mappings_funcs[[paste0(func)]] <- filt
+  }
 
-agg <- list(
-  mean = c("age"),
-  sum = c("age"),
-  median = c("age"),
-  max = c("age"),
-  min = c("age"),
-  count = c("cause"),
-  mode = c("cause")
-)
 
-for (df in agg){
-  
-  functions <- df
-}
-
-avg <- list()
 
 # Apply function
 ngh_agg <- spatial_agg(
