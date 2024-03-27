@@ -42,6 +42,13 @@ agg <- list(
   mode = c("cause")
 )
 
+for (df in agg){
+  
+  functions <- df
+}
+
+avg <- list()
+
 # Apply function
 ngh_agg <- spatial_agg(
   ngh,
