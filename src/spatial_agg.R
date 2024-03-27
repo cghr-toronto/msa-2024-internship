@@ -35,6 +35,9 @@ View(filt) # after
 agg <- list(
   mean = c("age"),
   sum = c("age"),
+  median = c("age"),
+  max = c("age"),
+  min = c("age"),
   count = c("cause"),
   mode = c("cause")
 )
