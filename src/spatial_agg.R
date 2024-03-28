@@ -33,17 +33,11 @@ for (func in agg_funcs) {
   filt <- mapping %>%
     filter(str_detect(can_aggregate, "mean")) %>%
     pull(column)
-  mappings_funcs[[paste0(func)]] <- filt
+  mappings_funcs[[(func)]] <- filt
   }
-
-
 
 # Apply function
 ngh_agg <- spatial_agg(
-  ngh,
-  ngh_imp,
-  ngh_imp_id = "X_id",
-  mappings = mappings
 )
 
 # Check the result
