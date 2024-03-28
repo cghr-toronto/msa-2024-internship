@@ -25,15 +25,15 @@ mapping <- data.frame(
   can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
 
-agg_funcs <- c("mean", "sum", "median", "count")
+agg_funcs <- c("mean", "sum", "count")
 
 mappings_funcs <- list()
 for (func in agg_funcs) {
   # Fill your list where each key is func and each value is the columns having the relevant aggregate function
   filt <- mapping %>%
-    filter(str_detect(can_aggregate, "mean")) %>%
+    filter(str_detect(can_aggregate, func)) %>%
     pull(column)
-  mappings_funcs[[(func)]] <- filt
+  mappings_funcs[[func]] <- filt
   }
 
 # Apply function
