@@ -28,13 +28,12 @@ mapping <- data.frame(
 agg_funcs <- c("mean", "sum", "count")
 
 mappings_funcs <- list()
-mappings_funcs[[1]] <- "mean"
+
 for (func in agg_funcs) {
   # Fill your list where each key is func and each value is the columns having the relevant aggregate function
-  filt <- mapping %>%
+  mappings_funcs[[1]] <- mapping %>%
     filter(str_detect(can_aggregate, func)) %>%
     pull(column)
-  mappings_funcs[[func]] <- filt
   }
 
 # Apply function
