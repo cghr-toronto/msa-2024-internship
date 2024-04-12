@@ -1,6 +1,8 @@
 library(sf)
 library(tidyverse)
 library(ggplot2)
+library(dplyr)
+library(magrittr)
 
 ## Read data
 # Reading in the Neighbourhoods GeoJson File and reprojecting
