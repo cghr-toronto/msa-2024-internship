@@ -4,7 +4,8 @@ p_w_list <- list()
 
 for (func in p_w) {
   # Fill your list where each key is func and each value is the columns having the relevant aggregate function
-  p_w_list[[func]] <- iris %>%
+  p_w_list[[func]] <- iris %>% mutate(Petal.Width = as.numeric(as.character(Petal.Width))) %>%
     filter(str_detect(Petal.Width, func)) %>%
-    pull(Species)
+    pull(Species) %>% summarise_at(vars(Species), list(mean))
 }
+
