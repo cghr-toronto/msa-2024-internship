@@ -35,12 +35,7 @@ for (func in agg_funcs) {
   # Fill your list where each key is func and each value is the columns having the relevant aggregate function
   mappings_funcs[[func]] <- mapping %>%
     filter(str_detect(can_aggregate, func)) %>%
-    pull(column) 
+    pull(column)
   }
 
-# Apply function
-ngh_agg <- spatial_agg(
-)
-
-# Check the result
-plot(out)
+mappings_funcs$mean

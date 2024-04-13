@@ -4,4 +4,18 @@ library(magrittr)
 
 df <- iris
 
-df %>% summarise_all(mean, na.rm = TRUE)
+iris_data <- data.frame(
+  column = c("Sepal.Length", "Sepal.Width"),
+  can_aggregate = c("mean", "mean") 
+)
+
+agg_funcs <- c("mean", "sum", "count")
+
+iris_funcs <- list()
+
+for (func in agg_funcs) {
+  # Fill your list where each key is func and each value is the columns having the relevant aggregate function
+  iris_funcs[[func]] <- iris_data %>%
+    filter(str_detect(can_aggregate, func)) %>%
+    pull(column)
+}
