@@ -12,7 +12,7 @@ iris_data <- data.frame(
   can_aggregate = c("sum, mean", "mean, count") 
 )
 
-agg_funcs <- c("mean", "sum", "count")
+agg_funcs <- c("mean", "sum")
 
 
 iris_funcs <- list()
@@ -23,5 +23,3 @@ for (func in agg_funcs) {
     filter(str_detect(can_aggregate, func)) %>%
     pull(column)
 }
-
-iris_funcs[["count"]]
