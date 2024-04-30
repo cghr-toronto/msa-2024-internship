@@ -23,3 +23,5 @@ for (func in agg_funcs) {
     filter(str_detect(can_aggregate, func), column == "Sepal.Width") %>%
     pull(column)
 }
+
+iris_funcs[["mean"]]
