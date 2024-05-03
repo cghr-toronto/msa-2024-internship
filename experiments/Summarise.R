@@ -15,21 +15,20 @@ iris_data <- data.frame(
 agg_funcs <- c("mean", "sum", "count")
 
 
-iris_funcs <- list()
-
 for (func in agg_funcs) {
-  iris_cols <- iris_data %>%
+  # Fill your list where each key is func and each value is the columns having the relevant aggregate function
+  iris_funcs[[func]] <- iris_data %>%
     filter(str_detect(can_aggregate, func)) %>%
     pull(column)
   
-  if (func %in% c("count")) {
-    sum_fun <- df %>%
-      summarise(across(all_of(iris_cols), .fns = n))
-  } else {
+  if (func %in% c("count")){
+    
+    sum_fun <- summarise_at(iris, iris_funcs[[func]], .funs = n)
+    
+  } else { 
+    
     func_name <- get(func)
-    sum_fun <- df %>%
-      summarise(across(all_of(iris_cols), .fns = func_name))
+    
+    sum_fun <- summarise_at(iris, iris_funcs[[func]], func_name)
   }
-  
-  iris_funcs[[func]] <- sum_fun
 }
