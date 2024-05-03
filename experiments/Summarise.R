@@ -23,6 +23,15 @@ for (func in agg_funcs) {
     filter(str_detect(can_aggregate, func)) %>%
     pull(column)
   
-  sum_fun <- summarise_at(iris, iris_funcs[["mean"]], mean)
-}
+  if (func %in% c("count")){
+    
+    sum_fun <- summarise_at(iris, iris_funcs[[func]], .funs = n)
+     
+    } else { 
+  
+    func_name <- get(func)
+  
+    sum_fun <- summarise_at(iris, iris_funcs[[func]], func_name)
+     }
+  }
 
