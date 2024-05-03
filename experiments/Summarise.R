@@ -21,7 +21,6 @@ for (func in agg_funcs) {
   # Fill your list where each key is func and each value is the columns having the relevant aggregate function
   iris_funcs[[func]] <- iris_data %>%
     filter(str_detect(can_aggregate, func)) %>%
-    pull(column) 
+    pull(column) %>% summarise_at(iris, iris_funcs[["mean"]], mean)
 }
 
-summarise_at(iris, iris_funcs[["mean"]], mean)
