@@ -31,4 +31,4 @@ for (func_name in agg_funcs) {
   }
 }
 
-print(sum_func)
+combined_results <- bind_cols(sum_func)
