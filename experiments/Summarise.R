@@ -14,6 +14,8 @@ agg_funcs <- c("mean", "sum", "median")
 
 iris_funcs <- list()
 
+sum_func <- list()
+
 for (func_name in agg_funcs) {
   
   if (func_name %in% c("median", "mean", "sum")){
@@ -25,6 +27,8 @@ for (func_name in agg_funcs) {
     
     func <- get(func_name)
     
-    sum_func <- summarise_at(iris, iris_funcs[[func_name]], func)
+    sum_func[[func_name]] <- summarise_at(iris, iris_funcs[[func_name]], func) 
   }
 }
+
+print(sum_func)
