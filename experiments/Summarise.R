@@ -29,9 +29,8 @@ for (func_name in agg_funcs) {
     
     sum_func[[func_name]] <- summarise_at(iris, iris_funcs[[func_name]], func) %>%
       rename_with(
-        .tbl = df,
-        .fn = ~ paste0("prefix_", .x, recycle0 = TRUE),
-        .cols = starts_with(func_name))
+        .fn = ~ paste0(func_name, "_", .),
+        .cols = everything())
     
   }
 }
