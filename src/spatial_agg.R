@@ -27,7 +27,7 @@ mapping <- data.frame(
   can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
 
-agg_funcs <- c("mean", "sum", "count")
+agg_funcs <- c("mean", "sum", "mode")
 
 mappings_funcs <- list()
 
