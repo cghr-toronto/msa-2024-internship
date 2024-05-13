@@ -22,8 +22,8 @@ spatial_agg <- function(gdf, gdf_agg, gdf_agg_id, mappings){
 
 }
 
-mapping <- data.frame(
-  column = c("cause", "age"),
+mappings <- data.frame(
+  column = c("AREA_SHORT_CODE", "AREA_ID"),
   can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
 
@@ -31,11 +31,28 @@ agg_funcs <- c("mean", "sum", "mode")
 
 mappings_funcs <- list()
 
-for (func in agg_funcs) {
-  # Fill your list where each key is func and each value is the columns having the relevant aggregate function
-  mappings_funcs[[func]] <- mapping %>%
-    filter(str_detect(can_aggregate, func)) %>%
-    pull(column)
-  }
+sum_func <- list()
 
-mappings_funcs$mean
+for (func_name in agg_funcs) {
+  
+  if (func_name %in% c("mode", "mean", "sum")){
+    
+    # Get cols
+    mappings_funcs[[func_name]] <- mappings %>%
+      filter(str_detect(can_aggregate, func_name)) %>%
+      pull(column)
+    
+    # Get
+    func <- get(func_name)
+    
+    # Apply
+    sum_func[[func_name]] <- summarise_at(ngh, mappings_funcs[[func_name]], func) %>%
+      rename_with(
+        .fn = ~ paste0(func_name, "_", .),
+        .cols = everything()
+      )
+    
+  }
+}
+
+combined_funcs <- bind_cols(sum_func)
