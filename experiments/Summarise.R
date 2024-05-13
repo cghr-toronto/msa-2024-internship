@@ -27,11 +27,13 @@ for (func_name in agg_funcs) {
     
     func <- get(func_name)
     
-    sum_func[[func_name]] <- summarise_at(iris, iris_funcs[[func_name]], func) 
+    sum_func[[func_name]] <- summarise_at(iris, iris_funcs[[func_name]], func) %>%
+      rename_with(
+        .tbl = .df,
+        .fn = ~ paste0("prefix_", .x, recycle0 = TRUE),
+        .cols = starts_with(func_name))
     
-    combined_results <- bind_cols(sum_func) %>%
-      rename_with(sum_func,
-                  ~ paste0("prefix_", .x, recycle0 = TRUE),
-                  starts_with(func_name))
   }
 }
+
+combined_results <- bind_cols(sum_func)
