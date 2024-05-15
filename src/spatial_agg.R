@@ -93,4 +93,5 @@ for (func_name in agg_funcs) {
   }
 }
 
+#combine columns from for loop
 agg_results <- bind_cols(gdf_agg)
