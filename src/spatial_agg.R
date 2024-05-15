@@ -37,7 +37,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mappin
   group_gdf = group_by(join_gdf, gdf_agg_id)
   
   # Aggregating the grouped gdfs
-  group_gdf_agg <- group_gdf %>% mappings$mapping_agg(mappings$mappinh_col)
+  group_gdf_agg <- group_gdf %>% mappings$mapping_agg(mappings$mapping_col)
 
 }
 
@@ -98,3 +98,13 @@ for (func_name in agg_funcs) {
 
 #combine columns from for loop
 agg_results <- bind_cols(gdf_agg)
+
+adult_cod <- spatial_agg(gdf = adult_gid, 
+                         gdf_agg = dist, 
+                         gdf_join = "gid_dist", 
+                         gdf_agg_join = "gid", 
+                         gdf_agg_id = "gid",
+                         mapping = mappings,
+                         mapping_agg = "can_aggregate",
+                         mapping_col = "column",
+                         is_spatial_join = FALSE)
