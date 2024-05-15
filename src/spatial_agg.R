@@ -16,6 +16,9 @@ adult_gid <- merge(adult, gid_r1, by = "geoid")
 # Convert data types
 adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 
+adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
+
+
 # Creating spatial_agg function
 spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mapping, mapping_agg, mapping_col, is_spatial_join){
   
@@ -30,7 +33,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mappin
     
     # Non spatial join
     join_gdf <- gdf %>%
-      left_join(gdf_agg, by = c(gdf_join, gdf_agg_join))
+      left_join(gdf_agg, by = c(gdf_join = gdf_agg_join))
   }
   
   # Group the joins
