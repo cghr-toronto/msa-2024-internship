@@ -35,6 +35,9 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mappin
   
   # Group the joins
   group_gdf = group_by(join_gdf, gdf_agg_id)
+  
+  # Aggregating the grouped gdfs
+  group_gdf_agg <- group_gdf %>% mappings$can_aggregate(column)
 
 }
 
