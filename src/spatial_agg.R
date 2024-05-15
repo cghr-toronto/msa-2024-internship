@@ -38,6 +38,8 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mappin
   
   # Aggregating the grouped gdfs
   group_gdf_agg <- group_gdf %>% mappings$mapping_agg(mappings$mapping_col)
+  
+  return(group_gdf_agg)
 
 }
 
