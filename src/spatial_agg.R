@@ -5,25 +5,39 @@ library(dplyr)
 library(magrittr)
 
 ## Read data
-# Reading in the Neighbourhoods GeoJson File and reprojecting
-ngh <- st_read("experiments/data/Neighbourhoods.geojson") %>% st_transform(3857)
+adult <- st_read("tmp/Data/R1/healsl_rd1_adult_v1.csv")
 
-# Reading in the Neighbourhood Improvement Areas GeoJson File and reprojecting
-ngh_imp <- st_read("experiments/data/Neighbourhood Improvement Areas.geojson") %>% st_transform(3857)
+dist <- st_read("tmp/Data/SL_bound/sl_dist_17_v2.geojson")
+
+gid_r1 <- st_read("tmp/Data/SL_bound/sl_rd1_gid_v1.csv")
+
+adult_gid <- merge(adult, gid_r1, by = "geoid")
+
+adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 
 # Creating spatial_agg function
-spatial_agg <- function(gdf, gdf_agg, gdf_agg_id, mappings){
+spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mappings, is_spatial_join){
 
+  if (is_spatial_join == TRUE){
+  
   # Join gdf and gdf_agg
   sjoin_gdf = st_join(gdf, gdf_agg)
   
   # Group the spatial joins
   grouped_sjoin = group_by(sjoin_gdf, gdf_agg_id) 
+  
+  } else {
+  
+    non_sjoin_gdf <- left_join(gdf, gdf_agg, by = c(gdf_join, gdf_agg_join))
+    
+    grouped_non_sjoin = group_by(sjoin_gdf, gdf_agg_id) 
+  }
 
 }
 
+
 mappings <- data.frame(
-  column = c("AREA_SHORT_CODE", "AREA_ID"),
+  column = c("arespcod", "adurillness_value"),
   can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
 
@@ -46,7 +60,7 @@ for (func_name in agg_funcs) {
     func <- get(func_name)
     
     # Apply
-    sum_func[[func_name]] <- summarise_at(ngh, mappings_funcs[[func_name]], func) %>%
+    sum_func[[func_name]] <- summarise_at(adult_gid, mappings_funcs[[func_name]], func, na.rm = TRUE) %>%
       rename_with(
         .fn = ~ paste0(func_name, "_", .),
         .cols = everything()
@@ -55,4 +69,4 @@ for (func_name in agg_funcs) {
   }
 }
 
-combined_funcs <- bind_cols(sum_func)
+agg_results <- bind_cols(sum_func)
