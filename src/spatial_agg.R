@@ -17,7 +17,7 @@ adult_gid <- merge(adult, gid_r1, by = "geoid")
 adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 
 # Creating spatial_agg function
-spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mappings, is_spatial_join){
+spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mapping, mapping_agg, mapping_col, is_spatial_join){
   
   # Perform joins
   if (is_spatial_join == TRUE){
@@ -37,7 +37,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mappin
   group_gdf = group_by(join_gdf, gdf_agg_id)
   
   # Aggregating the grouped gdfs
-  group_gdf_agg <- group_gdf %>% mappings$can_aggregate(column)
+  group_gdf_agg <- group_gdf %>% mappings$mapping_agg(mappings$mappinh_col)
 
 }
 
