@@ -5,33 +5,36 @@ library(dplyr)
 library(magrittr)
 
 ## Read data
-adult <- st_read("tmp/Data/R1/healsl_rd1_adult_v1.csv")
+adult <- st_read("../tmp/data/R1/healsl_rd1_adult_v1.csv")
 
-dist <- st_read("tmp/Data/SL_bound/sl_dist_17_v2.geojson")
+dist <- st_read("../tmp/data/SL_bound/sl_dist_17_v2.geojson")
 
-gid_r1 <- st_read("tmp/Data/SL_bound/sl_rd1_gid_v1.csv")
+gid_r1 <- st_read("../tmp/data/SL_bound/sl_rd1_gid_v1.csv")
 
 adult_gid <- merge(adult, gid_r1, by = "geoid")
 
+# Convert data types
 adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 
 # Creating spatial_agg function
 spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mappings, is_spatial_join){
-
+  
+  # Perform joins
   if (is_spatial_join == TRUE){
-  
-  # Join gdf and gdf_agg
-  sjoin_gdf = st_join(gdf, gdf_agg)
-  
-  # Group the spatial joins
-  grouped_sjoin = group_by(sjoin_gdf, gdf_agg_id) 
-  
-  } else {
-  
-    non_sjoin_gdf <- left_join(gdf, gdf_agg, by = c(gdf_join, gdf_agg_join))
     
-    grouped_non_sjoin = group_by(sjoin_gdf, gdf_agg_id) 
+    # Spatial join
+    join_gdf <- gdf %>% 
+      st_join(gdf, gdf_agg)
+    
+  } else {
+    
+    # Non spatial join
+    join_gdf <- gdf %>%
+      left_join(gdf_agg, by = c(gdf_join, gdf_agg_join))
   }
+  
+  # Group the joins
+  group_gdf = group_by(join_gdf, gdf_agg_id)
 
 }
 
@@ -45,7 +48,7 @@ agg_funcs <- c("mean", "sum", "mode")
 
 mappings_funcs <- list()
 
-sum_func <- list()
+gdf_agg <- list()
 
 for (func_name in agg_funcs) {
   
@@ -59,8 +62,29 @@ for (func_name in agg_funcs) {
     # Get
     func <- get(func_name)
     
-    # Apply
-    sum_func[[func_name]] <- summarise_at(adult_gid, mappings_funcs[[func_name]], func, na.rm = TRUE) %>%
+    # Apply func
+    if (func_name == "mode") {
+      
+      # Mode does not remove nas
+      gdf_agg[[func_name]] <- adult_gid %>%
+        summarise_at(
+          mappings_funcs[[func_name]],
+          func
+        )
+      
+    } else {
+      
+      # Other funcs remove nas
+      gdf_agg[[func_name]] <- adult_gid %>%
+        summarise_at(
+          mappings_funcs[[func_name]],
+          func,
+          na.rm = TRUE
+        )
+    }
+    
+    # Rename
+    gdf_agg[[func_name]] <- gdf_agg[[func_name]] %>%
       rename_with(
         .fn = ~ paste0(func_name, "_", .),
         .cols = everything()
@@ -69,4 +93,4 @@ for (func_name in agg_funcs) {
   }
 }
 
-agg_results <- bind_cols(sum_func)
+agg_results <- bind_cols(gdf_agg)
