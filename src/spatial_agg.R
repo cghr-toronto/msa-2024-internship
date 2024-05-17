@@ -5,11 +5,11 @@ library(dplyr)
 library(magrittr)
 
 ## Read data
-adult <- st_read("../tmp/data/R1/healsl_rd1_adult_v1.csv")
+adult <- st_read("../tmp/Data/R1/healsl_rd1_adult_v1.csv")
 
-dist <- st_read("../tmp/data/SL_bound/sl_dist_17_v2.geojson")
+dist <- st_read("../tmp/Data/SL_bound/sl_dist_17_v2.geojson")
 
-gid_r1 <- st_read("../tmp/data/SL_bound/sl_rd1_gid_v1.csv")
+gid_r1 <- st_read("../tmp/Data/SL_bound/sl_rd1_gid_v1.csv")
 
 adult_gid <- merge(adult, gid_r1, by = "geoid")
 
@@ -33,7 +33,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, gdf_agg_id, mappin
     
     # Non spatial join
     join_gdf <- gdf %>%
-      left_join(gdf_agg, by = c(gdf_join = gdf_agg_join))
+      left_join(gdf_agg, by = setNames(gdf_agg_join, gdf_join))
   }
   
   # Group the joins
@@ -101,9 +101,10 @@ for (func_name in agg_funcs) {
   }
 }
 
-#combine columns from for loop
+# Combine columns from for loop
 agg_results <- bind_cols(gdf_agg)
 
+# Testing out function 
 adult_cod <- spatial_agg(gdf = adult_gid, 
                          gdf_agg = dist, 
                          gdf_join = "gid_dist", 
