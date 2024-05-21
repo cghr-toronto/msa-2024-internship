@@ -39,7 +39,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   
   
   # Group the joins
-  group_gdf <- join_gdf %>% group_by( ., [[gdf_agg_id]])
+  group_gdf <- join_gdf %>% group_by(.data[[gdf_agg_id]])
   
   mappings <- data.frame(
     column = c("arespcod", "adurillness_value"),
