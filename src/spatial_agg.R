@@ -62,9 +62,6 @@ for (func_name in agg_funcs) {
       filter(str_detect(can_aggregate, func_name)) %>%
       pull(column)
     
-    print("mappings")
-    print(mappings_funcs)
-    
     # Get
     func <- get(func_name)
     
