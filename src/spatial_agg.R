@@ -36,10 +36,6 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
     join_gdf <-
       left_join(gdf, gdf_agg, by = setNames(gdf_agg_join, gdf_join))
   }
-
-  
-  # Group the joins
-  group_gdf <- group_by(join_gdf, {{gdf_agg_id}})
   
 
   mappings <- data.frame(
@@ -70,21 +66,15 @@ for (func_name in agg_funcs) {
     if (func_name == "mode") {
       
       # Mode does not remove nas
-      agg_list[[func_name]] <- group_gdf %>%
-        summarise_at(
-          mappings_funcs[[func_name]],
-          func
-        )
+      agg_list[[func_name]] <- 
+        aggregate(join_gdf[,mappings_funcs[[func_name]],drop=FALSE], join_gdf[,gdf_agg_id,drop=FALSE], FUN=func)
+        
       
     } else {
       
       # Other funcs remove nas
-      agg_list[[func_name]] <- group_gdf %>%
-        summarise_at(
-          mappings_funcs[[func_name]],
-          func,
-          na.rm = TRUE
-        )
+      agg_list[[func_name]] <- 
+        aggregate(join_gdf[,mappings_funcs[[func_name]],drop=FALSE], join_gdf[,gdf_agg_id,drop=FALSE], FUN=func, na.rm = TRUE)
     }
     
     # Rename
@@ -114,3 +104,5 @@ adult_cod <- spatial_agg(gdf = adult_gid,
                          mapping_agg = "can_aggregate",
                          mapping_col = "column",
                          is_spatial_join = FALSE)
+                         
+                   
