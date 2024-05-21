@@ -57,13 +57,13 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   }
   
   
-  # Group the joins
+  # Group the joined dataframe
   group_gdf <- join_gdf %>% group_by(.data[[gdf_agg_id]])
   
   # List of aggregation functions available to use
   agg_funcs <- c("mean", "sum", "mode")
  
-  # List of mappings functions that match with the joine gdf
+  # List of mappings functions that match with the joined gdf
   mappings_funcs <- list()
 
   #List for aggregation results
@@ -93,21 +93,21 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
             func
           )
         
+        print(group_gdf)
+        
       } else {
         
         # Other functions remove NA's
         agg_list[[func_name]] <- group_gdf %>%
-          summarise_at(
-            mappings_funcs[[func_name]],
+          summarise_at(mappings_funcs[[func_name]],
             func,
             na.rm = TRUE
           )
       }
-      
+  
       # Rename aggregation results columns
       agg_list[[func_name]] <- agg_list[[func_name]] %>%
-        rename_with(
-          .fn = ~ paste0( ., "_", func_name),
+        rename_with(.fn = ~ paste0( ., "_", func_name),
           .cols = everything()
         )
       
