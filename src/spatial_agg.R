@@ -39,7 +39,6 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   
   # Group the joins
   group_gdf <- join_gdf %>% group_by((gdf_agg_id))
-
   
 
   mappings <- data.frame(
@@ -51,7 +50,7 @@ agg_funcs <- c("mean", "sum", "mode")
 
 mappings_funcs <- list()
 
-gdf_agg <- list()
+agg_list <- list()
 
 
 for (func_name in agg_funcs) {
@@ -63,6 +62,9 @@ for (func_name in agg_funcs) {
       filter(str_detect(can_aggregate, func_name)) %>%
       pull(column)
     
+    print("mappings")
+    print(mappings_funcs)
+    
     # Get
     func <- get(func_name)
     
@@ -70,7 +72,7 @@ for (func_name in agg_funcs) {
     if (func_name == "mode") {
       
       # Mode does not remove nas
-      gdf_agg[[func_name]] <- group_gdf %>%
+      agg_list[[func_name]] <- join_gdf %>%
         summarise_at(
           mappings_funcs[[func_name]],
           func
@@ -79,7 +81,7 @@ for (func_name in agg_funcs) {
     } else {
       
       # Other funcs remove nas
-      gdf_agg[[func_name]] <- group_gdf %>%
+      agg_list[[func_name]] <- join_gdf %>%
         summarise_at(
           mappings_funcs[[func_name]],
           func,
@@ -88,7 +90,7 @@ for (func_name in agg_funcs) {
     }
     
     # Rename
-    gdf_agg[[func_name]] <- gdf_agg[[func_name]] %>%
+    agg_list[[func_name]] <- agg_list[[func_name]] %>%
       rename_with(
         .fn = ~ paste0(func_name, "_", .),
         .cols = everything()
@@ -98,7 +100,7 @@ for (func_name in agg_funcs) {
 }
 
 # Combine columns from for loop
-agg_results <- bind_cols(gdf_agg)
+agg_results <- bind_cols(agg_list)
 
 return(agg_results)
 
