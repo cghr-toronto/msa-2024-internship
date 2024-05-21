@@ -40,8 +40,9 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   # Group the joins
   group_gdf <- join_gdf %>% group_by((gdf_agg_id))
 
+  
 
-mappings <- data.frame(
+  mappings <- data.frame(
   column = c("arespcod", "adurillness_value"),
   can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
@@ -51,6 +52,7 @@ agg_funcs <- c("mean", "sum", "mode")
 mappings_funcs <- list()
 
 gdf_agg <- list()
+
 
 for (func_name in agg_funcs) {
   
@@ -68,7 +70,7 @@ for (func_name in agg_funcs) {
     if (func_name == "mode") {
       
       # Mode does not remove nas
-      gdf_agg[[func_name]] <- adult_gid %>%
+      gdf_agg[[func_name]] <- group_gdf %>%
         summarise_at(
           mappings_funcs[[func_name]],
           func
@@ -77,7 +79,7 @@ for (func_name in agg_funcs) {
     } else {
       
       # Other funcs remove nas
-      gdf_agg[[func_name]] <- adult_gid %>%
+      gdf_agg[[func_name]] <- group_gdf %>%
         summarise_at(
           mappings_funcs[[func_name]],
           func,
