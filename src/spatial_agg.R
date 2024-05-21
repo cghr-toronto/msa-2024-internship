@@ -16,8 +16,6 @@ adult_gid <- merge(adult, gid_r1, by = "geoid")
 # Convert data types
 adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 
-adult_gid$afeverdur_value <- as.numeric(adult_gid$afeverdur_value)
-
 adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
 
 
@@ -39,64 +37,71 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
       left_join(gdf, gdf_agg, by = setNames(gdf_agg_join, gdf_join))
   }
   
-
-  mappings <- data.frame(
-  column = c("afeverdur_value", "adurillness_value"),
-  can_aggregate = c("count,mode", "sum,median,mean,min,max") 
-)
-
-agg_funcs <- c("mean", "sum", "mode")
-
-mappings_funcs <- list()
-
-agg_list <- list()
-
-
-for (func_name in agg_funcs) {
   
-  if (func_name %in% c("mode", "mean", "sum")){
+  # Group the joins
+  group_gdf <- group_by(join_gdf, {{gdf_agg_id}})
+  
+  
+  mappings <- data.frame(
+    column = c("arespcod", "adurillness_value"),
+    can_aggregate = c("count,mode", "sum,median,mean,min,max") 
+  )
+  
+  agg_funcs <- c("mean", "sum", "mode")
+  
+  mappings_funcs <- list()
+  
+  agg_list <- list()
+  
+  
+  for (func_name in agg_funcs) {
     
-    # Get cols
-    mappings_funcs[[func_name]] <- mappings %>%
-      filter(str_detect(can_aggregate, func_name)) %>%
-      pull(column)
-    
-    # Get
-    func <- get(func_name)
-    
-    # Apply func
-    if (func_name == "mode") {
+    if (func_name %in% c("mode", "mean", "sum")){
       
-      # Mode does not remove nas
-      agg_list[[func_name]] <- 
-        aggregate(join_gdf[,mappings_funcs[[func_name]],drop=FALSE], join_gdf[,gdf_agg_id,drop=FALSE], FUN=func)
+      # Get cols
+      mappings_funcs[[func_name]] <- mappings %>%
+        filter(str_detect(can_aggregate, func_name)) %>%
+        pull(column)
+      
+      # Get
+      func <- get(func_name)
+      
+      # Apply func
+      if (func_name == "mode") {
         
+        # Mode does not remove nas
+        agg_list[[func_name]] <- group_gdf %>%
+          summarise_at(
+            mappings_funcs[[func_name]],
+            func
+          )
+        
+      } else {
+        
+        # Other funcs remove nas
+        agg_list[[func_name]] <- group_gdf %>%
+          summarise_at(
+            mappings_funcs[[func_name]],
+            func,
+            na.rm = TRUE
+          )
+      }
       
-    } else {
+      # Rename
+      agg_list[[func_name]] <- agg_list[[func_name]] %>%
+        rename_with(
+          .fn = ~ paste0(func_name, "_", .),
+          .cols = everything()
+        )
       
-      # Other funcs remove nas
-      agg_list[[func_name]] <- 
-        aggregate(join_gdf[,mappings_funcs[[func_name]],drop=FALSE], join_gdf[,gdf_agg_id,drop=FALSE], FUN=func, na.rm = TRUE)
     }
-    
-    print("agg")
-    print(agg_list)
-    
-    # Rename
-    agg_list[[func_name]] <- agg_list[[func_name]] %>%
-      rename_with(
-        .fn = ~ paste0(func_name, "_", .),
-        .cols = everything()
-      )
-    
   }
-}
-
-# Combine columns from for loop
-agg_results <- bind_cols(agg_list)
-
-return(agg_results)
-
+  
+  # Combine columns from for loop
+  agg_results <- bind_cols(agg_list)
+  
+  return(agg_results)
+  
 }
 
 # Testing out function 
@@ -109,5 +114,6 @@ adult_cod <- spatial_agg(gdf = adult_gid,
                          mapping_agg = "can_aggregate",
                          mapping_col = "column",
                          is_spatial_join = FALSE)
+
                          
                    
