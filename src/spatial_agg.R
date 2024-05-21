@@ -40,14 +40,6 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   # Group the joins
   group_gdf <- join_gdf %>% group_by((gdf_agg_id))
 
-  
-  # Aggregating the grouped gdfs
-  group_gdf_agg <- group_gdf %>% mappings$mapping_agg(mappings$mapping_col)
-  
-  return(group_gdf_agg)
-
-}
-
 
 mappings <- data.frame(
   column = c("arespcod", "adurillness_value"),
@@ -105,6 +97,10 @@ for (func_name in agg_funcs) {
 
 # Combine columns from for loop
 agg_results <- bind_cols(gdf_agg)
+
+return(agg_results)
+
+}
 
 # Testing out function 
 adult_cod <- spatial_agg(gdf = adult_gid, 
