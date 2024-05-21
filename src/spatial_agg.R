@@ -36,9 +36,10 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
     join_gdf <-
       left_join(gdf, gdf_agg, by = setNames(gdf_agg_join, gdf_join))
   }
+
   
   # Group the joins
-  group_gdf <- join_gdf %>% group_by((gdf_agg_id))
+  group_gdf <- group_by(join_gdf, {{gdf_agg_id}})
   
 
   mappings <- data.frame(
@@ -69,7 +70,7 @@ for (func_name in agg_funcs) {
     if (func_name == "mode") {
       
       # Mode does not remove nas
-      agg_list[[func_name]] <- join_gdf %>%
+      agg_list[[func_name]] <- group_gdf %>%
         summarise_at(
           mappings_funcs[[func_name]],
           func
@@ -78,7 +79,7 @@ for (func_name in agg_funcs) {
     } else {
       
       # Other funcs remove nas
-      agg_list[[func_name]] <- join_gdf %>%
+      agg_list[[func_name]] <- group_gdf %>%
         summarise_at(
           mappings_funcs[[func_name]],
           func,
