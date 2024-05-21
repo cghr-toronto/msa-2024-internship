@@ -16,6 +16,8 @@ adult_gid <- merge(adult, gid_r1, by = "geoid")
 # Convert data types
 adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 
+adult_gid$afeverdur_value <- as.numeric(adult_gid$afeverdur_value)
+
 adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
 
 
@@ -39,7 +41,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   
 
   mappings <- data.frame(
-  column = c("arespcod", "adurillness_value"),
+  column = c("afeverdur_value", "adurillness_value"),
   can_aggregate = c("count,mode", "sum,median,mean,min,max") 
 )
 
@@ -76,6 +78,9 @@ for (func_name in agg_funcs) {
       agg_list[[func_name]] <- 
         aggregate(join_gdf[,mappings_funcs[[func_name]],drop=FALSE], join_gdf[,gdf_agg_id,drop=FALSE], FUN=func, na.rm = TRUE)
     }
+    
+    print("agg")
+    print(agg_list)
     
     # Rename
     agg_list[[func_name]] <- agg_list[[func_name]] %>%
