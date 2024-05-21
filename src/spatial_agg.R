@@ -135,4 +135,4 @@ adult_cod <- spatial_agg(gdf = adult_gid,
 
 
 # Joining function results back to district boundaries
-dist_adult_cod <- left_join(dist, adult_cod, by = setNames("gid", "gid_dist_mean"))
+dist_adult_cod <- left_join(dist, adult_cod, by = setNames("gid_dist_mean", "gid"))
