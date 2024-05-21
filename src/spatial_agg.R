@@ -18,10 +18,14 @@ adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 
 adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
 
+mappings <- data.frame(
+  column = c("arespcod", "adurillness_value"),
+  can_aggregate = c("count,mode", "sum,median,mean,min,max") 
+)
 
 # Creating spatial_agg function
 spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, 
-                        gdf_agg_id, mapping, mapping_agg, mapping_col, is_spatial_join){
+                        gdf_agg_id, mapping, is_spatial_join){
   
   # Perform joins
   if (is_spatial_join == TRUE){
@@ -41,10 +45,6 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   # Group the joins
   group_gdf <- join_gdf %>% group_by(.data[[gdf_agg_id]])
   
-  mappings <- data.frame(
-    column = c("arespcod", "adurillness_value"),
-    can_aggregate = c("count,mode", "sum,median,mean,min,max") 
-  )
   
   agg_funcs <- c("mean", "sum", "mode")
   
@@ -89,7 +89,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
       # Rename
       agg_list[[func_name]] <- agg_list[[func_name]] %>%
         rename_with(
-          .fn = ~ paste0(func_name, "_", .),
+          .fn = ~ paste0( ., "_", func_name),
           .cols = everything()
         )
       
@@ -110,8 +110,6 @@ adult_cod <- spatial_agg(gdf = adult_gid,
                          gdf_agg_join = "gid", 
                          gdf_agg_id = "gid_dist",
                          mapping = mappings,
-                         mapping_agg = "can_aggregate",
-                         mapping_col = "column",
                          is_spatial_join = FALSE)
 
                          
