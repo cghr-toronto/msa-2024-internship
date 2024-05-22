@@ -1,3 +1,5 @@
+source("../src/spatial_agg.R")
+
 # Loading packages for being able to manipulate and plot spatial data
 library(sf)
 library(tidyverse)
@@ -6,7 +8,6 @@ library(dplyr)
 library(magrittr)
 
 ## Read data
-
 # Reading in Adult R1 data
 adult <- st_read("../tmp/Data/R1/healsl_rd1_adult_v1.csv")
 
@@ -22,7 +23,6 @@ adult_gid <- merge(adult, gid_r1, by = "geoid")
 
 
 ## Converting data types
-
 # Convert data type of illness duration column
 adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 

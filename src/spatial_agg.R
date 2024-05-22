@@ -95,7 +95,6 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
             na.rm = TRUE
           )
       }
-      
     }
    
     # Rename aggregation results columns
