@@ -31,7 +31,7 @@
 #'
 #' @examples
 
-spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, 
+spatial_agg <- function(gdf, gdf_agg, gdf_join = NULL, gdf_agg_join = NULL, 
                         gdf_agg_id, mapping, is_spatial_join, ...){
   
   # Perform joins
