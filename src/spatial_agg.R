@@ -140,7 +140,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   agg_results <- agg_list %>% reduce(left_join, by = gdf_agg_id)   
   
   # Joining function results back to district boundaries
-  final_results <- left_join(gdf_agg, gdf, by = setNames(gdf_join, gdf_agg_join))
+  final_results <- left_join(gdf_agg, agg_results, by = setNames(gdf_join, gdf_agg_join))
   
   return(final_results)
   
