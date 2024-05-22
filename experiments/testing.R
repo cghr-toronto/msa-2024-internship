@@ -43,8 +43,6 @@ adult_cod <- spatial_agg(gdf = adult_gid,
                          gdf_agg_join = "gid", 
                          gdf_agg_id = "gid_dist",
                          mapping = mappings,
-                         mapping_col = "column", 
-                         mapping_agg = "can_aggregate",
                          is_spatial_join = FALSE)
 
 simple_choro_map <- 
