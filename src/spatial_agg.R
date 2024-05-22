@@ -64,7 +64,7 @@ mappings <- data.frame(
 #' join (otherwise) function that you will use for the aggregation.
 #'
 #'
-#' @return final_results
+#' @return out: gdf_agg with the processed aggregated results of gdf. 
 #' @export
 #'
 #' @examples
@@ -147,9 +147,9 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   agg_results <- agg_list %>% reduce(left_join, by = gdf_agg_id)   
   
   # Joining function results back to district boundaries
-  final_results <- left_join(gdf_agg, agg_results, by = setNames(gdf_join, gdf_agg_join))
+  out <- left_join(gdf_agg, agg_results, by = setNames(gdf_join, gdf_agg_join))
   
-  return(final_results)
+  return(out)
   
 }
 
