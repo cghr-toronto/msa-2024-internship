@@ -33,7 +33,7 @@ adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
 # Set Mappings dataframe
 mappings <- data.frame(
   column = c("arespcod", "adurillness_value"),
-  can_aggregate = c("count,mode", "sum,median,mean,min,max") 
+  can_aggregate = c("count,mode", "sum,median,mean,min,max,sd,var") 
 )
 
 #' Title: Spatial Aggregation function
@@ -55,7 +55,7 @@ mappings <- data.frame(
 #' where each column is structured as follows:
 #'  - column: the name (char) of the column in gdf to be aggregated
 #'  - can_aggregate: a comma separated text (char) of aggregation functions to apply to the column 
-#'    (e.g. count,sum,mean,max,median,min,stdev,mode). Empty values mean this column is skipped. 
+#'    (e.g. count,sum,mean,max,median,min,sd,mode,var). Empty values mean this column is skipped. 
 #' 
 #' @param is_spatial_join: Set to TRUE to perform a spatial join using gdf_geom and gdf_agg_geom, 
 #' and FALSE to perform a non-spatial join using gdf_join and gdf_agg_join columns. Default is TRUE.
@@ -68,6 +68,7 @@ mappings <- data.frame(
 #' @export
 #'
 #' @examples
+
 spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, 
                         gdf_agg_id, mapping, is_spatial_join, ...){
   
@@ -90,7 +91,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   group_gdf <- join_gdf %>% group_by(.data[[gdf_agg_id]])
   
   # List of aggregation functions available to use
-  agg_funcs <- c("mean", "sum", "mode", "median", "min", "max")
+  agg_funcs <- c("mean", "sum", "mode", "median", "min", "max", "sd", "var")
  
   # List of mappings functions that match with the joined gdf
   mappings_funcs <- list()
@@ -102,7 +103,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   # Performing aggregation for columns in mappings
   for (func_name in agg_funcs) {
     
-    if (func_name %in% c("mode", "mean", "sum", "median", "min", "max")){
+    if (func_name %in% c("mode", "mean", "sum", "median", "min", "max", "sd", "var")){
       
       # Retrieve aggregation function connected to corresponding column
       mappings_funcs[[func_name]] <- mappings %>%
@@ -152,7 +153,6 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   return(out)
   
 }
-
 
 # Testing out function 
 adult_cod <- spatial_agg(gdf = adult_gid, 
