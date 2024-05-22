@@ -39,6 +39,20 @@ mappings <- data.frame(
 
 
 ## Creating Spatial Aggregation function
+#' Title
+#'
+#' @param gdf 
+#' @param gdf_agg 
+#' @param gdf_join 
+#' @param gdf_agg_join 
+#' @param gdf_agg_id 
+#' @param mapping 
+#' @param is_spatial_join 
+#'
+#' @return
+#' @export
+#'
+#' @examples
 spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join, 
                         gdf_agg_id, mapping, is_spatial_join){
   
@@ -117,7 +131,10 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   # Combine aggregation results and renamed columns into singular vector
   agg_results <- agg_list %>% reduce(left_join, by = gdf_agg_id)   
   
-  return(agg_results)
+  # Joining function results back to district boundaries
+  final_results <- left_join(dist, adult_cod, by = setNames(gdf_join, gdf_agg_join))
+  
+  return(final_results)
   
 }
 
@@ -131,6 +148,3 @@ adult_cod <- spatial_agg(gdf = adult_gid,
                          mapping = mappings,
                          is_spatial_join = FALSE)
 
-
-# Joining function results back to district boundaries
-dist_adult_cod <- left_join(dist, adult_cod, by = setNames("gid_dist", "gid"))
