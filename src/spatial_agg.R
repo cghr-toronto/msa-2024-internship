@@ -51,11 +51,18 @@ mappings <- data.frame(
 #' 
 #' @param gdf_agg_id: the column name (char) containing identifiers for rows in gdf_agg.
 #' 
-#' @param mapping: a data.frame containing the behaviour of the spatial aggregation pipeline, where each column is structured as follows:
-#'  column: the name (char) of the column in gdf to be aggregated
-#'  can_aggregate: a comma separated text (char) of aggregation functions to apply to the column (e.g. count,sum,mean,max,median,min,stdev,mode). Empty values mean this column is skipped. 
+#' @param mapping: a data.frame containing the behaviour of the spatial aggregation pipeline, 
+#' where each column is structured as follows:
+#'  - column: the name (char) of the column in gdf to be aggregated
+#'  - can_aggregate: a comma separated text (char) of aggregation functions to apply to the column 
+#'    (e.g. count,sum,mean,max,median,min,stdev,mode). Empty values mean this column is skipped. 
 #' 
-#' @param is_spatial_join 
+#' @param is_spatial_join: Set to TRUE to perform a spatial join using gdf_geom and gdf_agg_geom, 
+#' and FALSE to perform a non-spatial join using gdf_join and gdf_agg_join columns. Default is TRUE.
+#'
+#' @param ...: additional arguments passed to the st_join (if is_spatial_join is TRUE) or 
+#' join (otherwise) function that you will use for the aggregation.
+#'
 #'
 #' @return final_results
 #' @export
