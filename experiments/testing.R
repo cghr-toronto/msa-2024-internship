@@ -44,3 +44,9 @@ adult_cod <- spatial_agg(gdf = adult_gid,
                          gdf_agg_id = "gid_dist",
                          mapping = mappings,
                          is_spatial_join = FALSE)
+
+simple_choro_map <- 
+  ggplot() + 
+  geom_sf(data = adult_cod, aes(fill = adurillness_value_sum))
+
+simple_choro_map

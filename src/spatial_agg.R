@@ -32,14 +32,15 @@
 #' @examples
 
 spatial_agg <- function(gdf, gdf_agg, gdf_join = NULL, gdf_agg_join = NULL, 
-                        gdf_agg_id, mapping, is_spatial_join, ...){
+                        gdf_agg_id, gdf_geom = geometry, gdf_agg_geom = geometry, 
+                        mapping, mapping_col = column, mapping_agg = can_aggregate, is_spatial_join, ...){
   
   # Perform joins
   if (is_spatial_join == TRUE){
     
     # Spatial join
     join_gdf <- gdf %>% 
-      st_join(gdf, gdf_agg, ...)
+      st_join(gdf_geom, gdf_agg_geom, ...)
     
   } else {
     
@@ -69,8 +70,8 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join = NULL, gdf_agg_join = NULL,
       
       # Retrieve aggregation function connected to corresponding column
       mappings_funcs[[func_name]] <- mappings %>%
-        filter(str_detect(can_aggregate, func_name)) %>%
-        pull(column)
+        filter(str_detect(mapping_agg, func_name)) %>%
+        pull(mapping_col)
       
       # Convert function names to functions
       func <- get(func_name)
