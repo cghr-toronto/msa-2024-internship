@@ -104,8 +104,6 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
             na.rm = TRUE
           )
       }
-  
-      
       
     }
     
@@ -113,16 +111,18 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
     agg_list[[func_name]] <- agg_list[[func_name]] %>%
       rename_with(
         .fn = ~ paste0( ., "_", func_name),
-        .cols = everything()
+        .cols = -all_of(gdf_agg_id)
       )
   }
   
   # Combine aggregation results and renamed columns into singular vector
-  agg_results <- bind_cols(agg_list)
+  agg_results <- agg_list %>% reduce(left_join, by = gdf_agg_id)
+  print(agg_results)  
   
   return(agg_results)
   
 }
+
 
 # Testing out function 
 adult_cod <- spatial_agg(gdf = adult_gid, 
@@ -135,4 +135,4 @@ adult_cod <- spatial_agg(gdf = adult_gid,
 
 
 # Joining function results back to district boundaries
-dist_adult_cod <- left_join(dist, adult_cod, by = setNames("gid_dist_mean", "gid"))
+dist_adult_cod <- left_join(dist, adult_cod, by = setNames("gid_dist", "gid"))
