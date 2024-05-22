@@ -93,7 +93,6 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
             func
           )
         
-        
       } else {
         
         # Other functions remove NA's
@@ -116,8 +115,7 @@ spatial_agg <- function(gdf, gdf_agg, gdf_join, gdf_agg_join,
   }
   
   # Combine aggregation results and renamed columns into singular vector
-  agg_results <- agg_list %>% reduce(left_join, by = gdf_agg_id)
-  print(agg_results)  
+  agg_results <- agg_list %>% reduce(left_join, by = gdf_agg_id)   
   
   return(agg_results)
   
