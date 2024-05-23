@@ -19,9 +19,11 @@ gid_r1 <- st_read("../tmp/data/SL_bound/sl_rd1_gid_v1.csv")
 
 adult <- adult %>% mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
                                            is.na(adj_icd_cod) & !is.na(p1_recon_icd_cod) & !is.na(p2_recon_icd_cod) ~ p1_recon_icd_cod,  # Use p1_recon_icd if adj_icd is NA and both p1_recon_icd and p2_recon_icd are not NA
-                                           is.na(adj_icd_cod) & is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) ~ p1_icd_cod  # Use p1_icd if both adj_icd and recon_icd are NA
+                                           is.na(adj_icd_cod) & is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) ~ p1_icd_cod,  # Use p1_icd if both adj_icd and recon_icd are NA
+                                           TRUE ~ NA_character_  # Default case, if none of the above conditions are met
 )
-) %>% select(final_icd_cod) %>% left_join(adult, final_icd_cod, by = character())
+) 
+
 
 # Join Adult R1 data with GID file
 adult_gid <- merge(adult, gid_r1, by = "geoid")
