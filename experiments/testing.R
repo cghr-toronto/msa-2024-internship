@@ -31,6 +31,9 @@ adult <- adult %>% mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_ic
   )
 ) 
 
+# Remove neonatal and child records from ICD codes
+icd <- filter(icd, cghr10_age == "adult")
+  
 # Assign CGHR-10 title for corresponding record codes
 adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod")) 
   
