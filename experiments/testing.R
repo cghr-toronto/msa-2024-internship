@@ -20,7 +20,7 @@ gid_r1 <- st_read("../tmp/data/SL_bound/sl_rd1_gid_v1.csv")
 # Join Adult R1 data with GID file
 adult_gid <- merge(adult, gid_r1, by = "geoid")
 
-adult_gid %>% mutate_all(na_if,"")
+adult_gid <- adult_gid %>% mutate_all(na_if,"")
 
 ## Converting data types
 # Convert data type of illness duration column
