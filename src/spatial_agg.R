@@ -69,7 +69,7 @@ spatial_agg <- function(
     # Retrieve agg func names for column
     agg_cols <- mapping %>%
       filter(str_detect(can_aggregate, func_name)) %>%
-      filter(column != gdf_id)
+      filter(column != gdf_id) %>%
       pull(column)
     
     # Convert function names to functions
