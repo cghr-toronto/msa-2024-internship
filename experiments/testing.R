@@ -1,4 +1,4 @@
-source("spatial_agg.R")
+source("../src/spatial_agg.R")
 
 # Loading packages for being able to manipulate and plot spatial data
 library(sf)
@@ -38,7 +38,7 @@ adult_cod <- spatial_agg(gdf = adult_gid,
                          gdf_agg = dist,
                          mapping = mapping,
                          gdf_id = "gid_dist", 
-                         gdf_agg_id = "gid_dist",
+                         gdf_agg_id = "gid",
                          is_spatial_join = FALSE,
                          count_col = "deaths")
 

@@ -48,7 +48,7 @@ spatial_agg <- function(
     # Non spatial join
     join_gdf <- gdf %>% left_join(
       gdf_agg,
-      by = setNames(gdf_id, gdf_agg_id),
+      by = setNames(gdf_agg_id, gdf_id),
       ...
     )
     
@@ -63,11 +63,11 @@ spatial_agg <- function(
   # Agg results
   agg_list <- list()
   
-  # Performing aggregation for columns in mappings
+  # Performing aggregation for columns in mapping
   for (func_name in agg_funcs) {
       
     # Retrieve agg func names for column
-    agg_cols <- mappings %>%
+    agg_cols <- mapping %>%
       filter(str_detect(can_aggregate, func_name)) %>%
       filter(column != gdf_id)
       pull(column)
