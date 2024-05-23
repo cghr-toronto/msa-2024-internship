@@ -48,7 +48,7 @@ adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
 
 # Set mapping dataframe
 mapping <- data.frame(
-  column = c("abreathing", "adurillness_value"),
+  column = c("cghr10_title", "adurillness_value"),
   can_aggregate = c("count,mode", "sum,median,mean,min,max,sd,var") 
 )
 
