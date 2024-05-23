@@ -63,6 +63,13 @@ spatial_agg <- function(
   # Agg results
   agg_list <- list()
   
+  # Creating mode function
+  Modes <- function(x) {
+    ux <- unique(x)
+    tab <- tabulate(match(x, ux))
+    ux[tab == max(tab)]
+  }
+  
   # Performing aggregation for columns in mapping
   for (func_name in agg_funcs) {
       
@@ -82,7 +89,7 @@ spatial_agg <- function(
       agg_list[[func_name]] <- group_gdf %>%
         summarise_at(
           agg_cols,
-          func
+          Modes
         )
 
     } else if (func_name == "count") {
