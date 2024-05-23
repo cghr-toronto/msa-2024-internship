@@ -9,7 +9,7 @@ library(magrittr)
 
 ## Read data
 # Reading in Adult R1 data
-adult <- st_read("../tmp/data/R1/healsl_rd1_adult_v1.csv")
+adult <- st_read("../tmp/data/R1/healsl_rd1_adult_v1.csv", header=T, na.strings=c(""," ","NA"))
 
 # Reading District Boundary file
 dist <- st_read("../tmp/data/SL_bound/sl_dist_17_v2.geojson")
@@ -19,6 +19,8 @@ gid_r1 <- st_read("../tmp/data/SL_bound/sl_rd1_gid_v1.csv")
 
 # Join Adult R1 data with GID file
 adult_gid <- merge(adult, gid_r1, by = "geoid")
+
+adult
 
 ## Converting data types
 # Convert data type of illness duration column
