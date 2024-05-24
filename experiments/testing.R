@@ -56,8 +56,8 @@ mapping <- data.frame(
 adult_cod <- spatial_agg(gdf = dist, 
                          gdf_agg = adult_gid,
                          mapping = mapping,
-                         gdf_id = "gid_dist", 
-                         gdf_agg_id = "gid",
+                         gdf_id = "gid", 
+                         gdf_agg_id = "gid_dist",
                          is_spatial_join = FALSE,
                          count_col = "deaths")
 
