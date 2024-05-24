@@ -9,16 +9,16 @@ library(magrittr)
 
 ## Read data
 # Reading in Adult R1 data
-adult <- st_read("../tmp/data/R1/healsl_rd1_adult_v1.csv")
+adult <- st_read("../tmp/data/healsl_rd1_adult_v1.csv")
 
 # Reading District Boundary file
-dist <- st_read("../tmp/data/SL_bound/sl_dist_17_v2.geojson")
+dist <- st_read("../tmp/data/sl_dist_17_v2.geojson")
 
 # Reading in GID boundary file
-gid_r1 <- st_read("../tmp/data/SL_bound/sl_rd1_gid_v1.csv")
+gid_r1 <- st_read("../tmp/data/sl_rd1_gid_v1.csv")
 
 # Reading in ICD-10 code file
-icd <- st_read("../tmp/data/ICD_10/icd10_cghr10_v1.csv")
+icd <- st_read("../tmp/data/icd10_cghr10_v1.csv")
 
 # Created new column for adult displaying final ICD-10 code cause of death
 adult <- adult %>% mutate_all(na_if,"") %>% mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
@@ -53,8 +53,8 @@ mapping <- data.frame(
 )
 
 # Testing out function 
-adult_cod <- spatial_agg(gdf = adult_gid, 
-                         gdf_agg = dist,
+adult_cod <- spatial_agg(gdf = dist, 
+                         gdf_agg = adult_gid,
                          mapping = mapping,
                          gdf_id = "gid_dist", 
                          gdf_agg_id = "gid",
