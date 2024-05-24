@@ -94,19 +94,6 @@ spatial_agg <- function(
     # Group joined df
     group_gdf <- join_gdf %>% group_by(.data[[gdf_id]])
     
-    # Agg funcs avail
-    agg_funcs <- c(
-        "count",
-        "mean",
-        "sum",
-        "mode",
-        "median",
-        "min",
-        "max",
-        "sd",
-        "var"
-    )
-    
     # Agg results
     agg_list <- list()
     
