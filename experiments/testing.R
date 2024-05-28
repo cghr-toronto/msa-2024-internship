@@ -8,8 +8,9 @@ library(dplyr)
 library(magrittr)
 
 ## Read data
-# Reading in Adult R1 data
-adult <- st_read("../tmp/data/healsl_rd1_adult_v1.csv")
+# Reading in Adult R1 and R2 data
+adult_r1 <- st_read("../tmp/data/healsl_rd1_adult_v1.csv")
+adult_r2 <- st_read("../tmp/data/healsl_rd2_adult_v1.csv")
 
 # Reading District Boundary file
 dist <- st_read("../tmp/data/sl_dist_17_v2.geojson")
@@ -19,6 +20,9 @@ gid_r1 <- st_read("../tmp/data/sl_rd1_gid_v1.csv")
 
 # Reading in ICD-10 code file
 icd <- st_read("../tmp/data/icd10_cghr10_v1.csv")
+
+# Combine r1 and r2 adult data
+adult <- bind_rows(adult_r1, adult_r2)
 
 # Created new column for adult displaying final ICD-10 code cause of death
 adult <- adult %>% mutate_all(na_if,"") %>% mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
@@ -61,6 +65,6 @@ adult_cod <- spatial_agg(gdf = dist,
 
 simple_choro_map <- 
   ggplot() + 
-  geom_sf(data = adult_cod, aes(fill = cghr10_title_Malaria_count))
+  geom_sf(data = adult_cod, aes(fill = cghr10_title_mode))
 
 simple_choro_map
