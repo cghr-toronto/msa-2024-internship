@@ -10,7 +10,7 @@ library(magrittr)
 ## Read data
 # Reading in Adult R1 data
 adult <- st_read("../tmp/data/healsl_rd1_adult_v1.csv")
- 
+
 # Reading District Boundary file
 dist <- st_read("../tmp/data/sl_dist_17_v2.geojson")
 
@@ -37,8 +37,6 @@ adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod"))
 # Join Adult R1 data with GID file
 adult_gid <- merge(adult, gid_r1, by = "geoid")
 
-
-
 ## Converting data types
 # Convert data type of illness duration column
 adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
@@ -53,11 +51,11 @@ mapping <- data.frame(
 )
 
 # Testing out function 
-adult_cod <- spatial_agg(gdf = dist, 
+adult_cod <- spatial_agg(gdf = dist,
                          gdf_agg = adult_gid,
                          mapping = mapping,
-                         gdf_id = "gid_dist", 
-                         gdf_agg_id = "gid",
+                         gdf_id = "gid", 
+                         gdf_agg_id = "gid_dist",
                          is_spatial_join = FALSE,
                          count_col = "deaths")
 

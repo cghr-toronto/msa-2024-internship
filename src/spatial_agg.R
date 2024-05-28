@@ -84,15 +84,15 @@ spatial_agg <- function(
     } else {
         
         # Non spatial join
-        join_gdf <- gdf %>% left_join(
+        join_gdf <- gdf %>% right_join(
             gdf_agg,
-            by = setNames(gdf_id, gdf_agg_id),
+            by = setNames(gdf_agg_id, gdf_id),
             ...
         )
     }
     
     # Group joined df
-    group_gdf <- join_gdf %>% group_by( .[[gdf_id]])
+    group_gdf <- join_gdf %>% group_by(.data[[gdf_id]])
     
     # Agg results
     agg_list <- list()
