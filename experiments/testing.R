@@ -8,7 +8,7 @@ library(dplyr)
 library(magrittr)
 
 ## Read data
-# Reading in Adult R1 and R2 data
+# Reading in Adult Round 1 and Round 2 data
 adult_r1 <- st_read("../tmp/data/healsl_rd1_adult_v1.csv")
 adult_r2 <- st_read("../tmp/data/healsl_rd2_adult_v1.csv")
 
@@ -50,8 +50,8 @@ adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
 
 # Set mapping dataframe
 mapping <- data.frame(
-  column = c("cghr10_title", "adurillness_value"),
-  can_aggregate = c("count,mode", "sum,median,mean,min,max,sd,var") 
+  column = c("symp1", "symp2", "symp3", "symp4", "symp5"),
+  can_aggregate = c("count", "count", "count", "count", "count") 
 )
 
 # Testing out function 
@@ -65,6 +65,6 @@ adult_cod <- spatial_agg(gdf = dist,
 
 simple_choro_map <- 
   ggplot() + 
-  geom_sf(data = adult_cod, aes(fill = cghr10_title_mode))
+  geom_sf(data = adult_cod, aes(fill = cghr10_title_))
 
 simple_choro_map
