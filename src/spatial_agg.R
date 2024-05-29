@@ -128,7 +128,8 @@ spatial_agg <- function(
         unique
     
     # Only include funcs that are known
-    func_avail <- func_avail[func_avail %in% names(agg_funcs)]
+    func_known <- c(names(agg_funcs), "count")
+    func_avail <- func_avail[func_avail %in% func_known]
     
     # Perform aggregation for columns based on mapping
     agg_list <- list()
