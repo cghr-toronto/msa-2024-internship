@@ -127,6 +127,9 @@ spatial_agg <- function(
         pull(can_aggregate) %>%
         unique
     
+    # Only include funcs that are known
+    func_avail <- func_avail[func_avail %in% names(agg_funcs)]
+    
     # Perform aggregation for columns based on mapping
     agg_list <- list()
     for (func_name in names(func_avail)) {
