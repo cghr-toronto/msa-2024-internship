@@ -85,6 +85,13 @@ spatial_agg <- function(
     ...
 ) {
     
+    # Rename mapping col names
+    mapping <- mapping %>%
+        rename(
+            column = all_of(mapping_col),
+            can_aggregate = all_of(mapping_agg_col)
+        )
+    
     # Perform joins
     if (is_spatial_join == TRUE) {
         

@@ -65,6 +65,6 @@ adult_cod <- spatial_agg(gdf = dist,
 
 simple_choro_map <- 
   ggplot() + 
-  geom_sf(data = adult_cod, aes(fill = cghr10_title_))
+  geom_sf(data = adult_cod, aes(fill = cghr10_title))
 
-simple_choro_map
+#simple_choro_map
