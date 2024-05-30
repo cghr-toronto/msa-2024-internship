@@ -75,21 +75,16 @@ result <- adult_cod_without_geometry %>%
         values_to = "count" # New column to store the counts
     ) %>% mutate(symptom = gsub("^symp\\d+_|_count$","", symptom)) %>% # Remove prefix and suff
     group_by(gid, symptom) %>% # Group by gid and sympt
-    summarize(total_count = sum(count)) # Summarize the counts f
-    
-wide <- result %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
+    summarize(total_count = sum(count) # Summarize the counts f
+    ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
                  values_from = total_count, # Values to be filled in the wide format
                  values_fill = 0 # Fill any missing values with 0
     )
 
 
-final_wide <- wide %>%
+final_result <- result %>%
     left_join(adult_cod %>% select(gid, geometry), by = "gid")
 
 # Print the wide format
 cat("\nWide format:\n")
-print(result)
-
-# Print the long format
-cat("\nLong format:\n")
-print(final_wide)
+print(final_result)
