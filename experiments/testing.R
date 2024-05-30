@@ -51,8 +51,8 @@ adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
 
 # Set mapping dataframe
 mapping <- data.frame(
-  column = c("symp1", "symp2", "symp3", "symp4", "symp5"),
-  can_aggregate = c("count", "count", "count", "count", "count") 
+  column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9"),
+  can_aggregate = c("count", "count", "count", "count", "count", "count", "count", "count", "count") 
 )
 
 # Testing out function 
@@ -69,8 +69,7 @@ adult_cod_without_geometry <- adult_cod  %>%
     select(-geometry)
 
 result <- adult_cod_without_geometry %>%
-    pivot_longer( cols = matches(
-        "^symp\\d+_"), # Matches columns starting with "symp" followed by dig
+    pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
         names_to = "symptom", # New column to store the symptom names
         values_to = "count" # New column to store the counts
     ) %>% mutate(symptom = gsub("^symp\\d+_|_count$","", symptom)) %>% # Remove prefix and suff
@@ -81,10 +80,23 @@ result <- adult_cod_without_geometry %>%
                  values_fill = 0 # Fill any missing values with 0
     )
 
-
 final_result <- result %>%
     left_join(adult_cod %>% select(gid, geometry), by = "gid")
 
 # Print the wide format
 cat("\nWide format:\n")
 print(final_result)
+
+sf_final_result <- st_as_sf(final_result)
+
+non_spat <- adult %>%
+    pivot_longer( cols = matches("\\d+_"), # Matches columns starting with "symp" followed by dig
+        names_to = "symptom", # New column to store the symptom names
+        values_to = "count" # New column to store the counts
+    ) %>% mutate(symptom = gsub("\\d+","", symptom)) %>% # Remove suffix
+    group_by(cghr10_title, symptom) %>% # Group by gid and sympt
+    summarize(total_count = sum(count) # Summarize the counts f
+    ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
+                       values_from = total_count, # Values to be filled in the wide format
+                       values_fill = 0 # Fill any missing values with 0
+    )
