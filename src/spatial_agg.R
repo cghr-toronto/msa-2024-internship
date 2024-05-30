@@ -178,7 +178,7 @@ spatial_agg <- function(
         as_tibble() %>%
         select(-geometry)
     
-    # Group joined df and remove geometry
+    # Group joined df
     group_gdf <- join_gdf %>%
         group_by(.data[[gdf_id]])
     
