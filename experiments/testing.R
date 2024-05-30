@@ -100,3 +100,6 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
         values_from = count,  # The values in the 'count' column will fill the new columns
         values_fill = list(count = 0)  # Fill missing values with 0
     )
+
+death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
+non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
