@@ -51,8 +51,8 @@ adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
 
 # Set mapping dataframe
 mapping <- data.frame(
-  column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9"),
-  can_aggregate = c("count", "count", "count", "count", "count", "count", "count", "count", "count") 
+  column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9", "symp10"),
+  can_aggregate = c("count", "count", "count", "count", "count", "count", "count", "count", "count", "count") 
 )
 
 # Testing out function 
@@ -89,14 +89,14 @@ print(final_result)
 
 sf_final_result <- st_as_sf(final_result)
 
-non_spat <- adult %>%
-    pivot_longer( cols = matches("\\d+_"), # Matches columns starting with "symp" followed by dig
+non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
         names_to = "symptom", # New column to store the symptom names
-        values_to = "count" # New column to store the counts
-    ) %>% mutate(symptom = gsub("\\d+","", symptom)) %>% # Remove suffix
-    group_by(cghr10_title, symptom) %>% # Group by gid and sympt
-    summarize(total_count = sum(count) # Summarize the counts f
-    ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
-                       values_from = total_count, # Values to be filled in the wide format
-                       values_fill = 0 # Fill any missing values with 0
+        values_to = "value" # New column to store the counts
+    ) %>% group_by(cghr10_title, value) %>%
+  summarise(count = n(), .groups = 'drop') %>%
+  arrange(cghr10_title, value) %>%
+    pivot_wider(
+        names_from = value,   # The values in the 'value' column will become column names
+        values_from = count,  # The values in the 'count' column will fill the new columns
+        values_fill = list(count = 0)  # Fill missing values with 0
     )
