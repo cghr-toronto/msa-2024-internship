@@ -63,32 +63,3 @@ adult_cod <- spatial_agg(gdf = dist,
                          agg_id = "gid_dist",
                          is_spatial_join = FALSE,
                          count_col = "deaths")
-
-<<<<<<< HEAD
-result <- df %>%
-    pivot_longer( cols = matches(
-        "^symp\\d+_"), # Matches columns starting with "symp" followed by dig
-    names_to = "symptom", # New column to store the symptom names
-    values_to = "count" # New column to store the counts
-    ) %>% mutate(symptom = gsub("^symp\\d+_|_count$","", symptom)) %>% # Remove prefix and suff
-    group_by(gid, symptom) %>% # Group by gid and sympt
-    summarize(total_count = sum(count)) %>% # Summarize the counts f
-    pivot_wider( names_from = symptom, # Pivot symptom column to wide format
-                 values_from = total_count, # Values to be filled in the wide format
-                 values_fill = 0 # Fill any missing values with 0
-    )
-# Print the long format
-cat(
-    "\nLong format:\n"
-)print(df_long)
-# Print the wide format
-cat(
-    "\nWide format:\n"
-)print(result)
-=======
-simple_choro_map <- 
-  ggplot() + 
-  geom_sf(data = adult_cod, aes(fill = cghr10_title))
-
-#simple_choro_map
->>>>>>> ea2819d4f0f832ef18c72afa25f9969635918eb6
