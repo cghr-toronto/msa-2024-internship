@@ -51,6 +51,8 @@ calc_mode <- function(x, first = T, ...) {
 #' @param has_count Set to `TRUE` to include counts for each row in `agg` joined to `gdf` and `FALSE` to exclude.
 #' @param is_spatial_join Set to `TRUE` to perform a spatial join, and FALSE to perform a non-spatial join using `gdf_id` and `agg_id` columns. Default is TRUE.
 #' @param agg_funcs list of aggregation functions where the key is the name matching functions in the `can_aggregate` column in `mapping`, and the value is the function itself. The `count` key is reserved to count unique values in a column.
+#' @param check_can_aggregate Set to `TRUE` to warn if all function names in column `can_aggregate` of `mapping` are known and `FALSE` to silence this warning.
+#' @param check_error Set to `TRUE` to error out if any check does not pass or `FALSE` to not error out.
 #' @param ... Additional arguments passed to the `st_join` (if is_spatial_join is TRUE) or `join` (otherwise) function that you will use for the aggregation.
 #'
 #' @return `gdf` with the processed aggregated results of `agg`.
@@ -76,14 +78,84 @@ spatial_agg <- function(
         min = ~ min(.x, na.rm = TRUE),
         max = ~ max(.x, na.rm = TRUE),
         sd = ~ sd(.x, na.rm = TRUE),
-        var = ~ var(.x, na.rm = TRUE,
-        count)
+        var = ~ var(.x, na.rm = TRUE)
     ),
     count_col = "count",
     has_count = TRUE,
     is_spatial_join = TRUE,
+    check_can_aggregate = TRUE,
+    check_column = TRUE,
+    check_error = TRUE,
     ...
 ) {
+    
+    # Rename mapping col names
+    mapping <- mapping %>%
+        rename(
+            column = all_of(mapping_col),
+            can_aggregate = all_of(mapping_agg_col)
+        )
+    
+    # Get cols in agg and mapping
+    agg_cols <- colnames(agg)
+    mapping_cols <- mapping %>% pull(column)
+    
+    # Check if any cols in mapping are missing from agg
+    mapping_miss <- mapping_cols[!mapping_cols %in% agg_cols]
+    has_mapping_miss <- length(mapping_miss) > 0
+    if (check_column & has_mapping_miss) {
+        
+        # Create warning or error msg
+        check_column_msg <- paste0(
+            "Columns in mapping not found in agg: ",
+            paste0(mapping_miss, collapse = ", ")
+        )
+        
+        # Error out or warn if any cols are missing
+        if (check_error) {
+            stop(check_column_msg)
+        } else {
+            warning(check_column_msg)
+        }
+    }
+    
+    # Get all avail funcs from mapping
+    func_avail <- mapping %>%
+        filter(!is.na(can_aggregate)) %>%
+        mutate(
+            can_aggregate = str_remove_all(can_aggregate, " ")
+        ) %>%
+        separate_longer_delim(can_aggregate, ",") %>%
+        pull(can_aggregate) %>%
+        unique
+    
+    # Check if func are known
+    func_known <- c(names(agg_funcs), "count")
+    func_unknown <- func_avail[!func_avail %in% func_known]
+    has_func_unknown <- length(func_unknown) > 0
+    if (check_can_aggregate & has_func_unknown) {
+        
+        # Create warning or error msg
+        check_can_aggregate_msg <- paste0(
+            "Unknown aggregate functions in mapping: ",
+            paste0(func_unknown, collapse = ", ")
+        )
+        
+        # Error out or warn if any func is not known
+        if (check_error) {
+            stop(check_can_aggregate_msg)
+        } else {
+            warning(check_can_aggregate_msg)
+        }
+    }
+    
+    # Only include func that are known
+    func_avail <- func_avail[func_avail %in% func_known]
+    
+    # Filter for mapping cols existing in agg
+    mapping <- mapping %>% filter(
+        column %in% agg_cols
+    )
     
     # Perform joins
     if (is_spatial_join == TRUE) {
@@ -99,7 +171,6 @@ spatial_agg <- function(
             by = setNames(agg_id, gdf_id),
             ...
         )
-        
     }
     
     # Remove geometry and convert to df
@@ -110,20 +181,6 @@ spatial_agg <- function(
     # Group joined df and remove geometry
     group_gdf <- join_gdf %>%
         group_by(.data[[gdf_id]])
-        
-    # Get all available funcs from mapping
-    func_avail <- mapping %>%
-        filter(!is.na(can_aggregate)) %>%
-        mutate(
-            can_aggregate = str_remove_all(can_aggregate, " ")
-        ) %>%
-        separate_longer_delim(can_aggregate, ",") %>%
-        pull(can_aggregate) %>%
-        unique
-    
-    # Only include funcs that are known
-    func_known <- c(names(agg_funcs), "count")
-    func_avail <- func_avail[func_avail %in% func_known]
     
     # Perform aggregation for columns based on mapping
     agg_list <- list()

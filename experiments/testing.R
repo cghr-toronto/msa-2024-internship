@@ -64,6 +64,7 @@ adult_cod <- spatial_agg(gdf = dist,
                          is_spatial_join = FALSE,
                          count_col = "deaths")
 
+<<<<<<< HEAD
 result <- df %>%
     pivot_longer( cols = matches(
         "^symp\\d+_"), # Matches columns starting with "symp" followed by dig
@@ -84,3 +85,10 @@ cat(
 cat(
     "\nWide format:\n"
 )print(result)
+=======
+simple_choro_map <- 
+  ggplot() + 
+  geom_sf(data = adult_cod, aes(fill = cghr10_title))
+
+#simple_choro_map
+>>>>>>> ea2819d4f0f832ef18c72afa25f9969635918eb6
