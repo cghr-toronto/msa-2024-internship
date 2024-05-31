@@ -83,7 +83,7 @@ result <- adult_cod_without_geometry %>%
     )
 
 # Join geometry to new spatial table
-final_result <- result %>%
+spatial <- result %>%
     left_join(adult_cod %>% select(gid, geometry), by = "gid")
 
 # Print the wide format
@@ -106,3 +106,15 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
 # Creating count for deaths per cause in non-spatial
 death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
+
+ggplot() +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=yellowEyes)) +
+    scale_fill_viridis_c(name = "Count") +
+    scale_fill_gradient(low="lightblue", high="darkblue") +
+    labs(title = "Cases with Jaundice")
+
+ggplot() +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=cough)) +
+    scale_fill_viridis_c(name = "Count") +
+    scale_fill_gradient(low="lightblue", high="darkblue") +
+    labs(title = "Cases with Coughing")
