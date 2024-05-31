@@ -64,10 +64,12 @@ adult_cod <- spatial_agg(gdf = dist,
                          is_spatial_join = FALSE,
                          count_col = "deaths")
 
+# Remove geometry from adult_cod
 adult_cod_without_geometry <- adult_cod  %>%
     as_tibble() %>%
     select(-geometry)
 
+# Creating spatial symptom count
 result <- adult_cod_without_geometry %>%
     pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
         names_to = "symptom", # New column to store the symptom names
@@ -80,6 +82,7 @@ result <- adult_cod_without_geometry %>%
                  values_fill = 0 # Fill any missing values with 0
     )
 
+# Join geometry to new spatial table
 final_result <- result %>%
     left_join(adult_cod %>% select(gid, geometry), by = "gid")
 
@@ -87,8 +90,7 @@ final_result <- result %>%
 cat("\nWide format:\n")
 print(final_result)
 
-sf_final_result <- st_as_sf(final_result)
-
+# Creating non-spatial table of symptom and causes of death
 non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
         names_to = "symptom", # New column to store the symptom names
         values_to = "value" # New column to store the counts
@@ -101,5 +103,6 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
         values_fill = list(count = 0)  # Fill missing values with 0
     )
 
+# Creating count for deaths per cause in non-spatial
 death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
