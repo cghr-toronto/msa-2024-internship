@@ -7,6 +7,10 @@ library(ggplot2)
 library(dplyr)
 library(magrittr)
 library(stringr)
+library(lubridate)
+library(ggspatial)
+library(tmap)
+library(prettymapr)
 
 ## Read data
 # Reading in Adult Round 1 and Round 2 data
@@ -88,7 +92,10 @@ spatial <- result %>%
 
 # Print the wide format
 cat("\nWide format:\n")
-print(final_result)
+print(spatial)
+
+# Convert spatial to an sf and reproject crs
+spatial <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
@@ -107,14 +114,19 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
 death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
-ggplot() +
+jaundice <- ggplot() +
     geom_sf(data = spatial, aes(geometry = geometry, fill=yellowEyes)) +
-    scale_fill_viridis_c(name = "Count") +
+    guides(fill = guide_legend(title = "Count")) +
     scale_fill_gradient(low="lightblue", high="darkblue") +
+    annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
+    annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Cases with Jaundice")
 
-ggplot() +
+coughing <- ggplot() +
     geom_sf(data = spatial, aes(geometry = geometry, fill=cough)) +
-    scale_fill_viridis_c(name = "Count") +
+    guides(fill = guide_legend(title = "Count")) +
     scale_fill_gradient(low="lightblue", high="darkblue") +
+    annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
+    annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Cases with Coughing")
+
