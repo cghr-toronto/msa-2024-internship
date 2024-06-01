@@ -20,8 +20,9 @@ adult_r2 <- st_read("../tmp/data/healsl_rd2_adult_v1.csv")
 # Reading District Boundary file
 dist <- st_read("../tmp/data/sl_dist_17_v2.geojson")
 
-# Reading in GID boundary file
+# Reading in GID r1 and r2 boundary file
 gid_r1 <- st_read("../tmp/data/sl_rd1_gid_v1.csv")
+gid_r2 <- st_read("../tmp/data/sl_rd2_gid_v1.csv")
 
 # Reading in ICD-10 code file
 icd <- st_read("../tmp/data/icd10_cghr10_v1.csv")
@@ -43,7 +44,7 @@ icd <- filter(icd, cghr10_age == "adult")
 # Assign CGHR-10 title for corresponding record codes
 adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod")) 
   
-# Join Adult R1 data with GID file
+# Join Adult data with GID file
 adult_gid <- merge(adult, gid_r1, by = "geoid")
 
 ## Converting data types
@@ -120,7 +121,7 @@ jaundice <- ggplot() +
     scale_fill_gradient(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Cases with Jaundice")
+    labs(title = "Adult Cases with Jaundice")
 
 coughing <- ggplot() +
     geom_sf(data = spatial, aes(geometry = geometry, fill=cough)) +
@@ -128,5 +129,6 @@ coughing <- ggplot() +
     scale_fill_gradient(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Cases with Coughing")
+    labs(title = "Adult Cases with Coughing")
+
 
