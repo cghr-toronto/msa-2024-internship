@@ -125,6 +125,7 @@ print(spatial)
 # Convert spatial to an sf and reproject crs
 spatial <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
 
+
 # Creating non-spatial table of symptom and causes of death
 non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
         names_to = "symptom", # New column to store the symptom names
@@ -148,8 +149,7 @@ jaundice <- ggplot() +
     scale_fill_continuous(low="lightblue", high="darkblue", breaks = c(0,7,14)) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Jaundice") +
-    geom_text()
+    labs(title = "Adult Malaria Cases with Jaundice")
 
 coughing <- ggplot() +
     geom_sf(data = spatial, aes(geometry = geometry, fill=(cough_rate))) +
@@ -168,7 +168,7 @@ vomit <- ggplot() +
     labs(title = "Adult Malaria Cases with Vomit")
 
 bp <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=(breathingProblem_rate))) +
+    geom_sf(aes(geometry = geometry, fill=(breathingProblem_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
