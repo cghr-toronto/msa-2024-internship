@@ -76,7 +76,7 @@ adult_malaria_agg <- spatial_agg(gdf = dist,
                          gdf_id = "gid", 
                          agg_id = "gid_dist",
                          is_spatial_join = FALSE,
-                         count_col = "deaths")
+                         count_col = "malaria_deaths")
 
 adult_non_malaria_agg <- spatial_agg(gdf = dist,
                                      agg = adult_non_malaria,
@@ -84,7 +84,7 @@ adult_non_malaria_agg <- spatial_agg(gdf = dist,
                                      gdf_id = "gid", 
                                      agg_id = "gid_dist",
                                      is_spatial_join = FALSE,
-                                     count_col = "deaths")
+                                     count_col = "non_malaria_deaths")
 
 # Remove geometry from adult_cod
 adult_cod_without_geometry <- adult_cod  %>%
