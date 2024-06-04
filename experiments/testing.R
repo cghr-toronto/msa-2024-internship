@@ -121,25 +121,29 @@ death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
 jaundice <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=yellowEyes)) +
-    guides(fill = guide_legend(title = "Count")) +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=((yellowEyes/deaths) * 100))) +
+    guides(fill = guide_legend(title = "Cases per 100 deaths")) +
     scale_fill_gradient(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Jaundice")
 
 coughing <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=cough)) +
-    guides(fill = guide_legend(title = "Count")) +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=((cough/deaths) * 100))) +
+    guides(fill = guide_legend(title = "Cases per 100 deaths")) +
     scale_fill_gradient(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Coughing")
 
 vomit <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=vomit)) +
-    guides(fill = guide_legend(title = "Count")) +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=((vomit/deaths) * 100))) +
+    guides(fill = guide_legend(title = "Cases per 100 deaths")) +
     scale_fill_gradient(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Vomit")
+
+jaundice
+coughing
+vomit
