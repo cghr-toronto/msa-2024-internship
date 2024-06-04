@@ -61,7 +61,7 @@ adult_non_malaria <- adult %>% filter(cghr10_title != "Malaria")
 
 # Convert data type of District ID column
 adult_malaria$gid_dist <- as.integer(adult_malaria$gid_dist)
-adult_non_malaria$gid_dist <- as.integer(adult_non_malaria$gid_dist)
+adult$gid_dist <- as.integer(adult$gid_dist)
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -78,21 +78,21 @@ adult_malaria_agg <- spatial_agg(gdf = dist,
                          is_spatial_join = FALSE,
                          count_col = "malaria_deaths")
 
-adult_non_malaria_agg <- spatial_agg(gdf = dist,
-                                     agg = adult_non_malaria,
+adult_agg <- spatial_agg(gdf = dist,
+                                     agg = adult,
                                      mapping = mapping,
                                      gdf_id = "gid", 
                                      agg_id = "gid_dist",
                                      is_spatial_join = FALSE,
-                                     count_col = "non_malaria_deaths")
+                                     count_col = "all_deaths")
 
 # Remove geometry from adult_cod
-adult_cod_without_geometry <- adult_cod  %>%
+adult_malaria_without_geometry <- adult_malaria_agg  %>%
     as_tibble() %>%
-    select(-geometry, -deaths, -distname)
+    select(-geometry, -malaria_deaths, -distname)
 
 # Creating spatial symptom count
-result <- adult_cod_without_geometry %>%
+result <- adult_malaria_without_geometry %>%
     pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
         names_to = "symptom", # New column to store the symptom names
         values_to = "count" # New column to store the counts
@@ -106,14 +106,17 @@ result <- adult_cod_without_geometry %>%
 
 # Join geometry to new spatial table
 spatial <- result %>%
-    left_join(adult_cod %>% select(gid, geometry, deaths, distname), by = "gid")
+    left_join(adult_malaria_agg %>% select(gid, geometry, malaria_deaths, distname), by = "gid")
+
+# Add all deaths to malaria table
+spatial$all_deaths <- adult_agg$all_deaths
 
 # Create rate columns for malaria symptoms
-spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$deaths) * 100
-spatial$cough_rate <- (spatial$cough/spatial$deaths) * 100
-spatial$vomit_rate <- (spatial$vomit/spatial$deaths) * 100
-spatial$breathingProblem_rate <- (spatial$breathingProblem/spatial$deaths) * 100
-spatial$abdominalProblem_rate <- (spatial$abdominalProblem/spatial$deaths) * 100
+spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$all_deaths) * 100
+spatial$cough_rate <- (spatial$cough/spatial$all_deaths) * 100
+spatial$vomit_rate <- (spatial$vomit/spatial$all_deaths) * 100
+spatial$breathingProblem_rate <- (spatial$breathingProblem/spatial$all_deaths) * 100
+spatial$abdominalProblem_rate <- (spatial$abdominalProblem/spatial$all_deaths) * 100
 
 # Print the wide format
 cat("\nWide format:\n")
