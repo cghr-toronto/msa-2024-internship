@@ -49,12 +49,15 @@ icd <- filter(icd, cghr10_age == "adult")
 # Assign CGHR-10 title for corresponding record codes
 adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod")) 
 
-## Converting data types
+# Filter to only malaria
+adult_malaria <- adult %>% filter(cghr10_title == "Malaria")
+
+## Converting data types examples
 # Convert data type of illness duration column
-adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
+# adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 
 # Convert data type of District ID column
-adult_gid$gid_dist <- as.integer(adult_gid$gid_dist)
+adult_malaria$gid_dist <- as.integer(adult_malaria$gid_dist)
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -64,7 +67,7 @@ mapping <- data.frame(
 
 # Testing out function 
 adult_cod <- spatial_agg(gdf = dist,
-                         agg = adult_gid,
+                         agg = adult_malaria,
                          mapping = mapping,
                          gdf_id = "gid", 
                          agg_id = "gid_dist",
