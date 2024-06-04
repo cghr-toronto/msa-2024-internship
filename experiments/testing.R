@@ -150,9 +150,18 @@ bp <- ggplot() +
     scale_fill_gradient(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Breating Problems")
+    labs(title = "Adult Malaria Cases with Breathing Problems")
+
+ap <- ggplot() +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=((abdominalProblem/deaths) * 100))) +
+    guides(fill = guide_legend(title = "Cases per 100 deaths")) +
+    scale_fill_gradient(low="lightblue", high="darkblue") +
+    annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
+    annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
+    labs(title = "Adult Malaria Cases with Abdominal Problems")
 
 jaundice
 coughing
 vomit
 bp
+ap
