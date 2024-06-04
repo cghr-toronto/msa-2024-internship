@@ -49,8 +49,11 @@ icd <- filter(icd, cghr10_age == "adult")
 # Assign CGHR-10 title for corresponding record codes
 adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod")) 
 
-# Filter to only malaria
+# Dataframe with only malaria deaths
 adult_malaria <- adult %>% filter(cghr10_title == "Malaria")
+
+# Dataframe without malaria deaths
+adult_non_malaria <- adult %>% filter(cghr10_title != "Malaria")
 
 ## Converting data types examples
 # Convert data type of illness duration column
@@ -58,6 +61,7 @@ adult_malaria <- adult %>% filter(cghr10_title == "Malaria")
 
 # Convert data type of District ID column
 adult_malaria$gid_dist <- as.integer(adult_malaria$gid_dist)
+adult_non_malaria$gid_dist <- as.integer(adult_non_malaria$gid_dist)
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -66,7 +70,7 @@ mapping <- data.frame(
 )
 
 # Testing out function with adult malaria
-adult_cod <- spatial_agg(gdf = dist,
+adult_malaria_agg <- spatial_agg(gdf = dist,
                          agg = adult_malaria,
                          mapping = mapping,
                          gdf_id = "gid", 
@@ -74,10 +78,18 @@ adult_cod <- spatial_agg(gdf = dist,
                          is_spatial_join = FALSE,
                          count_col = "deaths")
 
+adult_non_malaria_agg <- spatial_agg(gdf = dist,
+                                     agg = adult_non_malaria,
+                                     mapping = mapping,
+                                     gdf_id = "gid", 
+                                     agg_id = "gid_dist",
+                                     is_spatial_join = FALSE,
+                                     count_col = "deaths")
+
 # Remove geometry from adult_cod
 adult_cod_without_geometry <- adult_cod  %>%
     as_tibble() %>%
-    select(-geometry, -deaths)
+    select(-geometry, -deaths, -distname)
 
 # Creating spatial symptom count
 result <- adult_cod_without_geometry %>%
@@ -94,7 +106,14 @@ result <- adult_cod_without_geometry %>%
 
 # Join geometry to new spatial table
 spatial <- result %>%
-    left_join(adult_cod %>% select(gid, geometry, deaths), by = "gid")
+    left_join(adult_cod %>% select(gid, geometry, deaths, distname), by = "gid")
+
+# Create rate columns for malaria symptoms
+spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$deaths) * 100
+spatial$cough_rate <- (spatial$cough/spatial$deaths) * 100
+spatial$vomit_rate <- (spatial$vomit/spatial$deaths) * 100
+spatial$breathingProblem_rate <- (spatial$breathingProblem/spatial$deaths) * 100
+spatial$abdominalProblem_rate <- (spatial$abdominalProblem/spatial$deaths) * 100
 
 # Print the wide format
 cat("\nWide format:\n")
@@ -121,41 +140,42 @@ death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
 jaundice <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=((yellowEyes/deaths) * 100))) +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=(yellowEyes_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
-    scale_fill_gradient(low="lightblue", high="darkblue", breaks = c(0,2,4,6,8)) +
+    scale_fill_continuous(low="lightblue", high="darkblue", breaks = c(0,7,14)) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Jaundice")
+    labs(title = "Adult Malaria Cases with Jaundice") +
+    geom_text()
 
 coughing <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=((cough/deaths) * 100))) +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=(cough_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
-    scale_fill_gradient(low="lightblue", high="darkblue") +
+    scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Coughing")
 
 vomit <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=((vomit/deaths) * 100))) +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=(vomit_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
-    scale_fill_gradient(low="lightblue", high="darkblue") +
+    scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Vomit")
 
 bp <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=((breathingProblem/deaths) * 100))) +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=(breathingProblem_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
-    scale_fill_gradient(low="lightblue", high="darkblue") +
+    scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Breathing Problems")
 
 ap <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=((abdominalProblem/deaths) * 100))) +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=(abdominalProblem_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
-    scale_fill_gradient(low="lightblue", high="darkblue") +
+    scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Abdominal Problems")
