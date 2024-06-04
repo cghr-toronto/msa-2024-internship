@@ -65,7 +65,7 @@ mapping <- data.frame(
   can_aggregate = c("count", "count", "count", "count", "count", "count", "count", "count", "count", "count") 
 )
 
-# Testing out function 
+# Testing out function with adult malaria
 adult_cod <- spatial_agg(gdf = dist,
                          agg = adult_malaria,
                          mapping = mapping,
@@ -77,7 +77,7 @@ adult_cod <- spatial_agg(gdf = dist,
 # Remove geometry from adult_cod
 adult_cod_without_geometry <- adult_cod  %>%
     as_tibble() %>%
-    select(-geometry)
+    select(-geometry, -deaths)
 
 # Creating spatial symptom count
 result <- adult_cod_without_geometry %>%
@@ -94,7 +94,7 @@ result <- adult_cod_without_geometry %>%
 
 # Join geometry to new spatial table
 spatial <- result %>%
-    left_join(adult_cod %>% select(gid, geometry), by = "gid")
+    left_join(adult_cod %>% select(gid, geometry, deaths), by = "gid")
 
 # Print the wide format
 cat("\nWide format:\n")
@@ -126,7 +126,7 @@ jaundice <- ggplot() +
     scale_fill_gradient(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Cases with Jaundice")
+    labs(title = "Adult Malaria Cases with Jaundice")
 
 coughing <- ggplot() +
     geom_sf(data = spatial, aes(geometry = geometry, fill=cough)) +
@@ -134,6 +134,12 @@ coughing <- ggplot() +
     scale_fill_gradient(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Cases with Coughing")
+    labs(title = "Adult Malaria Cases with Coughing")
 
-
+vomit <- ggplot() +
+    geom_sf(data = spatial, aes(geometry = geometry, fill=vomit)) +
+    guides(fill = guide_legend(title = "Count")) +
+    scale_fill_gradient(low="lightblue", high="darkblue") +
+    annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
+    annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
+    labs(title = "Adult Malaria Cases with Vomit")
