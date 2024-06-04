@@ -26,26 +26,28 @@ gid_r2 <- st_read("../tmp/data/sl_rd2_gid_v1.csv")
 
 # Reading in ICD-10 code file
 icd <- st_read("../tmp/data/icd10_cghr10_v1.csv")
+  
+# Join Adult datasets with GID files
+adult_r1_gid <- left_join(adult_r1, gid_r1, by = "geoid")
+adult_r2_gid <- left_join(adult_r2, gid_r2, by = "geoid")
 
 # Combine r1 and r2 adult data
-adult <- bind_rows(adult_r1, adult_r2)
+adult <- bind_rows(adult_r1_gid, adult_r2_gid)
 
 # Created new column for adult displaying final ICD-10 code cause of death
-adult <- adult %>% mutate_all(na_if,"") %>% mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
-                                                                             is.na(adj_icd_cod) & !is.na(p1_recon_icd_cod) & !is.na(p2_recon_icd_cod) ~ p1_recon_icd_cod,  # Use p1_recon_icd if adj_icd is NA and both p1_recon_icd and p2_recon_icd are not NA
-                                                                             is.na(adj_icd_cod) & is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) ~ p1_icd_cod,  # Use p1_icd if both adj_icd and recon_icd are NA
-                                                                             TRUE ~ NA_character_  # Default case, if none of the above conditions are met
-)
-) 
+adult <- adult %>% mutate_all(na_if,"") %>% 
+    mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
+                                     is.na(adj_icd_cod) & !is.na(p1_recon_icd_cod) & !is.na(p2_recon_icd_cod) ~ p1_recon_icd_cod,  # Use p1_recon_icd if adj_icd is NA and both p1_recon_icd and p2_recon_icd are not NA
+                                     is.na(adj_icd_cod) & is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) ~ p1_icd_cod,  # Use p1_icd if both adj_icd and recon_icd are NA
+                                     TRUE ~ NA_character_  # Default case, if none of the above conditions are met
+    )
+    ) 
 
 # Remove neonatal and child records from ICD codes
 icd <- filter(icd, cghr10_age == "adult")
-  
+
 # Assign CGHR-10 title for corresponding record codes
 adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod")) 
-  
-# Join Adult data with GID file
-adult_gid <- merge(adult, gid_r1, by = "geoid")
 
 ## Converting data types
 # Convert data type of illness duration column
