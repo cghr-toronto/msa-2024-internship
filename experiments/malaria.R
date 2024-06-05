@@ -56,11 +56,11 @@ adult$gid_dist <- as.integer(adult$gid_dist)
 young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
-# Creating filters for young adults
+# Creating filters for young adults by sex, age, and malaria
 young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
 young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
 
-# Creating filters for older adults
+# Creating filters for older adults by sex, age, and malaria
 older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 
@@ -198,11 +198,17 @@ non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 jaundice <- ggplot(yam_symptom) +
     geom_sf(aes(geometry = geometry, fill=(yellowEyes_rate))) +
     guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
-    scale_fill_continuous(low="lightblue", high="darkblue") +
+    scale_fill_continuous(low="lightblue", high="darkblue", breaks = c(0,2,4,6,8,10)) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Young Adult Male Malaria Cases with Jaundice") +
-    geom_sf_label(aes(label = yellowEyes_rate), size = 3)
+    geom_sf_label(aes(label = yellowEyes_rate), size = 2.5) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
 
 coughing <- ggplot(yam_symptom) +
     geom_sf(aes(geometry = geometry, fill=(cough_rate))) +
@@ -210,8 +216,15 @@ coughing <- ggplot(yam_symptom) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Coughing")+
-    geom_sf_label(aes(label = cough_rate), size = 3)
+    labs(title = "Young Adult Male Malaria Cases with Coughing")+
+    geom_sf_label(aes(label = cough_rate), size = 2.5) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
+
 
 vomit <- ggplot(yam_symptom) +
     geom_sf(aes(geometry = geometry, fill=(vomit_rate))) +
@@ -219,8 +232,15 @@ vomit <- ggplot(yam_symptom) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Vomit")+
-    geom_sf_label(aes(label = vomit_rate), size = 3)
+    labs(title = "Young Adult Male Malaria Cases with Vomit")+
+    geom_sf_label(aes(label = vomit_rate), size = 2.5) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
+
 
 bp <- ggplot(yam_symptom) +
     geom_sf(aes(geometry = geometry, fill=(breathingProblem_rate))) +
@@ -228,17 +248,31 @@ bp <- ggplot(yam_symptom) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Breathing Problems")+
-    geom_sf_label(aes(label = breathingProblem_rate), size = 3)
+    labs(title = "Young Adult Male Malaria Cases with Breathing Problems")+
+    geom_sf_label(aes(label = breathingProblem_rate), size = 2.5) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
+
 
 ap <- ggplot(yam_symptom) +
     geom_sf(aes(geometry = geometry, fill=(abdominalProblem_rate))) +
     guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
-    scale_fill_continuous(low="lightblue", high="darkblue", breaks = c(0,0.5,1,1.5,2,2.5)) +
+    scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Abdominal Problems")+
-    geom_sf_label(aes(label = abdominalProblem_rate), size = 3)
+    labs(title = "Young Adult Male Malaria Cases with Abdominal Problems")+
+    geom_sf_label(aes(label = abdominalProblem_rate), size = 2.5) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
+
 
 jaundice
 coughing
