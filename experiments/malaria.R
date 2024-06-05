@@ -195,7 +195,12 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
 death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
-jaundice <- ggplot(yam_symptom) +
+yam_new <- yam_symptom %>% pivot_longer(cols = ends_with("rate"),
+                                        names_to = "symptoms", 
+                                        values_to = "rates") %>% select(gid, symptoms, rates)
+    
+
+jaundice <- ggplot(yam_new) +
     geom_sf(aes(geometry = geometry, fill=(yellowEyes_rate))) +
     guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue", breaks = c(0,2,4,6,8,10)) +

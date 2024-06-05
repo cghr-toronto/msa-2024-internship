@@ -157,7 +157,13 @@ jaundice <- ggplot(spatial) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Jaundice") +
-    geom_sf_label(aes(label = yellowEyes_rate))
+    geom_sf_label(aes(label = yellowEyes_rate)) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
 
 coughing <- ggplot(spatial) +
     geom_sf(aes(geometry = geometry, fill=(cough_rate))) +
@@ -166,7 +172,13 @@ coughing <- ggplot(spatial) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Coughing")+
-    geom_sf_label(aes(label = cough_rate))
+    geom_sf_label(aes(label = cough_rate)) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
 
 vomit <- ggplot(spatial) +
     geom_sf(aes(geometry = geometry, fill=(vomit_rate))) +
@@ -175,7 +187,13 @@ vomit <- ggplot(spatial) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Vomit")+
-    geom_sf_label(aes(label = vomit_rate))
+    geom_sf_label(aes(label = vomit_rate)) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
 
 bp <- ggplot(spatial) +
     geom_sf(aes(geometry = geometry, fill=(breathingProblem_rate))) +
@@ -184,7 +202,13 @@ bp <- ggplot(spatial) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Breathing Problems")+
-    geom_sf_label(aes(label = breathingProblem_rate))
+    geom_sf_label(aes(label = breathingProblem_rate)) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
 
 ap <- ggplot(spatial) +
     geom_sf(aes(geometry = geometry, fill=(abdominalProblem_rate))) +
@@ -193,7 +217,13 @@ ap <- ggplot(spatial) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Abdominal Problems")+
-    geom_sf_label(aes(label = abdominalProblem_rate))
+    geom_sf_label(aes(label = abdominalProblem_rate)) +
+    theme_minimal() +
+    theme(panel.grid.major = element_blank(), 
+          panel.grid.minor = element_blank(),
+          axis.text = element_blank(), 
+          axis.ticks = element_blank(), 
+          axis.title = element_blank())
 
 jaundice
 coughing
