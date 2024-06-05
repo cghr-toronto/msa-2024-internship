@@ -112,11 +112,18 @@ spatial <- result %>%
 spatial$all_deaths <- adult_agg$all_deaths
 
 # Create rate columns for malaria symptoms
-spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$all_deaths) * 100
+spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$all_deaths) * 100 
 spatial$cough_rate <- (spatial$cough/spatial$all_deaths) * 100
 spatial$vomit_rate <- (spatial$vomit/spatial$all_deaths) * 100
 spatial$breathingProblem_rate <- (spatial$breathingProblem/spatial$all_deaths) * 100
 spatial$abdominalProblem_rate <- (spatial$abdominalProblem/spatial$all_deaths) * 100
+
+# Round to 2 decimal places
+spatial <- spatial %>% mutate(yellowEyes_rate = round(yellowEyes_rate, 2))
+spatial <- spatial %>% mutate(cough_rate = round(cough_rate, 2))
+spatial <- spatial %>% mutate(vomit_rate = round(vomit_rate, 2))
+spatial <- spatial %>% mutate(breathingProblem_rate = round(breathingProblem_rate, 2))
+spatial <- spatial %>% mutate(abdominalProblem_rate = round(abdominalProblem_rate, 2))
 
 # Print the wide format
 cat("\nWide format:\n")
