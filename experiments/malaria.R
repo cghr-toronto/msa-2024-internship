@@ -54,22 +54,15 @@ young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
 # Creating filters for young adults
-young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age)
-young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
+young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
+young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
 
 # Creating filters for older adults
-older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
-older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
-
-# Dataframe with only malaria deaths
-adult_malaria <- adult %>% filter(cghr10_title == "Malaria")
+older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
+older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 
 # Dataframe without malaria deaths
 adult_non_malaria <- adult %>% filter(cghr10_title != "Malaria")
-
-## Converting data types examples
-# Convert data type of illness duration column
-# adult_gid$adurillness_value <- as.numeric(adult_gid$adurillness_value)
 
 # Convert data type of District ID column
 adult_malaria$gid_dist <- as.integer(adult_malaria$gid_dist)
@@ -82,13 +75,37 @@ mapping <- data.frame(
 )
 
 # Testing out function with adult malaria
-adult_malaria_agg <- spatial_agg(gdf = dist,
-                                 agg = adult_malaria,
+young_male_adult_malaria <- spatial_agg(gdf = dist,
+                                 agg = young_male_adult,
                                  mapping = mapping,
                                  gdf_id = "gid", 
                                  agg_id = "gid_dist",
                                  is_spatial_join = FALSE,
                                  count_col = "malaria_deaths")
+
+young_female_adult_malaria <- spatial_agg(gdf = dist,
+                                        agg = young_female_adult,
+                                        mapping = mapping,
+                                        gdf_id = "gid", 
+                                        agg_id = "gid_dist",
+                                        is_spatial_join = FALSE,
+                                        count_col = "malaria_deaths")
+
+older_male_adult_malaria <- spatial_agg(gdf = dist,
+                                        agg = older_male_adult,
+                                        mapping = mapping,
+                                        gdf_id = "gid", 
+                                        agg_id = "gid_dist",
+                                        is_spatial_join = FALSE,
+                                        count_col = "malaria_deaths")
+
+older_female_adult_malaria <- spatial_agg(gdf = dist,
+                                        agg = older_female_adult,
+                                        mapping = mapping,
+                                        gdf_id = "gid", 
+                                        agg_id = "gid_dist",
+                                        is_spatial_join = FALSE,
+                                        count_col = "malaria_deaths")
 
 adult_agg <- spatial_agg(gdf = dist,
                          agg = adult,
@@ -98,7 +115,12 @@ adult_agg <- spatial_agg(gdf = dist,
                          is_spatial_join = FALSE,
                          count_col = "all_deaths")
 
-# Remove geometry from adult_cod
+# Function for creating rates for aggregated results
+symptom_rate <- function(
+        adult_malaria_agg,
+        adult_agg){
+
+# Remove geometry from aggregated dataframe
 adult_malaria_without_geometry <- adult_malaria_agg  %>%
     as_tibble() %>%
     select(-geometry, -malaria_deaths, -distname)
@@ -142,8 +164,20 @@ cat("\nWide format:\n")
 print(spatial)
 
 # Convert spatial to an sf and reproject crs
-spatial <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
+out <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
 
+return(out)
+
+}
+
+yam_symptom <- symptom_rate(adult_malaria_agg = young_male_adult_malaria,
+                            adult_agg = adult_agg)
+yaf_symptom <- symptom_rate(adult_malaria_agg = young_female_adult_malaria,
+                            adult_agg = adult_agg)
+oam_symptom <- symptom_rate(adult_malaria_agg = older_male_adult_malaria,
+                            adult_agg = adult_agg)
+oaf_symptom <- symptom_rate(adult_malaria_agg = older_female_adult_malaria,
+                            adult_agg = adult_agg)
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
