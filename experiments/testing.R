@@ -178,7 +178,7 @@ bp <- ggplot() +
 ap <- ggplot() +
     geom_sf(data = spatial, aes(geometry = geometry, fill=(abdominalProblem_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
-    scale_fill_continuous(low="lightblue", high="darkblue") +
+    scale_fill_continuous(low="lightblue", high="darkblue", breaks = c(0,0.5,1,1.5,2,2.5)) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     labs(title = "Adult Malaria Cases with Abdominal Problems")
