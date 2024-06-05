@@ -143,45 +143,50 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
 death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
-jaundice <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=(yellowEyes_rate))) +
+jaundice <- ggplot(spatial) +
+    geom_sf(aes(geometry = geometry, fill=(yellowEyes_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Jaundice")
+    labs(title = "Adult Malaria Cases with Jaundice") +
+    geom_sf_label(aes(label = yellowEyes_rate))
 
-coughing <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=(cough_rate))) +
+coughing <- ggplot(spatial) +
+    geom_sf(aes(geometry = geometry, fill=(cough_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Coughing")
+    labs(title = "Adult Malaria Cases with Coughing")+
+    geom_sf_label(aes(label = cough_rate))
 
-vomit <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=(vomit_rate))) +
+vomit <- ggplot(spatial) +
+    geom_sf(aes(geometry = geometry, fill=(vomit_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Vomit")
+    labs(title = "Adult Malaria Cases with Vomit")+
+    geom_sf_label(aes(label = vomit_rate))
 
-bp <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=(breathingProblem_rate))) +
+bp <- ggplot(spatial) +
+    geom_sf(aes(geometry = geometry, fill=(breathingProblem_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Breathing Problems")
+    labs(title = "Adult Malaria Cases with Breathing Problems")+
+    geom_sf_label(aes(label = breathingProblem_rate))
 
-ap <- ggplot() +
-    geom_sf(data = spatial, aes(geometry = geometry, fill=(abdominalProblem_rate))) +
+ap <- ggplot(spatial) +
+    geom_sf(aes(geometry = geometry, fill=(abdominalProblem_rate))) +
     guides(fill = guide_legend(title = "Cases per 100 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue", breaks = c(0,0.5,1,1.5,2,2.5)) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Adult Malaria Cases with Abdominal Problems")
+    labs(title = "Adult Malaria Cases with Abdominal Problems")+
+    geom_sf_label(aes(label = abdominalProblem_rate))
 
 jaundice
 coughing
