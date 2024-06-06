@@ -163,12 +163,22 @@ cat("\nWide format:\n")
 print(spatial)
 
 # Convert spatial to an sf and reproject crs
-out <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
+spatial <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
+
+# Pivoted spatial table to show rates for each symptom
+out <- spatial %>% 
+    pivot_longer(cols = ends_with("rate"),
+                 names_to = "symptoms", 
+                 values_to = "rates") %>% 
+    select(gid, symptoms, rates) %>%
+    mutate(symptoms = str_remove(symptoms, "_rate$"))
 
 return(out)
 
 }
 
+
+# Running symptom_rate for each age group
 yam_symptom <- symptom_rate(adult_malaria_agg = young_male_adult_malaria,
                             adult_agg = adult_agg)
 yaf_symptom <- symptom_rate(adult_malaria_agg = young_female_adult_malaria,
@@ -195,92 +205,74 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
 death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
-yam_new <- yam_symptom %>% pivot_longer(cols = ends_with("rate"),
-                                        names_to = "symptoms", 
-                                        values_to = "rates") %>% select(gid, symptoms, rates)
-    
-
-jaundice <- ggplot(yam_new) +
-    geom_sf(aes(geometry = geometry, fill=(yellowEyes_rate))) +
-    guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
-    scale_fill_continuous(low="lightblue", high="darkblue", breaks = c(0,2,4,6,8,10)) +
-    annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
-    annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Young Adult Male Malaria Cases with Jaundice") +
-    geom_sf_label(aes(label = yellowEyes_rate), size = 2.5) +
-    theme_minimal() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          axis.text = element_blank(), 
-          axis.ticks = element_blank(), 
-          axis.title = element_blank())
-
-coughing <- ggplot(yam_symptom) +
-    geom_sf(aes(geometry = geometry, fill=(cough_rate))) +
+# Creating maps for each age group
+yam_plot <- ggplot(yam_symptom) +
+    geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Young Adult Male Malaria Cases with Coughing")+
-    geom_sf_label(aes(label = cough_rate), size = 2.5) +
+    labs(title = "Young Male Adult Malaria Symptoms") +
+    geom_sf_label(aes(label = rates), size = 2.5) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank())
+          axis.title = element_blank()) +
+    facet_wrap(~ symptoms)
 
-
-vomit <- ggplot(yam_symptom) +
-    geom_sf(aes(geometry = geometry, fill=(vomit_rate))) +
+yaf_plot <- ggplot(yaf_symptom) +
+    geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Young Adult Male Malaria Cases with Vomit")+
-    geom_sf_label(aes(label = vomit_rate), size = 2.5) +
+    labs(title = "Young Female Adult Malaria Symptoms")+
+    geom_sf_label(aes(label = rates), size = 2.5) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank())
+          axis.title = element_blank()) +
+    facet_wrap(~ symptoms)
 
 
-bp <- ggplot(yam_symptom) +
-    geom_sf(aes(geometry = geometry, fill=(breathingProblem_rate))) +
+oam_plot <- ggplot(oam_symptom) +
+    geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Young Adult Male Malaria Cases with Breathing Problems")+
-    geom_sf_label(aes(label = breathingProblem_rate), size = 2.5) +
+    labs(title = "Older Male Adult Malaria Symptoms")+
+    geom_sf_label(aes(label = rates), size = 2.5) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank())
+          axis.title = element_blank()) +
+    facet_wrap(~ symptoms)
 
 
-ap <- ggplot(yam_symptom) +
-    geom_sf(aes(geometry = geometry, fill=(abdominalProblem_rate))) +
+oaf_plot <- ggplot(oaf_symptom) +
+    geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Young Adult Male Malaria Cases with Abdominal Problems")+
-    geom_sf_label(aes(label = abdominalProblem_rate), size = 2.5) +
+    labs(title = "Older Female Adult Malaria Symptoms")+
+    geom_sf_label(aes(label = rates), size = 2.5) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank())
+          axis.title = element_blank()) +
+    facet_wrap(~ symptoms)
 
-
-jaundice
-coughing
-vomit
-bp
-ap
+yam_plot
+yaf_plot
+oam_plot
+oaf_plot
