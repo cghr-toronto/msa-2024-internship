@@ -1,5 +1,5 @@
 source("../src/spatial_agg.R")
-
+source("../experiments/adult_malaria.R")
 
 # Loading packages for being able to manipulate and plot spatial data
 library(sf)
@@ -37,9 +37,9 @@ child <- bind_rows(child_r1_gid, child_r2_gid)
 
 # Created new column for child displaying final ICD-10 code cause of death
 child <- child %>% mutate_all(na_if,"") %>% 
-    mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
-                                     is.na(adj_icd_cod) & !is.na(p1_recon_icd_cod) & !is.na(p2_recon_icd_cod) ~ p1_recon_icd_cod,  # Use p1_recon_icd if adj_icd is NA and both p1_recon_icd and p2_recon_icd are not NA
-                                     is.na(adj_icd_cod) & is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) ~ p1_icd_cod,  # Use p1_icd if both adj_icd and recon_icd are NA
+    mutate(final_icd = case_when(!is.na(adj_icd) ~ adj_icd,  # Use adj_icd if it is not NA
+                                     is.na(adj_icd) & !is.na(p1_recon_icd) & !is.na(p2_recon_icd) ~ p1_recon_icd,  # Use p1_recon_icd if adj_icd is NA and both p1_recon_icd and p2_recon_icd are not NA
+                                     is.na(adj_icd) & is.na(p1_recon_icd) & is.na(p2_recon_icd) ~ p1_icd,  # Use p1_icd if both adj_icd and recon_icd are NA
                                      TRUE ~ NA_character_  # Default case, if none of the above conditions are met
     )
     ) 
@@ -48,7 +48,7 @@ child <- child %>% mutate_all(na_if,"") %>%
 icd <- filter(icd, cghr10_age == "child")
 
 # Assign CGHR-10 title for corresponding record codes
-child <- left_join(child, icd, by = setNames("icd10_code", "final_icd_cod"))
+child <- left_join(child, icd, by = setNames("icd10_code", "final_icd"))
 
 # Convert data type of District ID column
 child$gid_dist <- as.integer(child$gid_dist)
