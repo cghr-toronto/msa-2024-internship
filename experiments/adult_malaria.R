@@ -116,16 +116,16 @@ adult_agg <- spatial_agg(gdf = dist,
 
 # Function for creating rates for aggregated results
 symptom_rate <- function(
-        adult_malaria_agg,
-        adult_agg){
+        malaria_agg,
+        agg){
 
 # Remove geometry from aggregated dataframe
-adult_malaria_without_geometry <- adult_malaria_agg  %>%
+malaria_without_geometry <- malaria_agg  %>%
     as_tibble() %>%
     select(-geometry, -malaria_deaths, -distname)
 
 # Creating spatial symptom count
-result <- adult_malaria_without_geometry %>%
+result <- malaria_without_geometry %>%
     pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
                   names_to = "symptom", # New column to store the symptom names
                   values_to = "count" # New column to store the counts
@@ -139,10 +139,10 @@ result <- adult_malaria_without_geometry %>%
 
 # Join geometry to new spatial table
 spatial <- result %>%
-    left_join(adult_malaria_agg %>% select(gid, geometry, malaria_deaths, distname), by = "gid")
+    left_join(malaria_agg %>% select(gid, geometry, malaria_deaths, distname), by = "gid")
 
 # Add all deaths to malaria table
-spatial$all_deaths <- adult_agg$all_deaths
+spatial$all_deaths <- agg$all_deaths
 
 # Create rate columns for malaria symptoms
 spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$all_deaths) * 1000 
@@ -177,16 +177,15 @@ return(out)
 
 }
 
-
 # Running symptom_rate for each age group
-yam_symptom <- symptom_rate(adult_malaria_agg = young_male_adult_malaria,
-                            adult_agg = adult_agg)
-yaf_symptom <- symptom_rate(adult_malaria_agg = young_female_adult_malaria,
-                            adult_agg = adult_agg)
-oam_symptom <- symptom_rate(adult_malaria_agg = older_male_adult_malaria,
-                            adult_agg = adult_agg)
-oaf_symptom <- symptom_rate(adult_malaria_agg = older_female_adult_malaria,
-                            adult_agg = adult_agg)
+yam_symptom <- symptom_rate(malaria_agg = young_male_adult_malaria,
+                            agg = adult_agg)
+yaf_symptom <- symptom_rate(malaria_agg = young_female_adult_malaria,
+                            agg = adult_agg)
+oam_symptom <- symptom_rate(malaria_agg = older_male_adult_malaria,
+                            agg = adult_agg)
+oaf_symptom <- symptom_rate(malaria_agg = older_female_adult_malaria,
+                            agg = adult_agg)
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
