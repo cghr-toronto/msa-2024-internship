@@ -182,6 +182,18 @@ spatial_agg <- function(
     group_gdf <- join_gdf %>%
         group_by(.data[[gdf_id]])
     
+    # Remove geometry if exists
+    if ("geometry" %in% colnames(group_gdf)) {
+        group_gdf <- group_gdf %>%
+            as_tibble %>%
+            select(-geometry)
+    }
+    
+    # Determine missing ids for zero counts
+    gdf_id_uniq <- unique(gdf[[gdf_id]])
+    agg_id_uniq <- unique(agg[[agg_id]])
+    gdf_nin_agg <- gdf_id_uniq[!gdf_id_uniq %in% agg_id_uniq]
+    
     # Perform aggregation for columns based on mapping
     agg_list <- list()
     for (func_name in func_avail) {
@@ -198,7 +210,7 @@ spatial_agg <- function(
             # Apply unique counts for each gdf object and pivot to columns
             agg_list[[func_name]] <- lapply(
                 agg_cols,
-                function (x)
+                function (x) {
                     group_gdf %>%
                     mutate(!!x := na_if(.data[[x]], "")) %>%
                     count(.data[[x]]) %>%
@@ -206,12 +218,19 @@ spatial_agg <- function(
                         names_from = x,
                         values_from = n
                     ) %>%
-                    rename_with(
+                    rename_with( # rename as <col-name>_<unique-val>
                         .fn = ~ paste0(x, "_", .),
                         .cols = -all_of(gdf_id)
                     )
+                }) %>%
+                reduce(left_join, by = gdf_id) %>%
+                ungroup %>%
+                add_row(
+                    !!gdf_id := gdf_nin_agg
                 ) %>%
-                reduce(left_join, by = gdf_id)
+                mutate( # replace NAs with 0 counts
+                    across(-all_of(gdf_id), ~replace_na(., 0))
+                )
             
         } else {
             
@@ -221,7 +240,8 @@ spatial_agg <- function(
             # Apply other functions
             agg_list[[func_name]] <- group_gdf %>%
                 summarise_at(agg_cols, func) %>%
-                filter(!is.na(.data[[gdf_id]]))
+                filter(!is.na(.data[[gdf_id]])) %>%
+                ungroup
         }
         
         # Rename aggregation results columns
@@ -238,11 +258,15 @@ spatial_agg <- function(
     # Count the number of rows joined to each object in gdf
     if (has_count) {
         out <- out %>% left_join(
-            join_gdf %>%
-                group_by(.data[[gdf_id]]) %>%
+            join_gdf %>% group_by(.data[[gdf_id]]) %>%
             summarise(!!count_col := n()),
             by = gdf_id
-        )
+        ) %>%
+            ungroup %>%
+            mutate( # replace NA counts as 0
+                !!count_col := replace_na(.data[[count_col]], 0)
+            )
+            
     }
     
     # Join agg results back to gdf objects
