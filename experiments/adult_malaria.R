@@ -49,9 +49,6 @@ icd <- filter(icd, cghr10_age == "adult")
 # Assign CGHR-10 title for corresponding record codes
 adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod"))
 
-# Convert data type of District ID column
-adult$gid_dist <- as.integer(adult$gid_dist)
-
 # Creating age ranges for adults
 young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
@@ -77,40 +74,40 @@ mapping <- data.frame(
 young_male_adult_malaria <- spatial_agg(gdf = dist,
                                  agg = young_male_adult,
                                  mapping = mapping,
-                                 gdf_id = "gid", 
-                                 agg_id = "gid_dist",
+                                 gdf_id = "distname", 
+                                 agg_id = "district_cod",
                                  is_spatial_join = FALSE,
                                  count_col = "malaria_deaths")
 
 young_female_adult_malaria <- spatial_agg(gdf = dist,
                                         agg = young_female_adult,
                                         mapping = mapping,
-                                        gdf_id = "gid", 
-                                        agg_id = "gid_dist",
+                                        gdf_id = "distname", 
+                                        agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "malaria_deaths")
 
 older_male_adult_malaria <- spatial_agg(gdf = dist,
                                         agg = older_male_adult,
                                         mapping = mapping,
-                                        gdf_id = "gid", 
-                                        agg_id = "gid_dist",
+                                        gdf_id = "distname", 
+                                        agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "malaria_deaths")
 
 older_female_adult_malaria <- spatial_agg(gdf = dist,
                                         agg = older_female_adult,
                                         mapping = mapping,
-                                        gdf_id = "gid", 
-                                        agg_id = "gid_dist",
+                                        gdf_id = "distname", 
+                                        agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "malaria_deaths")
 
 adult_agg <- spatial_agg(gdf = dist,
                          agg = adult,
                          mapping = mapping,
-                         gdf_id = "gid", 
-                         agg_id = "gid_dist",
+                         gdf_id = "distname", 
+                         agg_id = "district_cod",
                          is_spatial_join = FALSE,
                          count_col = "all_deaths")
 
