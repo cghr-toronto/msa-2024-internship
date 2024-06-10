@@ -211,7 +211,8 @@ spatial_agg <- function(
                         .cols = -all_of(gdf_id)
                     )
                 ) %>%
-                reduce(left_join, by = gdf_id)
+                reduce(left_join, by = gdf_id) %>%
+                mutate(across(-all_of(gdf_id), ~ replace_na(., 0)))
             
         } else {
             
