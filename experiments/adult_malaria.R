@@ -31,8 +31,87 @@ icd <- st_read("../tmp/data/icd10_cghr10_v1.csv")
 adult_r1_gid <- left_join(adult_r1, gid_r1, by = "geoid")
 adult_r2_gid <- left_join(adult_r2, gid_r2, by = "geoid")
 
+
+
+# Find matching columns
+same_cols <- colnames(adult_r2_gid)
+same_cols <- same_cols[same_cols %in% colnames(adult_r1_gid)]
+
+# Ensure both data have same columns
+adult_r1_gid <- adult_r1_gid %>% select(all_of(same_cols))
+adult_r2_gid <- adult_r2_gid %>% select(all_of(same_cols))
+
+adult_r1_gid <- adult_r1_gid %>% mutate(endtime = as.character(endtime))
+
 # Combine r1 and r2 adult data
 adult <- bind_rows(adult_r1_gid, adult_r2_gid)
+
+# Get unique district names
+uniq_dname <- unique(dist$distname)
+uniq_dcod <- unique(adult$district_cod)
+
+# See distname and district_cod
+cat(
+    "Before Fix\n----------\n\ndistname:\n",
+    paste0(uniq_dname, collapse = "\n "),
+    "\n\ndistrict_cod:\n",
+    paste0(uniq_dcod, collapse = "\n "),
+    "\n\n"
+)
+
+# Find all distname not in district_cod
+dname_nin_dcod <- uniq_dname[!uniq_dname %in% uniq_dcod]
+
+# Find all district_cod not in distname
+dcod_nin_dname <- uniq_dcod[!uniq_dcod %in% uniq_dname]
+
+# See conflicting distname and district_cod
+cat(
+    "\nBefore Fix\n----------\n\ndistname not in district_cod:\n",
+    paste0(dname_nin_dcod, collapse = "\n "),
+    "\n\ndistrict_cod not in distname:\n",
+    paste0(dcod_nin_dname, collapse = "\n "),
+    "\n"
+)
+
+# Match conflicts (EDIT AS NEEDED)
+# Probably a good idea to place this before joining by distname
+# THIS CODE IS PLACED IN YOUR MAIN CODE FILE TO FIX dist
+dist <- dist %>%
+    mutate(
+        distname = case_when(
+            distname == "Western Area Rur" ~ "Western Area Rural",
+            distname == "Western Area Urb" ~ "Western Area Urban",
+            .default = distname)
+    )
+
+# Get unique district names
+uniq_dname <- unique(dist$distname)
+uniq_dcod <- unique(adult$district_cod)
+
+# See distname and district_cod
+cat(
+    "After Fix\n---------\n\ndistname:\n",
+    paste0(uniq_dname, collapse = "\n "),
+    "\n\ndistrict_cod:\n",
+    paste0(uniq_dcod, collapse = "\n "),
+    "\n"
+)
+
+# Find all distname not in district_cod
+dname_nin_dcod <- uniq_dname[!uniq_dname %in% uniq_dcod]
+
+# Find all district_cod not in distname
+dcod_nin_dname <- uniq_dcod[!uniq_dcod %in% uniq_dname]
+
+# See conflicting distname and district_cod
+cat(
+    "\nAfter Fix\n---------\n\ndistname not in district_cod:\n",
+    paste0(dname_nin_dcod, collapse = "\n "),
+    "\n\ndistrict_cod not in distname:\n",
+    paste0(dcod_nin_dname, collapse = "\n "),
+    "\n"
+)
 
 # Created new column for adult displaying final ICD-10 code cause of death
 adult <- adult %>% mutate_all(na_if,"") %>% 
