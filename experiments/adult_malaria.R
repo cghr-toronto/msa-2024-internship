@@ -31,8 +31,6 @@ icd <- st_read("../tmp/data/icd10_cghr10_v1.csv")
 adult_r1_gid <- left_join(adult_r1, gid_r1, by = "geoid")
 adult_r2_gid <- left_join(adult_r2, gid_r2, by = "geoid")
 
-
-
 # Find matching columns
 same_cols <- colnames(adult_r2_gid)
 same_cols <- same_cols[same_cols %in% colnames(adult_r1_gid)]
@@ -40,8 +38,6 @@ same_cols <- same_cols[same_cols %in% colnames(adult_r1_gid)]
 # Ensure both data have same columns
 adult_r1_gid <- adult_r1_gid %>% select(all_of(same_cols))
 adult_r2_gid <- adult_r2_gid %>% select(all_of(same_cols))
-
-adult_r1_gid <- adult_r1_gid %>% mutate(endtime = as.character(endtime))
 
 # Combine r1 and r2 adult data
 adult <- bind_rows(adult_r1_gid, adult_r2_gid)
