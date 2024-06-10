@@ -113,6 +113,11 @@ cat(
     "\n"
 )
 
+# Corrected district_cod to correct values
+adult <- adult %>%
+    mutate(district_cod = ifelse(gid_dist == 7, "Karene",
+                                 ifelse(gid_dist == 9, "Falaba", district_cod)))
+
 # Created new column for adult displaying final ICD-10 code cause of death
 adult <- adult %>% mutate_all(na_if,"") %>% 
     mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
