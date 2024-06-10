@@ -182,6 +182,18 @@ spatial_agg <- function(
     group_gdf <- join_gdf %>%
         group_by(.data[[gdf_id]])
     
+    # Remove geometry if exists
+    if ("geometry" %in% colnames(group_gdf)) {
+        group_gdf <- group_gdf %>%
+            as_tibble %>%
+            select(-geometry)
+    }
+    
+    # Determine missing ids for zero counts
+    gdf_id_uniq <- unique(gdf[[gdf_id]])
+    agg_id_uniq <- unique(agg[[agg_id]])
+    gdf_nin_agg <- gdf_id_uniq[!gdf_id_uniq %in% agg_id_uniq]
+    
     # Perform aggregation for columns based on mapping
     agg_list <- list()
     for (func_name in func_avail) {
@@ -198,7 +210,7 @@ spatial_agg <- function(
             # Apply unique counts for each gdf object and pivot to columns
             agg_list[[func_name]] <- lapply(
                 agg_cols,
-                function (x)
+                function (x) {
                     group_gdf %>%
                     mutate(!!x := na_if(.data[[x]], "")) %>%
                     count(.data[[x]]) %>%
@@ -206,13 +218,19 @@ spatial_agg <- function(
                         names_from = x,
                         values_from = n
                     ) %>%
-                    rename_with(
+                    rename_with( # rename as <col-name>_<unique-val>
                         .fn = ~ paste0(x, "_", .),
                         .cols = -all_of(gdf_id)
                     )
-                ) %>%
+                }) %>%
                 reduce(left_join, by = gdf_id) %>%
-                mutate(across(-all_of(gdf_id), ~ replace_na(., 0)))
+                ungroup %>%
+                add_row(
+                    !!gdf_id := gdf_nin_agg
+                ) %>%
+                mutate( # replace NAs with 0 counts
+                    across(-all_of(gdf_id), ~replace_na(., 0))
+                )
             
         } else {
             
@@ -222,7 +240,8 @@ spatial_agg <- function(
             # Apply other functions
             agg_list[[func_name]] <- group_gdf %>%
                 summarise_at(agg_cols, func) %>%
-                filter(!is.na(.data[[gdf_id]]))
+                filter(!is.na(.data[[gdf_id]])) %>%
+                ungroup
         }
         
         # Rename aggregation results columns
@@ -239,14 +258,97 @@ spatial_agg <- function(
     # Count the number of rows joined to each object in gdf
     if (has_count) {
         out <- out %>% left_join(
-            join_gdf %>%
-                group_by(.data[[gdf_id]]) %>%
+            join_gdf %>% group_by(.data[[gdf_id]]) %>%
             summarise(!!count_col := n()),
             by = gdf_id
-        )
+        ) %>%
+            ungroup %>%
+            mutate( # replace NA counts as 0
+                !!count_col := replace_na(.data[[count_col]], 0)
+            )
+            
     }
     
     # Join agg results back to gdf objects
     out <- left_join(gdf, out, by = gdf_id)
     return(out)
 }
+
+# Loading packages for being able to manipulate and plot spatial data
+library(sf)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(stringr)
+library(lubridate)
+library(ggspatial)
+library(tmap)
+library(prettymapr)
+
+## Read data
+# Reading in Adult Round 1 and Round 2 data
+adult_r1 <- st_read("../tmp/data/healsl_rd1_adult_v1.csv")
+adult_r2 <- st_read("../tmp/data/healsl_rd2_adult_v1.csv")
+
+# Reading District Boundary file
+dist <- st_read("../tmp/data/sl_dist_17_v2.geojson")
+
+# Reading in GID r1 and r2 boundary file
+gid_r1 <- st_read("../tmp/data/sl_rd1_gid_v1.csv")
+gid_r2 <- st_read("../tmp/data/sl_rd2_gid_v1.csv")
+
+# Reading in ICD-10 code file
+icd <- st_read("../tmp/data/icd10_cghr10_v1.csv")
+
+# Join Adult datasets with GID files
+adult_r1_gid <- left_join(adult_r1, gid_r1, by = "geoid")
+adult_r2_gid <- left_join(adult_r2, gid_r2, by = "geoid")
+
+# Combine r1 and r2 adult data
+adult <- bind_rows(adult_r1_gid, adult_r2_gid)
+
+# Created new column for adult displaying final ICD-10 code cause of death
+adult <- adult %>% mutate_all(na_if,"") %>% 
+    mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
+                                     is.na(adj_icd_cod) & !is.na(p1_recon_icd_cod) & !is.na(p2_recon_icd_cod) ~ p1_recon_icd_cod,  # Use p1_recon_icd if adj_icd is NA and both p1_recon_icd and p2_recon_icd are not NA
+                                     is.na(adj_icd_cod) & is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) ~ p1_icd_cod,  # Use p1_icd if both adj_icd and recon_icd are NA
+                                     TRUE ~ NA_character_  # Default case, if none of the above conditions are met
+    )
+    ) 
+
+# Remove neonatal and child records from ICD codes
+icd <- filter(icd, cghr10_age == "adult")
+
+# Assign CGHR-10 title for corresponding record codes
+adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod"))
+
+# Creating age ranges for adults
+young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
+older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
+
+# Creating filters for young adults by sex, age, and malaria
+young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
+young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
+
+# Creating filters for older adults by sex, age, and malaria
+older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
+older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
+
+# Dataframe without malaria deaths
+adult_non_malaria <- adult %>% filter(cghr10_title != "Malaria")
+
+# Set mapping dataframe
+mapping <- data.frame(
+    column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9", "symp10"),
+    can_aggregate = c("count", "count", "count", "count", "count", "count", "count", "count", "count", "count") 
+)
+
+# Testing out function with adult malaria
+young_male_adult_malaria <- spatial_agg(gdf = dist,
+                                        agg = young_male_adult,
+                                        mapping = mapping,
+                                        gdf_id = "distname", 
+                                        agg_id = "district_cod",
+                                        is_spatial_join = FALSE,
+                                        count_col = "malaria_deaths")
