@@ -39,6 +39,17 @@ same_cols <- same_cols[same_cols %in% colnames(adult_r1_gid)]
 adult_r1_gid <- adult_r1_gid %>% select(all_of(same_cols))
 adult_r2_gid <- adult_r2_gid %>% select(all_of(same_cols))
 
+# # Fix conflicting date type columns in round 1 and round 2 adult
+# adult_r1_gid <- adult_r1_gid %>%
+#     mutate(across(
+#         .cols = starts_with("time") | ends_with("time") | ends_with("date"),
+#         .fns = ~ na_if(., "")
+#     )) %>% 
+#     mutate(across(
+#         .cols = starts_with("time") | ends_with("time") | ends_with("date"),
+#         .fns = ~ ymd(.)
+#     ))
+
 # Combine r1 and r2 adult data
 adult <- bind_rows(adult_r1_gid, adult_r2_gid)
 
