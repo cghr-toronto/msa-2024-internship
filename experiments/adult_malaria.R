@@ -157,8 +157,10 @@ adult_non_malaria <- adult %>% filter(cghr10_title != "Malaria")
 
 # Set mapping dataframe
 mapping <- data.frame(
-    column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9", "symp10"),
-    can_aggregate = c("count", "count", "count", "count", "count", "count", "count", "count", "count", "count") 
+    column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9", "symp10", "symp11", 
+               "symp12", "symp13", "symp14"),
+    can_aggregate = c("count", "count", "count", "count", "count", "count", "count", "count", "count", "count", "count", 
+                      "count", "count", "count") 
 )
 
 # Testing out function with adult malaria
