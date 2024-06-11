@@ -161,7 +161,7 @@ cf_symptom <- symptom_rate(malaria_agg = female_child_malaria,
                             agg = child_agg)
 
 # Creating non-spatial table of symptom and causes of death
-non_spatial <- pivot_longer(child, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
+non_spatial_children <- pivot_longer(child, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
                             names_to = "symptom", # New column to store the symptom names
                             values_to = "value" # New column to store the counts
 ) %>% group_by(cghr10_title, value) %>%
@@ -184,14 +184,16 @@ cm_plot <- ggplot(cm_symptom) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Male Child Malaria Symptoms") +
+    ggtitle("Male Child Malaria Symptoms") +
     geom_sf_label(aes(label = rates), size = 2.5) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank()) +
+          axis.title = element_blank(),
+          plot.title = element_text(hjust = 0.5),
+          legend.position = "top") +
     facet_wrap(~ symptoms)
 
 cf_plot <- ggplot(cf_symptom) +
@@ -200,14 +202,16 @@ cf_plot <- ggplot(cf_symptom) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Female Child Malaria Symptoms")+
-    geom_sf_label(aes(label = rates), size = 2.5) +
+    ggtitle("Female Child Malaria Symptoms") +
+    geom_sf_label(aes(label = rates), size = 2.0) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank()) +
+          axis.title = element_blank(),
+          plot.title = element_text(hjust = 0.5),
+          legend.position = "top") +
     facet_wrap(~ symptoms)
 
 cm_plot

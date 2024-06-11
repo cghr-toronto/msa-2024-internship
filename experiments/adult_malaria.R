@@ -292,7 +292,7 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
 
 # Creating count for deaths per cause in non-spatial
 death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
-non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
+non_spatial_adult <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
 # Creating maps for each age group
 yam_plot <- ggplot(yam_symptom) +
@@ -301,14 +301,16 @@ yam_plot <- ggplot(yam_symptom) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Young Male Adult Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 2.5) +
+    ggtitle("Young Male Adult Malaria Symptoms") +
+    geom_sf_label(aes(label = rates), size = 2.0) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank()) +
+          axis.title = element_blank(),
+          plot.title = element_text(hjust = 0.5),
+          legend.position = "top") +
     facet_wrap(~ symptoms)
 
 yaf_plot <- ggplot(yaf_symptom) +
@@ -317,14 +319,16 @@ yaf_plot <- ggplot(yaf_symptom) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Young Female Adult Malaria Symptoms")+
-    geom_sf_label(aes(label = rates), size = 2.5) +
+    ggtitle("Young Female Adult Malaria Symptoms") +
+    geom_sf_label(aes(label = rates), size = 2.0) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank()) +
+          axis.title = element_blank(),
+          plot.title = element_text(hjust = 0.5),
+          legend.position = "top") +
     facet_wrap(~ symptoms)
 
 
@@ -334,14 +338,16 @@ oam_plot <- ggplot(oam_symptom) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Older Male Adult Malaria Symptoms")+
-    geom_sf_label(aes(label = rates), size = 2.5) +
+    ggtitle("Older Male Adult Malaria Symptoms") +
+    geom_sf_label(aes(label = rates), size = 2.0) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank()) +
+          axis.title = element_blank(),
+          plot.title = element_text(hjust = 0.5),
+          legend.position = "top") +
     facet_wrap(~ symptoms)
 
 
@@ -351,14 +357,16 @@ oaf_plot <- ggplot(oaf_symptom) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    labs(title = "Older Female Adult Malaria Symptoms")+
-    geom_sf_label(aes(label = rates), size = 2.5) +
+    ggtitle("Older Female Adult Malaria Symptoms") +
+    geom_sf_label(aes(label = rates), size = 2.0) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
-          axis.title = element_blank()) +
+          axis.title = element_blank(),
+          plot.title = element_text(hjust = 0.5),
+          legend.position = "top") +
     facet_wrap(~ symptoms)
 
 yam_plot
