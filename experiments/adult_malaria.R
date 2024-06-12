@@ -123,7 +123,28 @@ cat(
 # Corrected district_cod to correct values
 adult <- adult %>%
     mutate(district_cod = ifelse(gid_dist == 7, "Karene",
-                                 ifelse(gid_dist == 9, "Falaba", district_cod)))
+                                 ifelse(gid_dist == 9, "Falaba", district_cod))) %>%
+    mutate(district_cod = ifelse(is.na(district_cod) | district_cod == "",
+                                 case_when(
+                                     gid_dist == 1 ~ "Kailahun",
+                                     gid_dist == 2 ~ "Kenema",
+                                     gid_dist == 3 ~ "Bombali",
+                                     gid_dist == 4 ~ "Kono",
+                                     gid_dist == 5 ~ "Tonkolili",
+                                     gid_dist == 6 ~ "Bo",
+                                     gid_dist == 7 ~ "Karene",
+                                     gid_dist == 8 ~ "Kambia",
+                                     gid_dist == 9 ~ "Falaba",
+                                     gid_dist == 10 ~ "Koinadugu",
+                                     gid_dist == 11 ~ "Port Loko",
+                                     gid_dist == 12 ~ "Bonthe",
+                                     gid_dist == 13 ~ "Pujehun",
+                                     gid_dist == 14 ~ "Moyamba",
+                                     gid_dist == 15 ~ "Western Area Rural",
+                                     gid_dist == 16 ~ "Western Area Urban",
+                                     TRUE ~ district_cod
+                                 ),
+                                 district_cod))
 
 # Created new column for adult displaying final ICD-10 code cause of death
 adult <- adult %>% mutate_all(na_if,"") %>% 
