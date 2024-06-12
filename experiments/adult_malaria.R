@@ -240,6 +240,7 @@ spatial$cough_rate <- (spatial$cough/spatial$all_deaths) * 1000
 spatial$vomit_rate <- (spatial$vomit/spatial$all_deaths) * 1000
 spatial$breathingProblem_rate <- (spatial$breathingProblem/spatial$all_deaths) * 1000
 spatial$abdominalProblem_rate <- (spatial$abdominalProblem/spatial$all_deaths) * 1000
+spatial$fever_rate <- (spatial$fever/spatial$all_deaths) * 1000
 
 # Round to 2 decimal places
 spatial <- spatial %>% mutate(yellowEyes_rate = round(yellowEyes_rate, 2))
@@ -247,6 +248,7 @@ spatial <- spatial %>% mutate(cough_rate = round(cough_rate, 2))
 spatial <- spatial %>% mutate(vomit_rate = round(vomit_rate, 2))
 spatial <- spatial %>% mutate(breathingProblem_rate = round(breathingProblem_rate, 2))
 spatial <- spatial %>% mutate(abdominalProblem_rate = round(abdominalProblem_rate, 2))
+spatial <- spatial %>% mutate(fever_rate = round(fever_rate, 2))
 
 # Print the wide format
 cat("\nWide format:\n")
