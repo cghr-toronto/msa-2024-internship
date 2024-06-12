@@ -325,7 +325,7 @@ yam_plot <- ggplot(yam_symptom) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     ggtitle("Young Male Adult Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 1.5) +
+    geom_sf_label(aes(label = rates), size = 1.2) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
@@ -343,7 +343,7 @@ yaf_plot <- ggplot(yaf_symptom) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     ggtitle("Young Female Adult Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 1.5) +
+    geom_sf_label(aes(label = rates), size = 1.2) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
@@ -362,7 +362,7 @@ oam_plot <- ggplot(oam_symptom) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     ggtitle("Older Male Adult Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 1.5) +
+    geom_sf_label(aes(label = rates), size = 1.2) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
@@ -381,7 +381,7 @@ oaf_plot <- ggplot(oaf_symptom) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     ggtitle("Older Female Adult Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 1.5) +
+    geom_sf_label(aes(label = rates), size = 1.2) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
