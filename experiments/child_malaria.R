@@ -278,7 +278,7 @@ cm_plot <- ggplot(cm_symptom) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     ggtitle("Male Child Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 2.5) +
+    geom_sf_label(aes(label = rates), size = 1.5) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
@@ -296,7 +296,7 @@ cf_plot <- ggplot(cf_symptom) +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     ggtitle("Female Child Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 2.0) +
+    geom_sf_label(aes(label = rates), size = 1.5) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
