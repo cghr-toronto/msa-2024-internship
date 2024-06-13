@@ -271,6 +271,8 @@ non_spatial_children <- pivot_longer(child, cols = starts_with("symp"), # Matche
 death_count <- child %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
+colnames(non_spatial_children)[colnames(non_spatial_children) == "cghr10_title"] <- "cause_of_death"
+
 # Creating maps for each age group
 cm_plot <- create_plots(yam_symptom, plot_title = "CM")
 cf_plot <- create_plots(yaf_symptom, plot_title = "CF")

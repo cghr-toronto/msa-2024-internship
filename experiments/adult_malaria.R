@@ -318,6 +318,8 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
 death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial_adult <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
+colnames(non_spatial_adult)[colnames(non_spatial_adult) == "cghr10_title"] <- "cause_of_death"
+
 # Creating mappping parameters
 create_map <- function(data, symptom, plot_title) {
     filtered_data <- data %>% filter(symptoms == symptom)
@@ -380,3 +382,5 @@ yam_pdf <- pdf_print(yam_plot, "Young Adult Male Malaria Symptoms")
 yaf_pdf <- pdf_print(yaf_plot, "Young Adult Female Malaria Symptoms")
 oam_pdf <- pdf_print(oam_plot, "Older Adult Male Malaria Symptoms")
 oaf_pdf <- pdf_print(oaf_plot, "Older Adult Female Malaria Symptoms")
+
+heat <- pivot_longer(non_spatial_adult, cols = -select(""))
