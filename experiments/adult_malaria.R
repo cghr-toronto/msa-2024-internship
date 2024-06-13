@@ -60,11 +60,11 @@ uniq_dcod <- unique(adult$district_cod)
 
 # See distname and district_cod
 cat(
-    "Before Fix\n----------\n\ndistname:\n",
-    paste0(uniq_dname, collapse = "\n "),
-    "\n\ndistrict_cod:\n",
-    paste0(uniq_dcod, collapse = "\n "),
-    "\n\n"
+    "Before Fix/n----------/n/ndistname:/n",
+    paste0(uniq_dname, collapse = "/n "),
+    "/n/ndistrict_cod:/n",
+    paste0(uniq_dcod, collapse = "/n "),
+    "/n/n"
 )
 
 # Find all distname not in district_cod
@@ -75,11 +75,11 @@ dcod_nin_dname <- uniq_dcod[!uniq_dcod %in% uniq_dname]
 
 # See conflicting distname and district_cod
 cat(
-    "\nBefore Fix\n----------\n\ndistname not in district_cod:\n",
-    paste0(dname_nin_dcod, collapse = "\n "),
-    "\n\ndistrict_cod not in distname:\n",
-    paste0(dcod_nin_dname, collapse = "\n "),
-    "\n"
+    "/nBefore Fix/n----------/n/ndistname not in district_cod:/n",
+    paste0(dname_nin_dcod, collapse = "/n "),
+    "/n/ndistrict_cod not in distname:/n",
+    paste0(dcod_nin_dname, collapse = "/n "),
+    "/n"
 )
 
 # Match conflicts (EDIT AS NEEDED)
@@ -99,11 +99,11 @@ uniq_dcod <- unique(adult$district_cod)
 
 # See distname and district_cod
 cat(
-    "After Fix\n---------\n\ndistname:\n",
-    paste0(uniq_dname, collapse = "\n "),
-    "\n\ndistrict_cod:\n",
-    paste0(uniq_dcod, collapse = "\n "),
-    "\n"
+    "After Fix/n---------/n/ndistname:/n",
+    paste0(uniq_dname, collapse = "/n "),
+    "/n/ndistrict_cod:/n",
+    paste0(uniq_dcod, collapse = "/n "),
+    "/n"
 )
 
 # Find all distname not in district_cod
@@ -114,11 +114,11 @@ dcod_nin_dname <- uniq_dcod[!uniq_dcod %in% uniq_dname]
 
 # See conflicting distname and district_cod
 cat(
-    "\nAfter Fix\n---------\n\ndistname not in district_cod:\n",
-    paste0(dname_nin_dcod, collapse = "\n "),
-    "\n\ndistrict_cod not in distname:\n",
-    paste0(dcod_nin_dname, collapse = "\n "),
-    "\n"
+    "/nAfter Fix/n---------/n/ndistname not in district_cod:/n",
+    paste0(dname_nin_dcod, collapse = "/n "),
+    "/n/ndistrict_cod not in distname:/n",
+    paste0(dcod_nin_dname, collapse = "/n "),
+    "/n"
 )
 
 # Corrected district_cod to correct values
@@ -238,10 +238,10 @@ malaria_without_geometry <- malaria_agg  %>%
 
 # Creating spatial symptom count
 result <- malaria_without_geometry %>%
-    pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
+    pivot_longer( cols = matches("^symp//d+_"), # Matches columns starting with "symp" followed by dig
                   names_to = "symptom", # New column to store the symptom names
                   values_to = "count" # New column to store the counts
-    ) %>% mutate(symptom = gsub("^symp\\d+_|_count$","", symptom)) %>% # Remove prefix and suff
+    ) %>% mutate(symptom = gsub("^symp//d+_|_count$","", symptom)) %>% # Remove prefix and suff
     group_by(gid, symptom) %>% # Group by gid and sympt
     summarize(total_count = sum(count) # Summarize the counts f
     ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
@@ -273,7 +273,7 @@ spatial <- spatial %>% mutate(abdominalProblem_rate = round(abdominalProblem_rat
 spatial <- spatial %>% mutate(fever_rate = round(fever_rate, 2))
 
 # Print the wide format
-cat("\nWide format:\n")
+cat("/nWide format:/n")
 print(spatial)
 
 # Convert spatial to an sf and reproject crs
@@ -320,14 +320,15 @@ non_spatial_adult <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
 # Creating maps for each age group
 create_map <- function(data, symptom) {
-    ggplot(data = filter(data, symptom == !!symptom)) +
+    filtered_data <- data %>% filter(symptoms == symptom)
+    ggplot(data = filtered_data) +
     geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
     ggtitle(symptom) +
-    geom_sf_label(aes(label = rates), size = 1.2) +
+    geom_sf_label(aes(label = rates), size = 1.8) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
           panel.grid.minor = element_blank(),
@@ -337,69 +338,22 @@ create_map <- function(data, symptom) {
           plot.title = element_text(hjust = 0.5))
     }
 
-symptoms <- unique(yam_symptom$symptoms)
 
-plots <- lapply(symptoms, create_map, data = yam_symptom)
+create_plots <- function(group_symptoms) {
 
-combined_plot <- wrap_plots(plots)
+symptoms <- unique(group_symptoms$symptoms)
 
-combined_plot
+plots <- lapply(symptoms, create_map, data = group_symptoms)
 
-yaf_plot <- ggplot(yaf_symptom) +
-    geom_sf(aes(fill=(rates))) +
-    guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
-    scale_fill_continuous(low="lightblue", high="darkblue") +
-    annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
-    annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    ggtitle("Young Female Adult Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 1.2) +
-    theme_minimal() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          axis.text = element_blank(), 
-          axis.ticks = element_blank(), 
-          axis.title = element_blank(),
-          plot.title = element_text(hjust = 0.5),
-          legend.position = "top") +
-    facet_wrap(~ symptoms)
+combined_plot <- wrap_plots(plots) 
 
+return(combined_plot)
+}
 
-oam_plot <- ggplot(oam_symptom) +
-    geom_sf(aes(fill=(rates))) +
-    guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
-    scale_fill_continuous(low="lightblue", high="darkblue") +
-    annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
-    annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    ggtitle("Older Male Adult Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 1.2) +
-    theme_minimal() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          axis.text = element_blank(), 
-          axis.ticks = element_blank(), 
-          axis.title = element_blank(),
-          plot.title = element_text(hjust = 0.5),
-          legend.position = "top") +
-    facet_wrap(~ symptoms)
-
-
-oaf_plot <- ggplot(oaf_symptom) +
-    geom_sf(aes(fill=(rates))) +
-    guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
-    scale_fill_continuous(low="lightblue", high="darkblue") +
-    annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
-    annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    ggtitle("Older Female Adult Malaria Symptoms") +
-    geom_sf_label(aes(label = rates), size = 1.2) +
-    theme_minimal() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          axis.text = element_blank(), 
-          axis.ticks = element_blank(), 
-          axis.title = element_blank(),
-          plot.title = element_text(hjust = 0.5),
-          legend.position = "top") +
-    facet_wrap(~ symptoms)
+yam_plot <- create_plots(yam_symptom)
+yaf_plot <- create_plots(yaf_symptom)
+oam_plot <- create_plots(oam_symptom)
+oaf_plot <- create_plots(oaf_symptom)
 
 yam_plot
 yaf_plot
