@@ -11,6 +11,7 @@ library(lubridate)
 library(ggspatial)
 library(tmap)
 library(prettymapr)
+library(patchwork)
 
 ## Read data
 # Reading in Adult Round 1 and Round 2 data
@@ -318,13 +319,14 @@ death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial_adult <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
 # Creating maps for each age group
-yam_plot <- ggplot(yam_symptom) +
+create_map <- function(data, symptom) {
+    ggplot(data = filter(data, symptom == !!symptom)) +
     geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    ggtitle("Young Male Adult Malaria Symptoms") +
+    ggtitle(symptom) +
     geom_sf_label(aes(label = rates), size = 1.2) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
@@ -332,9 +334,16 @@ yam_plot <- ggplot(yam_symptom) +
           axis.text = element_blank(), 
           axis.ticks = element_blank(), 
           axis.title = element_blank(),
-          plot.title = element_text(hjust = 0.5),
-          legend.position = "top") +
-    facet_wrap(~ symptoms)
+          plot.title = element_text(hjust = 0.5))
+    }
+
+symptoms <- unique(yam_symptom$symptoms)
+
+plots <- lapply(symptoms, create_map, data = yam_symptom)
+
+combined_plot <- wrap_plots(plots)
+
+combined_plot
 
 yaf_plot <- ggplot(yaf_symptom) +
     geom_sf(aes(fill=(rates))) +
