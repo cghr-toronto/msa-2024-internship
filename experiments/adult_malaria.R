@@ -319,7 +319,7 @@ death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial_adult <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
 # Creating maps for each age group
-create_map <- function(data, symptom) {
+create_map <- function(data, symptom, plot_title) {
     filtered_data <- data %>% filter(symptoms == symptom)
     ggplot(data = filtered_data) +
     geom_sf(aes(fill=(rates))) +
@@ -327,7 +327,7 @@ create_map <- function(data, symptom) {
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    ggtitle(symptom) +
+    ggtitle(paste(plot_title, symptom, sep = "_")) +
     geom_sf_label(aes(label = rates), size = 1.8) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
@@ -336,23 +336,23 @@ create_map <- function(data, symptom) {
           axis.ticks = element_blank(), 
           axis.title = element_blank(),
           plot.title = element_text(hjust = 0.5))
-    }
+}
 
-create_plots <- function(group_symptoms) {
+create_plots <- function(group_symptoms, plot_title) {
     
     symptoms <- unique(group_symptoms$symptoms)
     
-    plots <- lapply(symptoms, create_map, data = group_symptoms)
+    plots <- lapply(symptoms, create_map, data = group_symptoms, plot_title)
     
     combined_plot <- wrap_plots(plots) 
     
     return(combined_plot)
 }
 
-yam_plot <- create_plots(yam_symptom)
-yaf_plot <- create_plots(yaf_symptom)
-oam_plot <- create_plots(oam_symptom)
-oaf_plot <- create_plots(oaf_symptom)
+yam_plot <- create_plots(yam_symptom, plot_title = "YAM")
+yaf_plot <- create_plots(yaf_symptom, plot_title = "YAF")
+oam_plot <- create_plots(oam_symptom, plot_title = "OAM")
+oaf_plot <- create_plots(oaf_symptom, plot_title = "OAF")
 
 yam_plot
 yaf_plot
