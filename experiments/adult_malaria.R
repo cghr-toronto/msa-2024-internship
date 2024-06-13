@@ -318,7 +318,7 @@ non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns
 death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial_adult <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
-# Creating maps for each age group
+# Creating mappping parameters
 create_map <- function(data, symptom, plot_title) {
     filtered_data <- data %>% filter(symptoms == symptom)
     ggplot(data = filtered_data) +
@@ -338,6 +338,7 @@ create_map <- function(data, symptom, plot_title) {
           plot.title = element_text(hjust = 0.5))
 }
 
+# Creating grouped plots parameters
 create_plots <- function(group_symptoms, plot_title) {
     
     symptoms <- unique(group_symptoms$symptoms)
@@ -349,12 +350,33 @@ create_plots <- function(group_symptoms, plot_title) {
     return(combined_plot)
 }
 
+# Creating plot series for each age group
 yam_plot <- create_plots(yam_symptom, plot_title = "YAM")
 yaf_plot <- create_plots(yaf_symptom, plot_title = "YAF")
 oam_plot <- create_plots(oam_symptom, plot_title = "OAM")
 oaf_plot <- create_plots(oaf_symptom, plot_title = "OAF")
 
+# Printing each plot series
 yam_plot
 yaf_plot
 oam_plot
 oaf_plot
+
+# Creating PDF export parameters
+pdf_print <- function(plot, title){
+    
+    output_dir <- "C:/Users/dante/OneDrive/Documents/MRP/Malaria age_sex maps/"
+    
+    pdf_file <- paste0(output_dir, title, ".pdf")
+    
+    pdf(file = pdf_file, width = 14, height = 8)
+    
+    dev.off()
+    
+}
+
+# Exporting plot series as PDFs
+yam_pdf <- pdf_print(yam_plot, "Young Adult Male Malaria Symptoms")
+yaf_pdf <- pdf_print(yaf_plot, "Young Adult Female Malaria Symptoms")
+oam_pdf <- pdf_print(oam_plot, "Older Adult Male Malaria Symptoms")
+oaf_pdf <- pdf_print(oaf_plot, "Older Adult Female Malaria Symptoms")

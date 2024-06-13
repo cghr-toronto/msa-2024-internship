@@ -1,4 +1,5 @@
 source("../src/spatial_agg.R")
+source("../experiments/adult_malaria.R")
 
 # Loading packages for being able to manipulate and plot spatial data
 library(sf)
@@ -271,38 +272,13 @@ death_count <- child %>% count(cghr10_title, sort = TRUE, name = "deaths")
 non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 
 # Creating maps for each age group
-create_map <- function(data, symptom, plot_title) {
-    filtered_data <- data %>% filter(symptoms == symptom)
-    ggplot(data = filtered_data) +
-        geom_sf(aes(fill=(rates))) +
-        guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
-        scale_fill_continuous(low="lightblue", high="darkblue") +
-        annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
-        annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-        ggtitle(paste(plot_title, symptom, sep = "_")) +
-        geom_sf_label(aes(label = rates), size = 1.8) +
-        theme_minimal() +
-        theme(panel.grid.major = element_blank(), 
-              panel.grid.minor = element_blank(),
-              axis.text = element_blank(), 
-              axis.ticks = element_blank(), 
-              axis.title = element_blank(),
-              plot.title = element_text(hjust = 0.5))
-}
-
-create_plots <- function(group_symptoms, plot_title) {
-    
-    symptoms <- unique(group_symptoms$symptoms)
-    
-    plots <- lapply(symptoms, create_map, data = group_symptoms, plot_title)
-    
-    combined_plot <- wrap_plots(plots) 
-    
-    return(combined_plot)
-}
-
 cm_plot <- create_plots(yam_symptom, plot_title = "CM")
 cf_plot <- create_plots(yaf_symptom, plot_title = "CF")
 
+# Print plots for each map
 cm_plot
 cf_plot
+
+# Export as pdf
+cm_pdf <- pdf_print(cm_plot, "Male Child Malaria Symptoms")
+cf_pdf <- pdf_print(cf_plot, "Female Child Malaria Symptoms")
