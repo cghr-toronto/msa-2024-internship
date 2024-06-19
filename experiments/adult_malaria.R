@@ -383,4 +383,10 @@ yaf_pdf <- pdf_print(yaf_plot, "fig-yaf-malaria-maps")
 oam_pdf <- pdf_print(oam_plot, "fig-oam-malaria-maps")
 oaf_pdf <- pdf_print(oaf_plot, "fig-oaf-malaria-maps")
 
+heat <- pivot_longer(non_spatial_adult, cols = -cause_of_death,
+                     names_to = "symptoms",
+                     values_to = "rates")
 
+ggplot(heat, aes(symptoms, cause_of_death)) +
+    geom_tile(aes(fill = rates)) +
+    geom_text(aes(label = round(rates, 1)))
