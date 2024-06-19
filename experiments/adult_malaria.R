@@ -358,7 +358,7 @@ yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms")
 oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms")
 oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms")
 
-# Printing each plot series
+# Viewing plots for each map series
 yam_plot
 yaf_plot
 oam_plot
@@ -383,6 +383,8 @@ yaf_pdf <- pdf_print(yaf_plot, "fig-yaf-malaria-maps")
 oam_pdf <- pdf_print(oam_plot, "fig-oam-malaria-maps")
 oaf_pdf <- pdf_print(oaf_plot, "fig-oaf-malaria-maps")
 
+
+# Creating heat map with non-spatial table
 heat <- pivot_longer(non_spatial_adult, cols = -cause_of_death,
                      names_to = "symptoms",
                      values_to = "rates") %>%
@@ -394,6 +396,8 @@ heat_map_adult <- ggplot(heat, aes(symptoms, cause_of_death)) +
     scale_fill_gradient(low = "white", high = "red") +
     theme(axis.text.x = element_text(size = 3))
 
+# Viewing plot of heat map
 heat_map_adult
 
+# Exporting heat map as pdf
 hm_adult <- pdf_print(heat_map_adult, "Adult Heatmap")

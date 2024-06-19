@@ -277,7 +277,7 @@ colnames(non_spatial_children)[colnames(non_spatial_children) == "cghr10_title"]
 cm_plot <- create_plots(yam_symptom, plot_title = "Child Male Malaria Symptoms")
 cf_plot <- create_plots(yaf_symptom, plot_title = "Child Female Malaria Symptoms")
 
-# Print plots for each map
+# Viewing plots for each map series
 cm_plot
 cf_plot
 
@@ -293,7 +293,8 @@ heat <- pivot_longer(non_spatial_children, cols = -cause_of_death,
 heat_map_children <- ggplot(heat, aes(symptoms, cause_of_death)) +
     geom_tile(aes(fill = rates)) +
     geom_text(aes(label = round(rates, 1))) +
-    scale_fill_gradient(low = "white", high = "red")
+    scale_fill_gradient(low = "white", high = "red") +
+    theme(axis.text.x = element_text(size = 3))
 
 heat_map_children
 
