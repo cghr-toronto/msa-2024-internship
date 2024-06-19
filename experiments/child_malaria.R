@@ -274,8 +274,8 @@ non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 colnames(non_spatial_children)[colnames(non_spatial_children) == "cghr10_title"] <- "cause_of_death"
 
 # Creating maps for each age group
-cm_plot <- create_plots(yam_symptom, plot_title = "CM")
-cf_plot <- create_plots(yaf_symptom, plot_title = "CF")
+cm_plot <- create_plots(yam_symptom, plot_title = "Child Male Malaria Symptoms")
+cf_plot <- create_plots(yaf_symptom, plot_title = "Child Female Malaria Symptoms")
 
 # Print plots for each map
 cm_plot
@@ -296,3 +296,5 @@ heat_map_children <- ggplot(heat, aes(symptoms, cause_of_death)) +
     scale_fill_gradient(low = "white", high = "red")
 
 heat_map_children
+
+hm_adult <- pdf_print(heat_map_adult, "Child Heatmap")

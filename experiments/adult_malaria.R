@@ -321,7 +321,7 @@ non_spatial_adult <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 colnames(non_spatial_adult)[colnames(non_spatial_adult) == "cghr10_title"] <- "cause_of_death"
 
 # Creating mappping parameters
-create_map <- function(data, symptom, plot_title) {
+create_map <- function(data, symptom) {
     filtered_data <- data %>% filter(symptoms == symptom)
     ggplot(data = filtered_data) +
     geom_sf(aes(fill=(rates))) +
@@ -329,7 +329,7 @@ create_map <- function(data, symptom, plot_title) {
     scale_fill_continuous(low="lightblue", high="darkblue") +
     annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
     annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    ggtitle(paste(plot_title, symptom, sep = "_")) +
+    ggtitle(paste(symptom)) +
     geom_sf_label(aes(label = rates), size = 1.8) +
     theme_minimal() +
     theme(panel.grid.major = element_blank(), 
@@ -345,18 +345,18 @@ create_plots <- function(group_symptoms, plot_title) {
     
     symptoms <- unique(group_symptoms$symptoms)
     
-    plots <- lapply(symptoms, create_map, data = group_symptoms, plot_title)
+    plots <- lapply(symptoms, create_map, data = group_symptoms)
     
-    combined_plot <- wrap_plots(plots) 
+    combined_plot <- wrap_plots(plots) + plot_annotation(title = plot_title)
     
     return(combined_plot)
 }
 
 # Creating plot series for each age group
-yam_plot <- create_plots(yam_symptom, plot_title = "YAM")
-yaf_plot <- create_plots(yaf_symptom, plot_title = "YAF")
-oam_plot <- create_plots(oam_symptom, plot_title = "OAM")
-oaf_plot <- create_plots(oaf_symptom, plot_title = "OAF")
+yam_plot <- create_plots(yam_symptom, "Young Adult Male Malaria Symptoms")
+yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms")
+oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms")
+oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms")
 
 # Printing each plot series
 yam_plot
@@ -396,3 +396,4 @@ heat_map_adult <- ggplot(heat, aes(symptoms, cause_of_death)) +
 
 heat_map_adult
 
+hm_adult <- pdf_print(heat_map_adult, "Adult Heatmap")
