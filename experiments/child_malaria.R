@@ -187,7 +187,8 @@ child_agg <- spatial_agg(gdf = dist,
 child_symptom_rate <- function(
         age_sex_agg,
         all_agg,
-        deaths){
+        deaths,
+        symptoms){
     
     # Remove geometry from aggregated dataframe
     age_sex_without_geometry <- age_sex_agg  %>%
@@ -251,9 +252,11 @@ child_symptom_rate <- function(
 
 # Running symptom_rate for each sex group
 cm_symptom <- child_symptom_rate(age_sex_agg = male_child_malaria,
-                            all_agg = child_agg, deaths = "malaria_deaths")
+                            all_agg = child_agg, deaths = "malaria_deaths",
+                            symptoms = symptoms_to_process)
 cf_symptom <- child_symptom_rate(age_sex_agg = female_child_malaria,
-                            all_agg = child_agg, deaths = "malaria_deaths")
+                            all_agg = child_agg, deaths = "malaria_deaths",
+                            symptoms = symptoms_to_process)
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial_children <- pivot_longer(child, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
@@ -302,4 +305,4 @@ heat_map_children <- ggplot(heat, aes(symptoms, cause_of_death)) +
 heat_map_children
 
 # Exporting heat map as pdf
-hm_adult <- pdf_print(heat_map_adult, "Child Heatmap")
+hm_children <- pdf_print(heat_map_children, "Child Heatmap")

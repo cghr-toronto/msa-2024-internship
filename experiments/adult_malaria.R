@@ -227,10 +227,11 @@ adult_agg <- spatial_agg(gdf = dist,
                          count_col = "all_deaths")
 
 # Function for creating rates for aggregated results
-adult_symptom_rate <- function(
+symptom_rate <- function(
         age_sex_agg,
         all_agg,
-        deaths){
+        deaths,
+        symptoms){
 
 # Remove geometry from aggregated dataframe
 age_sex_without_geometry <- age_sex_agg  %>%
@@ -283,17 +284,22 @@ return(out)
 
 }
 
-symptoms_to_process <- c()
+adult_symptoms_to_process <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit",
+                         "weightLoss")
 
 # Running symptom_rate for each age group
-yam_symptom <- adult_symptom_rate(age_sex_agg = young_male_adult_malaria,
-                            all_agg = adult_agg, deaths = "malaria_deaths")
-yaf_symptom <- adult_symptom_rate(age_sex_agg = young_female_adult_malaria,
-                            all_agg = adult_agg, deaths = "malaria_deaths")
-oam_symptom <- adult_symptom_rate(age_sex_agg = older_male_adult_malaria,
-                            all_agg = adult_agg, deaths = "malaria_deaths")
-oaf_symptom <- adult_symptom_rate(age_sex_agg = older_female_adult_malaria,
-                            all_agg = adult_agg, deaths = "malaria_deaths")
+yam_symptom <- symptom_rate(age_sex_agg = young_male_adult_malaria,
+                            all_agg = adult_agg, deaths = "malaria_deaths",
+                            symptoms = symptoms_to_process)
+yaf_symptom <- symptom_rate(age_sex_agg = young_female_adult_malaria,
+                            all_agg = adult_agg, deaths = "malaria_deaths",
+                            symptoms = symptoms_to_process)
+oam_symptom <- symptom_rate(age_sex_agg = older_male_adult_malaria,
+                            all_agg = adult_agg, deaths = "malaria_deaths",
+                            symptoms = symptoms_to_process)
+oaf_symptom <- symptom_rate(age_sex_agg = older_female_adult_malaria,
+                            all_agg = adult_agg, deaths = "malaria_deaths",
+                            symptoms = symptoms_to_process)
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
