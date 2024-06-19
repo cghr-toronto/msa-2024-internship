@@ -282,5 +282,5 @@ cm_plot
 cf_plot
 
 # Export as pdf
-cm_pdf <- pdf_print(cm_plot, "Male Child Malaria Symptoms")
-cf_pdf <- pdf_print(cf_plot, "Female Child Malaria Symptoms")
+cm_pdf <- pdf_print(cm_plot, "fig-cm-malaria-maps")
+cf_pdf <- pdf_print(cf_plot, "fig-cf-malaria-maps")

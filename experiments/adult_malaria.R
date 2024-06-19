@@ -367,7 +367,7 @@ oaf_plot
 # Creating PDF export parameters
 pdf_print <- function(plot, title){
     
-    output_dir <- "C:/Users/dante/OneDrive/Documents/MRP/Malaria age_sex maps/"
+    output_dir <- "C:/Users/dante/msa-2024-internship/figures/"
     
     pdf_file <- paste0(output_dir, title, ".pdf")
     
@@ -378,9 +378,9 @@ pdf_print <- function(plot, title){
 }
 
 # Exporting plot series as PDFs
-yam_pdf <- pdf_print(yam_plot, "Young Adult Male Malaria Symptoms")
-yaf_pdf <- pdf_print(yaf_plot, "Young Adult Female Malaria Symptoms")
-oam_pdf <- pdf_print(oam_plot, "Older Adult Male Malaria Symptoms")
-oaf_pdf <- pdf_print(oaf_plot, "Older Adult Female Malaria Symptoms")
+yam_pdf <- pdf_print(yam_plot, "fig-yam-malaria-maps")
+yaf_pdf <- pdf_print(yaf_plot, "fig-yaf-malaria-maps")
+oam_pdf <- pdf_print(oam_plot, "fig-oam-malaria-maps")
+oaf_pdf <- pdf_print(oaf_plot, "fig-oaf-malaria-maps")
 
-heat <- pivot_longer(non_spatial_adult, cols = -select(""))
+
