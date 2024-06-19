@@ -385,8 +385,13 @@ oaf_pdf <- pdf_print(oaf_plot, "fig-oaf-malaria-maps")
 
 heat <- pivot_longer(non_spatial_adult, cols = -cause_of_death,
                      names_to = "symptoms",
-                     values_to = "rates")
+                     values_to = "rates") %>%
+    filter(cause_of_death != "NA" & symptoms != "NA")
 
-ggplot(heat, aes(symptoms, cause_of_death)) +
+heat_map_adult <- ggplot(heat, aes(symptoms, cause_of_death)) +
     geom_tile(aes(fill = rates)) +
-    geom_text(aes(label = round(rates, 1)))
+    geom_text(aes(label = round(rates, 1))) +
+    scale_fill_gradient(low = "white", high = "red")
+
+heat_map_adult
+

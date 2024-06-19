@@ -284,3 +284,15 @@ cf_plot
 # Export as pdf
 cm_pdf <- pdf_print(cm_plot, "fig-cm-malaria-maps")
 cf_pdf <- pdf_print(cf_plot, "fig-cf-malaria-maps")
+
+heat <- pivot_longer(non_spatial_children, cols = -cause_of_death,
+                     names_to = "symptoms",
+                     values_to = "rates") %>%
+    filter(cause_of_death != "NA" & symptoms != "NA")
+
+heat_map_children <- ggplot(heat, aes(symptoms, cause_of_death)) +
+    geom_tile(aes(fill = rates)) +
+    geom_text(aes(label = round(rates, 1))) +
+    scale_fill_gradient(low = "white", high = "red")
+
+heat_map_children
