@@ -227,17 +227,18 @@ adult_agg <- spatial_agg(gdf = dist,
                          count_col = "all_deaths")
 
 # Function for creating rates for aggregated results
-symptom_rate <- function(
-        malaria_agg,
-        agg){
+adult_symptom_rate <- function(
+        age_sex_agg,
+        all_agg,
+        deaths){
 
 # Remove geometry from aggregated dataframe
-malaria_without_geometry <- malaria_agg  %>%
+age_sex_without_geometry <- age_sex_agg  %>%
     as_tibble() %>%
-    select(-geometry, -malaria_deaths, -distname)
+    select(-geometry, -deaths, -distname)
 
 # Creating spatial symptom count
-result <- malaria_without_geometry %>%
+result <- age_sex_without_geometry %>%
     pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
                   names_to = "symptom", # New column to store the symptom names
                   values_to = "count" # New column to store the counts
@@ -251,10 +252,10 @@ result <- malaria_without_geometry %>%
 
 # Join geometry to new spatial table
 spatial <- result %>%
-    left_join(malaria_agg %>% select(gid, geometry, malaria_deaths, distname), by = "gid")
+    left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
 
 # Add all deaths to malaria table
-spatial$all_deaths <- agg$all_deaths
+spatial$all_deaths <- all_agg$all_deaths
 
 # Create rate columns for malaria symptoms
 spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$all_deaths) * 1000 
@@ -292,14 +293,14 @@ return(out)
 }
 
 # Running symptom_rate for each age group
-yam_symptom <- symptom_rate(malaria_agg = young_male_adult_malaria,
-                            agg = adult_agg)
-yaf_symptom <- symptom_rate(malaria_agg = young_female_adult_malaria,
-                            agg = adult_agg)
-oam_symptom <- symptom_rate(malaria_agg = older_male_adult_malaria,
-                            agg = adult_agg)
-oaf_symptom <- symptom_rate(malaria_agg = older_female_adult_malaria,
-                            agg = adult_agg)
+yam_symptom <- adult_symptom_rate(age_sex_agg = young_male_adult_malaria,
+                            all_agg = adult_agg, deaths = "malaria_deaths")
+yaf_symptom <- adult_symptom_rate(age_sex_agg = young_female_adult_malaria,
+                            all_agg = adult_agg, deaths = "malaria_deaths")
+oam_symptom <- adult_symptom_rate(age_sex_agg = older_male_adult_malaria,
+                            all_agg = adult_agg, deaths = "malaria_deaths")
+oaf_symptom <- adult_symptom_rate(age_sex_agg = older_female_adult_malaria,
+                            all_agg = adult_agg, deaths = "malaria_deaths")
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
@@ -365,15 +366,15 @@ oam_plot
 oaf_plot
 
 # Creating PDF export parameters
-pdf_print <- function(plot, title){
+pdf_print <- function(series, title){
     
     output_dir <- "C:/Users/dante/msa-2024-internship/figures/"
     
-    pdf_file <- paste0(output_dir, title, ".pdf")
+    pdf_title <- paste0(output_dir, title, ".pdf")
     
-    pdf(file = pdf_file, width = 14, height = 8)
+    out = ggsave(pdf_title, plot = series, device = "pdf", width = 14, height = 8)
     
-    dev.off()
+    return(out)
     
 }
 

@@ -184,17 +184,18 @@ child_agg <- spatial_agg(gdf = dist,
                          is_spatial_join = FALSE,
                          count_col = "all_deaths")
 
-symptom_rate <- function(
-        malaria_agg,
-        agg){
+child_symptom_rate <- function(
+        age_sex_agg,
+        all_agg,
+        deaths){
     
     # Remove geometry from aggregated dataframe
-    malaria_without_geometry <- malaria_agg  %>%
+    age_sex_without_geometry <- age_sex_agg  %>%
         as_tibble() %>%
-        select(-geometry, -malaria_deaths, -distname)
+        select(-geometry, -deaths, -distname)
     
     # Creating spatial symptom count
-    result <- malaria_without_geometry %>%
+    result <- age_sex_without_geometry %>%
         pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
                       names_to = "symptom", # New column to store the symptom names
                       values_to = "count" # New column to store the counts
@@ -208,10 +209,10 @@ symptom_rate <- function(
     
     # Join geometry to new spatial table
     spatial <- result %>%
-        left_join(malaria_agg %>% select(gid, geometry, malaria_deaths, distname), by = "gid")
+        left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
     
     # Add all deaths to malaria table
-    spatial$all_deaths <- agg$all_deaths
+    spatial$all_deaths <- all_agg$all_deaths
     
     # Create rate columns for malaria symptoms
     spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$all_deaths) * 1000 
@@ -249,10 +250,10 @@ symptom_rate <- function(
 }
 
 # Running symptom_rate for each sex group
-cm_symptom <- symptom_rate(malaria_agg = male_child_malaria,
-                            agg = child_agg)
-cf_symptom <- symptom_rate(malaria_agg = female_child_malaria,
-                            agg = child_agg)
+cm_symptom <- child_symptom_rate(age_sex_agg = male_child_malaria,
+                            all_agg = child_agg, deaths = "malaria_deaths")
+cf_symptom <- child_symptom_rate(age_sex_agg = female_child_malaria,
+                            all_agg = child_agg, deaths = "malaria_deaths")
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial_children <- pivot_longer(child, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
@@ -274,8 +275,8 @@ non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 colnames(non_spatial_children)[colnames(non_spatial_children) == "cghr10_title"] <- "cause_of_death"
 
 # Creating maps for each age group
-cm_plot <- create_plots(yam_symptom, plot_title = "Child Male Malaria Symptoms")
-cf_plot <- create_plots(yaf_symptom, plot_title = "Child Female Malaria Symptoms")
+cm_plot <- create_plots(yam_symptom, "Child Male Malaria Symptoms")
+cf_plot <- create_plots(yaf_symptom, "Child Female Malaria Symptoms")
 
 # Viewing plots for each map series
 cm_plot
@@ -285,6 +286,7 @@ cf_plot
 cm_pdf <- pdf_print(cm_plot, "fig-cm-malaria-maps")
 cf_pdf <- pdf_print(cf_plot, "fig-cf-malaria-maps")
 
+# Creating heat map with non-spatial table
 heat <- pivot_longer(non_spatial_children, cols = -cause_of_death,
                      names_to = "symptoms",
                      values_to = "rates") %>%
@@ -296,6 +298,8 @@ heat_map_children <- ggplot(heat, aes(symptoms, cause_of_death)) +
     scale_fill_gradient(low = "white", high = "red") +
     theme(axis.text.x = element_text(size = 3))
 
+# Viewing plot of heat map
 heat_map_children
 
+# Exporting heat map as pdf
 hm_adult <- pdf_print(heat_map_adult, "Child Heatmap")
