@@ -391,7 +391,8 @@ heat <- pivot_longer(non_spatial_adult, cols = -cause_of_death,
 heat_map_adult <- ggplot(heat, aes(symptoms, cause_of_death)) +
     geom_tile(aes(fill = rates)) +
     geom_text(aes(label = round(rates, 1))) +
-    scale_fill_gradient(low = "white", high = "red")
+    scale_fill_gradient(low = "white", high = "red") +
+    theme(axis.text.x = element_text(size = 3))
 
 heat_map_adult
 
