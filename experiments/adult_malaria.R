@@ -258,20 +258,11 @@ spatial <- result %>%
 spatial$all_deaths <- all_agg$all_deaths
 
 # Create rate columns for malaria symptoms
-spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$all_deaths) * 1000 
-spatial$cough_rate <- (spatial$cough/spatial$all_deaths) * 1000
-spatial$vomit_rate <- (spatial$vomit/spatial$all_deaths) * 1000
-spatial$breathingProblem_rate <- (spatial$breathingProblem/spatial$all_deaths) * 1000
-spatial$abdominalProblem_rate <- (spatial$abdominalProblem/spatial$all_deaths) * 1000
-spatial$fever_rate <- (spatial$fever/spatial$all_deaths) * 1000
-
-# Round to 2 decimal places
-spatial <- spatial %>% mutate(yellowEyes_rate = round(yellowEyes_rate, 2))
-spatial <- spatial %>% mutate(cough_rate = round(cough_rate, 2))
-spatial <- spatial %>% mutate(vomit_rate = round(vomit_rate, 2))
-spatial <- spatial %>% mutate(breathingProblem_rate = round(breathingProblem_rate, 2))
-spatial <- spatial %>% mutate(abdominalProblem_rate = round(abdominalProblem_rate, 2))
-spatial <- spatial %>% mutate(fever_rate = round(fever_rate, 2))
+for (symptom in symptoms) {
+    rate_column <- paste0(symptom, "_rate")
+    spatial[[rate_column]] <- (spatial[[symptom]] / spatial$all_deaths) * 1000
+    spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
+}
 
 # Print the wide format
 cat("\nWide format:\n")
@@ -291,6 +282,8 @@ out <- spatial %>%
 return(out)
 
 }
+
+symptoms_to_process <- c()
 
 # Running symptom_rate for each age group
 yam_symptom <- adult_symptom_rate(age_sex_agg = young_male_adult_malaria,
@@ -389,7 +382,7 @@ oaf_pdf <- pdf_print(oaf_plot, "fig-oaf-malaria-maps")
 heat <- pivot_longer(non_spatial_adult, cols = -cause_of_death,
                      names_to = "symptoms",
                      values_to = "rates") %>%
-    filter(cause_of_death != "NA" & symptoms != "NA")
+    filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
 
 heat_map_adult <- ggplot(heat, aes(symptoms, cause_of_death)) +
     geom_tile(aes(fill = rates)) +

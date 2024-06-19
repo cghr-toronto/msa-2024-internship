@@ -290,7 +290,7 @@ cf_pdf <- pdf_print(cf_plot, "fig-cf-malaria-maps")
 heat <- pivot_longer(non_spatial_children, cols = -cause_of_death,
                      names_to = "symptoms",
                      values_to = "rates") %>%
-    filter(cause_of_death != "NA" & symptoms != "NA")
+    filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
 
 heat_map_children <- ggplot(heat, aes(symptoms, cause_of_death)) +
     geom_tile(aes(fill = rates)) +
