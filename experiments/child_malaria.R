@@ -12,6 +12,7 @@ library(lubridate)
 library(ggspatial)
 library(tmap)
 library(prettymapr)
+library(patchwork)
 
 ## Read data
 # Reading in Child Round 1 and Round 2 data
@@ -184,6 +185,7 @@ child_agg <- spatial_agg(gdf = dist,
                          is_spatial_join = FALSE,
                          count_col = "all_deaths")
 
+# Defining symptoms to be plotted
 child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "cough", "vomit",
                     "headache", "yellowEyes")
 

@@ -284,6 +284,7 @@ return(out)
 
 }
 
+# Defining symptoms to be plotted
 adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit",
                          "weightLoss")
 
