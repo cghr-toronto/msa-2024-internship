@@ -171,14 +171,14 @@ young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_gro
 young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
 young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age)
-young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
+young_male_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
 
 # Creating filters for older adults by sex, age, and malaria
 older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
 older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
-older_female_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
+older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
 
 # Dataframe without malaria deaths
 adult_non_malaria <- adult %>% filter(cghr10_title != "Malaria")
@@ -423,6 +423,12 @@ yam_plot <- create_plots(yam_symptom, "Young Adult Male Malaria Symptoms")
 yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms")
 oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms")
 oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms")
+
+# Viewing plots for each map series
+yam_plot
+yaf_plot
+oam_plot
+oaf_plot
 
 # Exporting plot series as PDFs
 yam_pdf <- pdf_print(yam_plot, "fig-yam-malaria-maps")
