@@ -184,7 +184,7 @@ mapping <- data.frame(
 )
 
 # Testing out function with adult malaria
-young_male_adult_agg <- spatial_agg(gdf = dist,
+young_male_adult_nm_agg <- spatial_agg(gdf = dist,
                                     agg = young_male_adult_non_malaria,
                                     mapping = mapping,
                                     gdf_id = "distname", 
@@ -192,7 +192,7 @@ young_male_adult_agg <- spatial_agg(gdf = dist,
                                     is_spatial_join = FALSE,
                                     count_col = "non_malaria_deaths")
 
-young_female_adult_agg <- spatial_agg(gdf = dist,
+young_female_adult_nm_agg <- spatial_agg(gdf = dist,
                                       agg = young_female_adult_non_malaria,
                                       mapping = mapping,
                                       gdf_id = "distname", 
@@ -200,7 +200,7 @@ young_female_adult_agg <- spatial_agg(gdf = dist,
                                       is_spatial_join = FALSE,
                                       count_col = "non_malaria_deaths")
 
-older_male_adult_agg <- spatial_agg(gdf = dist,
+older_male_adult_nm_agg <- spatial_agg(gdf = dist,
                                     agg = older_male_adult_non_malaria,
                                     mapping = mapping,
                                     gdf_id = "distname", 
@@ -208,7 +208,7 @@ older_male_adult_agg <- spatial_agg(gdf = dist,
                                     is_spatial_join = FALSE,
                                     count_col = "non_malaria_deaths")
 
-older_female_adult_agg <- spatial_agg(gdf = dist,
+older_female_adult_nm_agg <- spatial_agg(gdf = dist,
                                       agg = older_female_adult_non_malaria,
                                       mapping = mapping,
                                       gdf_id = "distname", 
@@ -229,27 +229,27 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
                     "weightLoss")
 
 # Running symptom_rate for each age group
-yam_symptom <- symptom_rate(age_sex_agg = young_male_adult_agg,
+yam_nm_symptom <- symptom_rate(age_sex_agg = young_male_adult_nm_agg,
                             all_agg = adult_agg, deaths = "non_malaria_deaths",
                             symptoms = adult_symptoms)
-yaf_symptom <- symptom_rate(age_sex_agg = young_female_adult_agg,
+yaf_nm_symptom <- symptom_rate(age_sex_agg = young_female_adult_nm_agg,
                             all_agg = adult_agg, deaths = "non_malaria_deaths",
                             symptoms = adult_symptoms)
-oam_symptom <- symptom_rate(age_sex_agg = older_male_adult_agg,
+oam_nm_symptom <- symptom_rate(age_sex_agg = older_male_adult_nm_agg,
                             all_agg = adult_agg, deaths = "non_malaria_deaths",
                             symptoms = adult_symptoms)
-oaf_symptom <- symptom_rate(age_sex_agg = older_female_adult_agg,
+oaf_nm_symptom <- symptom_rate(age_sex_agg = older_female_adult_nm_agg,
                             all_agg = adult_agg, deaths = "non_malaria_deaths",
                             symptoms = adult_symptoms)
 
 # Creating plot series for each age group
-yam_plot <- create_plots(yam_symptom, "Young Adult Male Non-Malaria Symptoms")
-yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Non-Malaria Symptoms")
-oam_plot <- create_plots(oam_symptom, "Older Adult Male Non-Malaria Symptoms")
-oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Non-Malaria Symptoms")
+yam_nm_plot <- create_plots(yam_nm_symptom, "Young Adult Male Non-Malaria Symptoms")
+yaf_nm_plot <- create_plots(yaf_nm_symptom, "Young Adult Female Non-Malaria Symptoms")
+oam_nm_plot <- create_plots(oam_nm_symptom, "Older Adult Male Non-Malaria Symptoms")
+oaf_nm_plot <- create_plots(oaf_nm_symptom, "Older Adult Female Non-Malaria Symptoms")
 
 # Exporting plot series as PDFs
-yam_pdf <- pdf_print(yam_plot, "fig-yam-non_malaria-maps")
-yaf_pdf <- pdf_print(yaf_plot, "fig-yaf-non_malaria-maps")
-oam_pdf <- pdf_print(oam_plot, "fig-oam-non_malaria-maps")
-oaf_pdf <- pdf_print(oaf_plot, "fig-oaf-non_malaria-maps")
+yam_nm_pdf <- pdf_print(yam_nm_plot, "fig-yam-non_malaria-maps")
+yaf_nm_pdf <- pdf_print(yaf_nm_plot, "fig-yaf-non_malaria-maps")
+oam_nm_pdf <- pdf_print(oam_nm_plot, "fig-oam-non_malaria-maps")
+oaf_nm_pdf <- pdf_print(oaf_nm_plot, "fig-oaf-non_malaria-maps")

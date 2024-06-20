@@ -424,12 +424,6 @@ yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms")
 oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms")
 oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms")
 
-# Viewing plots for each map series
-yam_plot
-yaf_plot
-oam_plot
-oaf_plot
-
 # Exporting plot series as PDFs
 yam_pdf <- pdf_print(yam_plot, "fig-yam-malaria-maps")
 yaf_pdf <- pdf_print(yaf_plot, "fig-yaf-malaria-maps")
