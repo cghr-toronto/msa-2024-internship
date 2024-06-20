@@ -146,8 +146,10 @@ child <- left_join(child, icd, by = setNames("icd10_code", "final_icd"))
 child$gid_dist <- as.integer(child$gid_dist)
 
 # Creating filters for young childs by sex, age, and malaria
-male_child <- child %>% filter(sex_death == "Male" & cghr10_title == "Malaria")
-female_child <- child %>% filter(sex_death == "Female" & cghr10_title == "Malaria")
+male_child_malaria <- child %>% filter(sex_death == "Male" & cghr10_title == "Malaria")
+female_child_malaria <- child %>% filter(sex_death == "Female" & cghr10_title == "Malaria")
+male_child <- child %>% filter(sex_death == "Male")
+female_child <- child %>% filter(sex_death == "Female")
 
 # Dataframe without malaria deaths
 child_non_malaria <- child %>% filter(cghr10_title != "Malaria")
@@ -161,16 +163,16 @@ mapping <- data.frame(
 )
 
 # Testing out function with child malaria
-male_child_malaria <- spatial_agg(gdf = dist,
-                                        agg = male_child,
+male_child_agg <- spatial_agg(gdf = dist,
+                                        agg = male_child_malaria,
                                         mapping = mapping,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "malaria_deaths")
 
-female_child_malaria <- spatial_agg(gdf = dist,
-                                          agg = female_child,
+female_child_agg <- spatial_agg(gdf = dist,
+                                          agg = female_child_malaria,
                                           mapping = mapping,
                                           gdf_id = "distname", 
                                           agg_id = "district_cod",
@@ -185,36 +187,28 @@ child_agg <- spatial_agg(gdf = dist,
                          is_spatial_join = FALSE,
                          count_col = "all_deaths")
 
+# Creating non-spatial table of symptom and causes of death
+non_spatial_children <- non_spatial(child)
+non_spatial_cm <- non_spatial(male_child)
+non_spatial_cf <- non_spatial(female_child)
+
+
+# Creating heat map with non-spatial table
+hm_children <- hm(non_spatial_children, "Child Symptom Heatmap")
+hm_male_child <- hm(non_spatial_cm, "Child Symptom Heatmap")
+hm_female_child <- hm(non_spatial_cf, "Child Symptom Heatmap")
+
 # Defining symptoms to be plotted
 child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "cough", "vomit",
                     "headache", "yellowEyes")
 
 # Running symptom_rate for each sex group
-cm_symptom <- symptom_rate(age_sex_agg = male_child_malaria,
+cm_symptom <- symptom_rate(age_sex_agg = male_child_agg,
                             all_agg = child_agg, deaths = "malaria_deaths",
                             symptoms = child_symptoms)
-cf_symptom <- symptom_rate(age_sex_agg = female_child_malaria,
+cf_symptom <- symptom_rate(age_sex_agg = female_child_agg,
                             all_agg = child_agg, deaths = "malaria_deaths",
                             symptoms = child_symptoms)
-
-# Creating non-spatial table of symptom and causes of death
-non_spatial_children <- pivot_longer(child, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
-                            names_to = "symptom", # New column to store the symptom names
-                            values_to = "value" # New column to store the counts
-) %>% group_by(cghr10_title, value) %>%
-    summarise(count = n(), .groups = 'drop') %>%
-    arrange(cghr10_title, value) %>%
-    pivot_wider(
-        names_from = value,   # The values in the 'value' column will become column names
-        values_from = count,  # The values in the 'count' column will fill the new columns
-        values_fill = list(count = 0)  # Fill missing values with 0
-    )
-
-# Creating count for deaths per cause in non-spatial
-death_count <- child %>% count(cghr10_title, sort = TRUE, name = "deaths")
-non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
-
-colnames(non_spatial_children)[colnames(non_spatial_children) == "cghr10_title"] <- "cause_of_death"
 
 # Creating maps for each age group
 cm_plot <- create_plots(cm_symptom, "Child Male Malaria Symptoms")
@@ -227,21 +221,3 @@ cf_plot
 # Export as pdf
 cm_pdf <- pdf_print(cm_plot, "fig-cm-malaria-maps")
 cf_pdf <- pdf_print(cf_plot, "fig-cf-malaria-maps")
-
-# Creating heat map with non-spatial table
-heat <- pivot_longer(non_spatial_children, cols = -cause_of_death,
-                     names_to = "symptoms",
-                     values_to = "rates") %>%
-    filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
-
-heat_map_children <- ggplot(heat, aes(symptoms, cause_of_death)) +
-    geom_tile(aes(fill = rates)) +
-    geom_text(aes(label = round(rates, 1))) +
-    scale_fill_gradient(low = "white", high = "red") +
-    theme(axis.text.x = element_text(size = 3))
-
-# Viewing plot of heat map
-heat_map_children
-
-# Exporting heat map as pdf
-hm_children <- pdf_print(heat_map_children, "Child Heatmap")

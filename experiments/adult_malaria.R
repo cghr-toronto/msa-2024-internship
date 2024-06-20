@@ -167,12 +167,18 @@ young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
 # Creating filters for young adults by sex, age, and malaria
-young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
-young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
+young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
+young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
+young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
+young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age)
+young_male_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
 
 # Creating filters for older adults by sex, age, and malaria
-older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
-older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
+older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
+older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
+older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
+older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
+older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
 
 # Dataframe without malaria deaths
 adult_non_malaria <- adult %>% filter(cghr10_title != "Malaria")
@@ -186,32 +192,32 @@ mapping <- data.frame(
 )
 
 # Testing out function with adult malaria
-young_male_adult_malaria <- spatial_agg(gdf = dist,
-                                 agg = young_male_adult,
+young_male_adult_agg <- spatial_agg(gdf = dist,
+                                 agg = young_male_adult_malaria,
                                  mapping = mapping,
                                  gdf_id = "distname", 
                                  agg_id = "district_cod",
                                  is_spatial_join = FALSE,
                                  count_col = "malaria_deaths")
 
-young_female_adult_malaria <- spatial_agg(gdf = dist,
-                                        agg = young_female_adult,
+young_female_adult_agg <- spatial_agg(gdf = dist,
+                                        agg = young_female_adult_malaria,
                                         mapping = mapping,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "malaria_deaths")
 
-older_male_adult_malaria <- spatial_agg(gdf = dist,
-                                        agg = older_male_adult,
+older_male_adult_agg <- spatial_agg(gdf = dist,
+                                        agg = older_male_adult_malaria,
                                         mapping = mapping,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "malaria_deaths")
 
-older_female_adult_malaria <- spatial_agg(gdf = dist,
-                                        agg = older_female_adult,
+older_female_adult_agg <- spatial_agg(gdf = dist,
+                                        agg = older_female_adult_malaria,
                                         mapping = mapping,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
@@ -225,6 +231,84 @@ adult_agg <- spatial_agg(gdf = dist,
                          agg_id = "district_cod",
                          is_spatial_join = FALSE,
                          count_col = "all_deaths")
+
+# Creating PDF export parameters
+pdf_print <- function(series, title){
+    
+    output_dir <- "C:/Users/dante/msa-2024-internship/figures/"
+    
+    pdf_title <- paste0(output_dir, title, ".pdf")
+    
+    out = ggsave(pdf_title, plot = series, device = "pdf", width = 14, height = 8)
+    
+    return(out)
+    
+}
+
+# Creating non-spatial table of symptom and causes of death
+non_spatial <- function(age_group){
+    
+    ns <- pivot_longer(age_group, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
+                       names_to = "symptom", # New column to store the symptom names
+                       values_to = "value" # New column to store the counts
+    ) %>% group_by(cghr10_title, value) %>%
+        summarise(count = n(), .groups = 'drop') %>%
+        arrange(cghr10_title, value) %>%
+        pivot_wider(
+            names_from = value,   # The values in the 'value' column will become column names
+            values_from = count,  # The values in the 'count' column will fill the new columns
+            values_fill = list(count = 0)  # Fill missing values with 0
+        )
+    
+    # Creating count for deaths per cause in non-spatial
+    death_count <- age_group %>% count(cghr10_title, sort = TRUE, name = "deaths")
+    ns <- ns %>% left_join(death_count, by = "cghr10_title")
+    colnames(ns)[colnames(ns) == "cghr10_title"] <- "cause_of_death"
+    
+    return(ns)
+}
+
+non_spatial_adult <- non_spatial(adult)
+non_spatial_young_adult <- non_spatial(young_adult)
+non_spatial_yam <- non_spatial(young_male_adult)
+non_spatial_yaf <- non_spatial(young_female_adult)
+non_spatial_older_adult <- non_spatial(older_adult)
+non_spatial_oam <- non_spatial(older_male_adult)
+non_spatial_oaf <- non_spatial(older_female_adult)
+
+
+# Creating heat map with non-spatial table
+hm <- function(ns_table, hm_title) {
+    
+    heat <- pivot_longer(ns_table, cols = -cause_of_death,
+                         names_to = "symptoms",
+                         values_to = "rates") %>%
+        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
+    
+    heat_map_plot <- ggplot(heat, aes(symptoms, cause_of_death)) +
+        geom_tile(aes(fill = rates)) +
+        geom_text(aes(label = round(rates, 1))) +
+        scale_fill_gradient(low = "white", high = "red") +
+        theme(axis.text.x = element_text(size = 3)) +
+        ggtitle(hm_title)
+    
+    # Viewing plot of heat map
+    heat_map_plot
+    
+    # Exporting heat map as pdf
+    out <- pdf_print(heat_map_plot, hm_title)
+    
+    return(out)
+    
+}
+
+hm_adult <- hm(non_spatial_adult, "Adult Symptom Heatmap")
+hm_young_adult <- hm(non_spatial_young_adult, "Young Adult Symptom Heatmap")
+hm_older_adult <- hm(non_spatial_older_adult, "Older Adult Symptom Heatmap")
+hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult Symptom Heatmap")
+hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult Symptom Heatmap")
+hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult Symptom Heatmap")
+hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Symptom Heatmap")
 
 # Function for creating rates for aggregated results
 symptom_rate <- function(
@@ -289,37 +373,18 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
                          "weightLoss")
 
 # Running symptom_rate for each age group
-yam_symptom <- symptom_rate(age_sex_agg = young_male_adult_malaria,
+yam_symptom <- symptom_rate(age_sex_agg = young_male_adult_agg,
                             all_agg = adult_agg, deaths = "malaria_deaths",
                             symptoms = adult_symptoms)
-yaf_symptom <- symptom_rate(age_sex_agg = young_female_adult_malaria,
+yaf_symptom <- symptom_rate(age_sex_agg = young_female_adult_agg,
                             all_agg = adult_agg, deaths = "malaria_deaths",
                             symptoms = adult_symptoms)
-oam_symptom <- symptom_rate(age_sex_agg = older_male_adult_malaria,
+oam_symptom <- symptom_rate(age_sex_agg = older_male_adult_agg,
                             all_agg = adult_agg, deaths = "malaria_deaths",
                             symptoms = adult_symptoms)
-oaf_symptom <- symptom_rate(age_sex_agg = older_female_adult_malaria,
+oaf_symptom <- symptom_rate(age_sex_agg = older_female_adult_agg,
                             all_agg = adult_agg, deaths = "malaria_deaths",
                             symptoms = adult_symptoms)
-
-# Creating non-spatial table of symptom and causes of death
-non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
-                            names_to = "symptom", # New column to store the symptom names
-                            values_to = "value" # New column to store the counts
-) %>% group_by(cghr10_title, value) %>%
-    summarise(count = n(), .groups = 'drop') %>%
-    arrange(cghr10_title, value) %>%
-    pivot_wider(
-        names_from = value,   # The values in the 'value' column will become column names
-        values_from = count,  # The values in the 'count' column will fill the new columns
-        values_fill = list(count = 0)  # Fill missing values with 0
-    )
-
-# Creating count for deaths per cause in non-spatial
-death_count <- adult %>% count(cghr10_title, sort = TRUE, name = "deaths")
-non_spatial_adult <- non_spatial %>% left_join(death_count, by = "cghr10_title")
-
-colnames(non_spatial_adult)[colnames(non_spatial_adult) == "cghr10_title"] <- "cause_of_death"
 
 # Creating mappping parameters
 create_map <- function(data, symptom) {
@@ -365,40 +430,9 @@ yaf_plot
 oam_plot
 oaf_plot
 
-# Creating PDF export parameters
-pdf_print <- function(series, title){
-    
-    output_dir <- "C:/Users/dante/msa-2024-internship/figures/"
-    
-    pdf_title <- paste0(output_dir, title, ".pdf")
-    
-    out = ggsave(pdf_title, plot = series, device = "pdf", width = 14, height = 8)
-    
-    return(out)
-    
-}
-
 # Exporting plot series as PDFs
 yam_pdf <- pdf_print(yam_plot, "fig-yam-malaria-maps")
 yaf_pdf <- pdf_print(yaf_plot, "fig-yaf-malaria-maps")
 oam_pdf <- pdf_print(oam_plot, "fig-oam-malaria-maps")
 oaf_pdf <- pdf_print(oaf_plot, "fig-oaf-malaria-maps")
 
-
-# Creating heat map with non-spatial table
-heat <- pivot_longer(non_spatial_adult, cols = -cause_of_death,
-                     names_to = "symptoms",
-                     values_to = "rates") %>%
-    filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
-
-heat_map_adult <- ggplot(heat, aes(symptoms, cause_of_death)) +
-    geom_tile(aes(fill = rates)) +
-    geom_text(aes(label = round(rates, 1))) +
-    scale_fill_gradient(low = "white", high = "red") +
-    theme(axis.text.x = element_text(size = 3))
-
-# Viewing plot of heat map
-heat_map_adult
-
-# Exporting heat map as pdf
-hm_adult <- pdf_print(heat_map_adult, "Adult Heatmap")
