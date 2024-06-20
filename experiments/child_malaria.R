@@ -184,79 +184,16 @@ child_agg <- spatial_agg(gdf = dist,
                          is_spatial_join = FALSE,
                          count_col = "all_deaths")
 
-child_symptom_rate <- function(
-        age_sex_agg,
-        all_agg,
-        deaths,
-        symptoms){
-    
-    # Remove geometry from aggregated dataframe
-    age_sex_without_geometry <- age_sex_agg  %>%
-        as_tibble() %>%
-        select(-geometry, -deaths, -distname)
-    
-    # Creating spatial symptom count
-    result <- age_sex_without_geometry %>%
-        pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
-                      names_to = "symptom", # New column to store the symptom names
-                      values_to = "count" # New column to store the counts
-        ) %>% mutate(symptom = gsub("^symp\\d+_|_count$","", symptom)) %>% # Remove prefix and suff
-        group_by(gid, symptom) %>% # Group by gid and sympt
-        summarize(total_count = sum(count) # Summarize the counts f
-        ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
-                           values_from = total_count, # Values to be filled in the wide format
-                           values_fill = 0 # Fill any missing values with 0
-        )
-    
-    # Join geometry to new spatial table
-    spatial <- result %>%
-        left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
-    
-    # Add all deaths to malaria table
-    spatial$all_deaths <- all_agg$all_deaths
-    
-    # Create rate columns for malaria symptoms
-    spatial$yellowEyes_rate <- (spatial$yellowEyes/spatial$all_deaths) * 1000 
-    spatial$cough_rate <- (spatial$cough/spatial$all_deaths) * 1000
-    spatial$vomit_rate <- (spatial$vomit/spatial$all_deaths) * 1000
-    spatial$difficultyBreathing_rate <- (spatial$difficultyBreathing/spatial$all_deaths) * 1000
-    spatial$abdominalProblem_rate <- (spatial$abdominalProblem/spatial$all_deaths) * 1000
-    spatial$fever_rate <- (spatial$fever/spatial$all_deaths) * 1000
-    
-    # Round to 2 decimal places
-    spatial <- spatial %>% mutate(yellowEyes_rate = round(yellowEyes_rate, 2))
-    spatial <- spatial %>% mutate(cough_rate = round(cough_rate, 2))
-    spatial <- spatial %>% mutate(vomit_rate = round(vomit_rate, 2))
-    spatial <- spatial %>% mutate(difficultyBreathing_rate = round(difficultyBreathing_rate, 2))
-    spatial <- spatial %>% mutate(abdominalProblem_rate = round(abdominalProblem_rate, 2))
-    spatial <- spatial %>% mutate(fever_rate = round(fever_rate, 2))
-    
-    # Print the wide format
-    cat("\nWide format:\n")
-    print(spatial)
-    
-    # Convert spatial to an sf and reproject crs
-    spatial <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
-    
-    # Pivoted spatial table to show rates for each symptom
-    out <- spatial %>% 
-        pivot_longer(cols = ends_with("rate"),
-                     names_to = "symptoms", 
-                     values_to = "rates") %>% 
-        select(gid, symptoms, rates) %>%
-        mutate(symptoms = str_remove(symptoms, "_rate$"))
-    
-    return(out)
-    
-}
+child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "cough", "vomit",
+                    "headache", "yellowEyes")
 
 # Running symptom_rate for each sex group
-cm_symptom <- child_symptom_rate(age_sex_agg = male_child_malaria,
+cm_symptom <- symptom_rate(age_sex_agg = male_child_malaria,
                             all_agg = child_agg, deaths = "malaria_deaths",
-                            symptoms = symptoms_to_process)
-cf_symptom <- child_symptom_rate(age_sex_agg = female_child_malaria,
+                            symptoms = child_symptoms)
+cf_symptom <- symptom_rate(age_sex_agg = female_child_malaria,
                             all_agg = child_agg, deaths = "malaria_deaths",
-                            symptoms = symptoms_to_process)
+                            symptoms = child_symptoms)
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial_children <- pivot_longer(child, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
@@ -278,8 +215,8 @@ non_spatial <- non_spatial %>% left_join(death_count, by = "cghr10_title")
 colnames(non_spatial_children)[colnames(non_spatial_children) == "cghr10_title"] <- "cause_of_death"
 
 # Creating maps for each age group
-cm_plot <- create_plots(yam_symptom, "Child Male Malaria Symptoms")
-cf_plot <- create_plots(yaf_symptom, "Child Female Malaria Symptoms")
+cm_plot <- create_plots(cm_symptom, "Child Male Malaria Symptoms")
+cf_plot <- create_plots(cf_symptom, "Child Female Malaria Symptoms")
 
 # Viewing plots for each map series
 cm_plot

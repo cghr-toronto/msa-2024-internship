@@ -284,22 +284,22 @@ return(out)
 
 }
 
-adult_symptoms_to_process <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit",
+adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit",
                          "weightLoss")
 
 # Running symptom_rate for each age group
 yam_symptom <- symptom_rate(age_sex_agg = young_male_adult_malaria,
                             all_agg = adult_agg, deaths = "malaria_deaths",
-                            symptoms = symptoms_to_process)
+                            symptoms = adult_symptoms)
 yaf_symptom <- symptom_rate(age_sex_agg = young_female_adult_malaria,
                             all_agg = adult_agg, deaths = "malaria_deaths",
-                            symptoms = symptoms_to_process)
+                            symptoms = adult_symptoms)
 oam_symptom <- symptom_rate(age_sex_agg = older_male_adult_malaria,
                             all_agg = adult_agg, deaths = "malaria_deaths",
-                            symptoms = symptoms_to_process)
+                            symptoms = adult_symptoms)
 oaf_symptom <- symptom_rate(age_sex_agg = older_female_adult_malaria,
                             all_agg = adult_agg, deaths = "malaria_deaths",
-                            symptoms = symptoms_to_process)
+                            symptoms = adult_symptoms)
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial <- pivot_longer(adult, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
