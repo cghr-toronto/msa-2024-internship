@@ -235,7 +235,7 @@ adult_agg <- spatial_agg(gdf = dist,
 # Creating PDF export parameters
 pdf_print <- function(series, title){
     
-    output_dir <- "../figures"
+    output_dir <- "../figures/"
     
     pdf_title <- paste0(output_dir, title, ".pdf")
     
