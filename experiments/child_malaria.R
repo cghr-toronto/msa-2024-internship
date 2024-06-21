@@ -194,9 +194,9 @@ non_spatial_cf <- non_spatial(female_child)
 
 
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child Symptom Heatmap")
-hm_male_child <- hm(non_spatial_cm, "Male Child Symptom Heatmap")
-hm_female_child <- hm(non_spatial_cf, "Female Child Symptom Heatmap")
+hm_children <- hm(non_spatial_children, "Child Symptom Heatmap", "fig-child-heatmap")
+hm_male_child <- hm(non_spatial_cm, "Male Child Symptom Heatmap", "fig-cm-heatmap")
+hm_female_child <- hm(non_spatial_cf, "Female Child Symptom Heatmap", "fig-cf-heatmap")
 
 # Defining symptoms to be plotted
 child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "cough", "vomit",
@@ -211,13 +211,5 @@ cf_symptom <- symptom_rate(age_sex_agg = female_child_agg,
                             symptoms = child_symptoms)
 
 # Creating maps for each age group
-cm_plot <- create_plots(cm_symptom, "Child Male Malaria Symptoms")
-cf_plot <- create_plots(cf_symptom, "Child Female Malaria Symptoms")
-
-# Viewing plots for each map series
-cm_plot
-cf_plot
-
-# Export as pdf
-cm_pdf <- pdf_print(cm_plot, "fig-cm-malaria-maps")
-cf_pdf <- pdf_print(cf_plot, "fig-cf-malaria-maps")
+cm_plot <- create_plots(cm_symptom, "Child Male Malaria Symptoms", "fig-cm-malaria-maps")
+cf_plot <- create_plots(cf_symptom, "Child Female Malaria Symptoms", "fig-cf-malaria-maps")

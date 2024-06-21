@@ -243,13 +243,7 @@ oaf_nm_symptom <- symptom_rate(age_sex_agg = older_female_adult_nm_agg,
                             symptoms = adult_symptoms)
 
 # Creating plot series for each age group
-yam_nm_plot <- create_plots(yam_nm_symptom, "Young Adult Male Non-Malaria Symptoms")
-yaf_nm_plot <- create_plots(yaf_nm_symptom, "Young Adult Female Non-Malaria Symptoms")
-oam_nm_plot <- create_plots(oam_nm_symptom, "Older Adult Male Non-Malaria Symptoms")
-oaf_nm_plot <- create_plots(oaf_nm_symptom, "Older Adult Female Non-Malaria Symptoms")
-
-# Exporting plot series as PDFs
-yam_nm_pdf <- pdf_print(yam_nm_plot, "fig-yam-non_malaria-maps")
-yaf_nm_pdf <- pdf_print(yaf_nm_plot, "fig-yaf-non_malaria-maps")
-oam_nm_pdf <- pdf_print(oam_nm_plot, "fig-oam-non_malaria-maps")
-oaf_nm_wapdf <- pdf_print(oaf_nm_plot, "fig-oaf-non_malaria-maps")
+yam_nm_plot <- create_plots(yam_nm_symptom, "Young Adult Male Non-Malaria Symptoms", "fig-yam-non_malaria-maps")
+yaf_nm_plot <- create_plots(yaf_nm_symptom, "Young Adult Female Non-Malaria Symptoms", "fig-yaf-non_malaria-maps")
+oam_nm_plot <- create_plots(oam_nm_symptom, "Older Adult Male Non-Malaria Symptoms", "fig-oam-non_malaria-maps")
+oaf_nm_plot <- create_plots(oaf_nm_symptom, "Older Adult Female Non-Malaria Symptoms", "fig-oaf-non_malaria-maps")

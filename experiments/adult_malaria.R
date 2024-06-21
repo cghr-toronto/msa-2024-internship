@@ -278,7 +278,7 @@ non_spatial_oaf <- non_spatial(older_female_adult)
 
 
 # Creating heat map with non-spatial table
-hm <- function(ns_table, hm_title) {
+hm <- function(ns_table, hm_title, pdf_title) {
     
     heat <- pivot_longer(ns_table, cols = -cause_of_death,
                          names_to = "symptoms",
@@ -289,26 +289,24 @@ hm <- function(ns_table, hm_title) {
         geom_tile(aes(fill = counts)) +
         geom_text(aes(label = round(counts, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
-        theme(axis.text.x = element_text(angle = 45, size = 3.5)) +
+        scale_x_discrete(position = "top") +
+        theme(axis.text.x = element_text(angle = 45, size = 8, vjust = 4)) +
         ggtitle(hm_title)
     
-    # Viewing plot of heat map
-    heat_map_plot
-    
     # Exporting heat map as pdf
-    out <- pdf_print(heat_map_plot, hm_title)
+    out <- pdf_print(heat_map_plot, pdf_title)
     
     return(out)
     
 }
 
-hm_adult <- hm(non_spatial_adult, "Adult Symptom Heatmap")
-hm_young_adult <- hm(non_spatial_young_adult, "Young Adult Symptom Heatmap")
-hm_older_adult <- hm(non_spatial_older_adult, "Older Adult Symptom Heatmap")
-hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult Symptom Heatmap")
-hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult Symptom Heatmap")
-hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult Symptom Heatmap")
-hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Symptom Heatmap")
+hm_adult <- hm(non_spatial_adult, "Adult Symptom Heatmap", "fig-adult-heatmap")
+hm_young_adult <- hm(non_spatial_young_adult, "Young Adult Symptom Heatmap", "fig-young-adult-heatmap")
+hm_older_adult <- hm(non_spatial_older_adult, "Older Adult Symptom Heatmap", "fig-older-adult-heatmap")
+hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult Symptom Heatmap", "fig-yam-heatmap")
+hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult Symptom Heatmap", "fig-yaf-heatmap")
+hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult Symptom Heatmap", "fig-oam-heatmap")
+hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Symptom Heatmap", "fig-oaf-heatmap")
 
 # Function for creating rates for aggregated results
 symptom_rate <- function(
@@ -407,7 +405,7 @@ create_map <- function(data, symptom) {
 }
 
 # Creating grouped plots parameters
-create_plots <- function(group_symptoms, plot_title) {
+create_plots <- function(group_symptoms, plot_title, pdf_title) {
     
     symptoms <- unique(group_symptoms$symptoms)
     
@@ -415,17 +413,13 @@ create_plots <- function(group_symptoms, plot_title) {
     
     combined_plot <- wrap_plots(plots) + plot_annotation(title = plot_title)
     
-    return(combined_plot)
+    out <- pdf_print(combined_plot, pdf_title)
+    
+    return(out)
 }
 
 # Creating plot series for each age group
-yam_plot <- create_plots(yam_symptom, "Young Adult Male Malaria Symptoms")
-yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms")
-oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms")
-oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms")
-
-# Exporting plot series as PDFs
-yam_pdf <- pdf_print(yam_plot, "fig-yam-malaria-maps")
-yaf_pdf <- pdf_print(yaf_plot, "fig-yaf-malaria-maps")
-oam_pdf <- pdf_print(oam_plot, "fig-oam-malaria-maps")
-oaf_pdf <- pdf_print(oaf_plot, "fig-oaf-malaria-maps")
+yam_plot <- create_plots(yam_symptom, "Young Adult Male Malaria Symptoms", "fig-yam-malaria-maps")
+yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms", "fig-yaf-malaria-maps")
+oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms", "fig-oam-malaria-maps")
+oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms", "fig-oaf-malaria-maps")
