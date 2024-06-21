@@ -282,14 +282,14 @@ hm <- function(ns_table, hm_title) {
     
     heat <- pivot_longer(ns_table, cols = -cause_of_death,
                          names_to = "symptoms",
-                         values_to = "rates") %>%
+                         values_to = "counts") %>%
         filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
     
     heat_map_plot <- ggplot(heat, aes(symptoms, cause_of_death)) +
-        geom_tile(aes(fill = rates)) +
-        geom_text(aes(label = round(rates, 1))) +
+        geom_tile(aes(fill = counts)) +
+        geom_text(aes(label = round(counts, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
-        theme(axis.text.x = element_text(size = 3)) +
+        theme(axis.text.x = element_text(angle = 45, size = 3.5)) +
         ggtitle(hm_title)
     
     # Viewing plot of heat map
@@ -429,4 +429,3 @@ yam_pdf <- pdf_print(yam_plot, "fig-yam-malaria-maps")
 yaf_pdf <- pdf_print(yaf_plot, "fig-yaf-malaria-maps")
 oam_pdf <- pdf_print(oam_plot, "fig-oam-malaria-maps")
 oaf_pdf <- pdf_print(oaf_plot, "fig-oaf-malaria-maps")
-
