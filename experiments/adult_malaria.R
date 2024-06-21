@@ -290,7 +290,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
         geom_text(aes(label = round(counts, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
         scale_x_discrete(position = "top") +
-        theme(axis.text.x = element_text(angle = 45, size = 8, vjust = 4)) +
+        theme(axis.text.x = element_text(angle = 45, size = 8, margin = margin(t = 20))) +
         ggtitle(hm_title)
     
     # Exporting heat map as pdf
@@ -306,7 +306,7 @@ hm_older_adult <- hm(non_spatial_older_adult, "Older Adult Symptom Heatmap", "fi
 hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult Symptom Heatmap", "fig-yam-heatmap")
 hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult Symptom Heatmap", "fig-yaf-heatmap")
 hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult Symptom Heatmap", "fig-oam-heatmap")
-hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Symptom Heatmap", "fig-oaf-heatmap")
+hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult Symptom Heatmap", "fig-oaf-heatmap")
 
 # Function for creating rates for aggregated results
 symptom_rate <- function(
