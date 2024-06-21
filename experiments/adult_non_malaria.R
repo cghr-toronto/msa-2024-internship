@@ -252,4 +252,4 @@ oaf_nm_plot <- create_plots(oaf_nm_symptom, "Older Adult Female Non-Malaria Symp
 yam_nm_pdf <- pdf_print(yam_nm_plot, "fig-yam-non_malaria-maps")
 yaf_nm_pdf <- pdf_print(yaf_nm_plot, "fig-yaf-non_malaria-maps")
 oam_nm_pdf <- pdf_print(oam_nm_plot, "fig-oam-non_malaria-maps")
-oaf_nm_pdf <- pdf_print(oaf_nm_plot, "fig-oaf-non_malaria-maps")
+oaf_nm_wapdf <- pdf_print(oaf_nm_plot, "fig-oaf-non_malaria-maps")
