@@ -265,6 +265,11 @@ non_spatial <- function(age_group){
     ns <- ns %>% left_join(death_count, by = "cghr10_title")
     colnames(ns)[colnames(ns) == "cghr10_title"] <- "cause_of_death"
     
+    ns <- ns %>%
+        mutate(is_malaria = ifelse(cause_of_death == "Malaria", 1, 0)) %>%
+        arrange(is_malaria) %>%
+        select(-is_malaria)
+    
     return(ns)
 }
 
@@ -284,6 +289,8 @@ hm <- function(ns_table, hm_title, pdf_title) {
                          names_to = "symptoms",
                          values_to = "counts") %>%
         filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
+    
+    heat$cause_of_death <- factor(heat$cause_of_death, levels = c("malaria", unique(heat$cause_of_death)))
     
     heat_map_plot <- ggplot(heat, aes(symptoms, cause_of_death)) +
         geom_tile(aes(fill = counts)) +
