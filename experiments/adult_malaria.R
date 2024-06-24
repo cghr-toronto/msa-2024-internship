@@ -171,14 +171,14 @@ young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_gro
 young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
 young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age)
-young_male_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
+young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
 
 # Creating filters for older adults by sex, age, and malaria
 older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
 older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
-older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
+older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
 # Dataframe without malaria deaths
 adult_non_malaria <- adult %>% filter(cghr10_title != "Malaria")
