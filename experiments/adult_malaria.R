@@ -290,7 +290,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
         geom_text(aes(label = round(counts, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
         scale_x_discrete(position = "top") +
-        theme(axis.text.x = element_text(angle = 45, size = 8, vjust = 1, margin = margin(t = 30, r = 30)),
+        theme(axis.text.x = element_text(angle = 45, size = 8, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
               axis.title.x = element_blank()) +
         ggtitle(hm_title)
     
