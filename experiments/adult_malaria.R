@@ -239,7 +239,7 @@ pdf_print <- function(series, title){
     
     pdf_title <- paste0(output_dir, title, ".pdf")
     
-    out = ggsave(pdf_title, plot = series, device = "pdf", width = 14, height = 8)
+    out = ggsave(pdf_title, plot = series, device = "pdf", width = 14, height = 10)
     
     return(out)
     
@@ -290,7 +290,8 @@ hm <- function(ns_table, hm_title, pdf_title) {
         geom_text(aes(label = round(counts, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
         scale_x_discrete(position = "top") +
-        theme(axis.text.x = element_text(angle = 45, size = 8, margin = margin(t = 20))) +
+        theme(axis.text.x = element_text(angle = 45, size = 8, vjust = 1, margin = margin(t = 30, r = 30)),
+              axis.title.x = element_blank()) +
         ggtitle(hm_title)
     
     # Exporting heat map as pdf
