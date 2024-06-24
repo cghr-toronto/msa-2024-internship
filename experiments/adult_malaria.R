@@ -182,9 +182,6 @@ older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
 older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
-# Dataframe without malaria deaths
-adult_non_malaria <- adult %>% filter(cghr10_title != "Malaria")
-
 # Set mapping dataframe
 mapping <- data.frame(
     column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9", "symp10", "symp11", 
