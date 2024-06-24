@@ -167,15 +167,18 @@ adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod"))
 young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
+# Non malaria disease list
+non_malaria <- c("Malaria", "Unspecified infections")
+
 # Creating filters for young adults by sex, age, and malaria
-young_male_adult_non_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & cghr10_title != "Malaria")
-young_female_adult_non_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title != "Malaria")
+young_male_adult_non_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & cghr10_title %in% non_malaria)
+young_female_adult_non_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title %in% non_malaria)
 young_adult_non_malaria <- adult %>% filter(death_age_group %in% young_adult_age & cghr10_title != "Malaria")
 
 # Creating filters for older adults by sex, age, and malaria
-older_male_adult_non_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title != "Malaria")
-older_female_adult_non_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title != "Malaria")
-older_adult_non_malaria <- adult %>% filter(death_age_group %in% older_adult_age & cghr10_title != "Malaria")
+older_male_adult_non_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title %in% non_malaria)
+older_female_adult_non_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title %in% non_malaria)
+older_adult_non_malaria <- adult %>% filter(death_age_group %in% older_adult_age & cghr10_title %in% non_malaria)
 
 # Set mapping dataframe
 mapping <- data.frame(

@@ -145,14 +145,12 @@ child <- left_join(child, icd, by = setNames("icd10_code", "final_icd"))
 # Convert data type of District ID column
 child$gid_dist <- as.integer(child$gid_dist)
 
-# Creating filters for young childs by sex, age, and malaria
-male_child_non_malaria <- child %>% filter(sex_death == "Male" & cghr10_title != "Malaria")
-female_child_non_malaria <- child %>% filter(sex_death == "Female" & cghr10_title != "Malaria")
-male_non_child <- child %>% filter(sex_death == "Male")
-female_non_child <- child %>% filter(sex_death == "Female")
+# Non-malaria disease list
+non_malaria <- c("Malaria", "Other infections")
 
-# Dataframe without malaria deaths
-child_non_malaria <- child %>% filter(cghr10_title != "Malaria")
+# Creating filters for young childs by sex, age, and malaria
+male_child_non_malaria <- child %>% filter(sex_death == "Male" & cghr10_title %in% non_malaria)
+female_child_non_malaria <- child %>% filter(sex_death == "Female" & cghr10_title %in% non_malaria)
 
 # Set mapping dataframe
 mapping <- data.frame(
