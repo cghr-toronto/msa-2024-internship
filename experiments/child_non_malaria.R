@@ -167,7 +167,7 @@ male_child_nm_agg <- spatial_agg(gdf = dist,
                               gdf_id = "distname", 
                               agg_id = "district_cod",
                               is_spatial_join = FALSE,
-                              count_col = "malaria_deaths")
+                              count_col = "non_malaria_deaths")
 
 female_child_nm_agg <- spatial_agg(gdf = dist,
                                 agg = female_child_non_malaria,
@@ -175,7 +175,7 @@ female_child_nm_agg <- spatial_agg(gdf = dist,
                                 gdf_id = "distname", 
                                 agg_id = "district_cod",
                                 is_spatial_join = FALSE,
-                                count_col = "malaria_deaths")
+                                count_col = "non_malaria_deaths")
 
 child_agg <- spatial_agg(gdf = dist,
                          agg = child,
@@ -191,10 +191,10 @@ child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "cough", "vomi
 
 # Running symptom_rate for each sex group
 cm_nm_symptom <- symptom_rate(age_sex_agg = male_child_nm_agg,
-                           all_agg = child_agg, deaths = "malaria_deaths",
+                           all_agg = child_agg, deaths = "non_malaria_deaths",
                            symptoms = child_symptoms)
 cf_nm_symptom <- symptom_rate(age_sex_agg = female_child_nm_agg,
-                           all_agg = child_agg, deaths = "malaria_deaths",
+                           all_agg = child_agg, deaths = "non_malaria_deaths",
                            symptoms = child_symptoms)
 
 # Creating maps for each age group
