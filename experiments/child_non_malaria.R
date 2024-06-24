@@ -151,6 +151,7 @@ non_malaria <- c("Malaria", "Other infections")
 # Creating filters for young childs by sex, age, and malaria
 male_child_non_malaria <- child %>% filter(sex_death == "Male" & cghr10_title %in% non_malaria)
 female_child_non_malaria <- child %>% filter(sex_death == "Female" & cghr10_title %in% non_malaria)
+child_non_malaria <- child %>% filter(cghr10_title %in% non_malaria)
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -177,6 +178,14 @@ female_child_nm_agg <- spatial_agg(gdf = dist,
                                 is_spatial_join = FALSE,
                                 count_col = "non_malaria_deaths")
 
+child_nm_agg <- spatial_agg(gdf = dist,
+                                 agg = child_non_malaria,
+                                 mapping = mapping,
+                                 gdf_id = "distname", 
+                                 agg_id = "district_cod",
+                                 is_spatial_join = FALSE,
+                                 count_col = "non_malaria_deaths")
+
 child_agg <- spatial_agg(gdf = dist,
                          agg = child,
                          mapping = mapping,
@@ -196,7 +205,11 @@ cm_nm_symptom <- symptom_rate(age_sex_agg = male_child_nm_agg,
 cf_nm_symptom <- symptom_rate(age_sex_agg = female_child_nm_agg,
                            all_agg = child_agg, deaths = "non_malaria_deaths",
                            symptoms = child_symptoms)
+child_nm_symptom <- symptom_rate(age_sex_agg = child_nm_agg,
+                              all_agg = child_agg, deaths = "non_malaria_deaths",
+                              symptoms = child_symptoms)
 
 # Creating maps for each age group
 cm_nm_plot <- create_plots(cm_symptom, "Child Male Non-Malaria Symptoms", "fig-cm-non-malaria-maps")
 cf_nm_plot <- create_plots(cf_symptom, "Child Female Non-Malaria Symptoms", "fig-cf-non-malaria-maps")
+child_nm_plot <- create_plots(child_nm_symptom, "Child Non-Malaria Symptoms", "fig-child-non-malaria-maps")
