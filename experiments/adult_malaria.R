@@ -167,6 +167,7 @@ young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
 # Creating filters for young adults by sex, age, and malaria
+young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & cghr10_title == "Malaria")
 young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
 young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & cghr10_title == "Malaria")
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
@@ -174,6 +175,7 @@ young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% 
 young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
 
 # Creating filters for older adults by sex, age, and malaria
+older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & cghr10_title == "Malaria")
 older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
@@ -223,6 +225,22 @@ older_female_adult_agg <- spatial_agg(gdf = dist,
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "malaria_deaths")
+
+young_adult_agg <- spatial_agg(gdf = dist,
+                                      agg = young_adult_malaria,
+                                      mapping = mapping,
+                                      gdf_id = "distname", 
+                                      agg_id = "district_cod",
+                                      is_spatial_join = FALSE,
+                                      count_col = "malaria_deaths")
+
+older_adult_agg <- spatial_agg(gdf = dist,
+                                      agg = older_adult_malaria,
+                                      mapping = mapping,
+                                      gdf_id = "distname", 
+                                      agg_id = "district_cod",
+                                      is_spatial_join = FALSE,
+                                      count_col = "malaria_deaths")
 
 adult_agg <- spatial_agg(gdf = dist,
                          agg = adult,
@@ -391,6 +409,12 @@ oam_symptom <- symptom_rate(age_sex_agg = older_male_adult_agg,
 oaf_symptom <- symptom_rate(age_sex_agg = older_female_adult_agg,
                             all_agg = adult_agg, deaths = "malaria_deaths",
                             symptoms = adult_symptoms)
+young_adult_symptom <- symptom_rate(age_sex_agg = young_adult_agg,
+                            all_agg = adult_agg, deaths = "malaria_deaths",
+                            symptoms = adult_symptoms)
+older_adult_symptom <- symptom_rate(age_sex_agg = older_adult_agg,
+                            all_agg = adult_agg, deaths = "malaria_deaths",
+                            symptoms = adult_symptoms)
 
 # Creating mappping parameters
 create_map <- function(data, symptom) {
@@ -431,3 +455,5 @@ yam_plot <- create_plots(yam_symptom, "Young Adult Male Malaria Symptoms", "fig-
 yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms", "fig-yaf-malaria-maps")
 oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms", "fig-oam-malaria-maps")
 oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms", "fig-oaf-malaria-maps")
+young_adult_plot <- create_plots(young_adult_symptom, "Young Adult Malaria Symptoms", "fig-ya-malaria-maps")
+older_adult_plot <- create_plots(older_adult_symptom, "Older Adult Malaria Symptoms", "fig-oa-malaria-maps")
