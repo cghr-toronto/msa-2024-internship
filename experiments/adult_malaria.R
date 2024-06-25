@@ -250,13 +250,17 @@ adult_agg <- spatial_agg(gdf = dist,
 # Creating PDF export parameters
 pdf_print <- function(series, title){
     
-    output_dir <- "../figures/"
+    pdf_output_dir <- "../figures/"
     
-    pdf_title <- paste0(output_dir, title, ".pdf")
+    jpeg_output_dir <- "../figures.jpgs/"
     
-    out = ggsave(pdf_title, plot = series, device = "pdf", width = 14, height = 10)
+    pdf_title <- paste0(pdf_output_dir, title, ".pdf")
     
-    return(out)
+    jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
+    
+    ggsave(pdf_title, plot = series, device = "pdf", width = 14, height = 10)
+    
+    ggsave(jpeg_title, plot = series, device = "jpeg", width = 14, height = 10)
     
 }
 
