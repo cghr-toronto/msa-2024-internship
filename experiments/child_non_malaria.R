@@ -195,7 +195,7 @@ child_agg <- spatial_agg(gdf = dist,
                          count_col = "all_deaths")
 
 # Defining symptoms to be plotted
-child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "cough", "vomit",
+child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "vomit",
                     "headache", "yellowEyes")
 
 # Running symptom_rate for each sex group

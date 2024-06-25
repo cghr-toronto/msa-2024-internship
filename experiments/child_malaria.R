@@ -205,7 +205,7 @@ hm_male_child <- hm(non_spatial_cm, "Male Child Symptom Heatmap", "fig-cm-heatma
 hm_female_child <- hm(non_spatial_cf, "Female Child Symptom Heatmap", "fig-cf-heatmap")
 
 # Defining symptoms to be plotted
-child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "cough", "vomit",
+child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "vomit",
                     "headache", "yellowEyes")
 
 # Running symptom_rate for each sex group
