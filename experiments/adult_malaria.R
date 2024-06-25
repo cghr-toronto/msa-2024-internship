@@ -182,6 +182,8 @@ older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
 older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
+adult_malaria <- adult %>% filter(cghr10_title == "Malaria")
+
 # Set mapping dataframe
 mapping <- data.frame(
     column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9", "symp10", "symp11", 
@@ -238,6 +240,15 @@ older_adult_agg <- spatial_agg(gdf = dist,
                                       agg_id = "district_cod",
                                       is_spatial_join = FALSE,
                                       count_col = "malaria_deaths")
+
+adult_malaria_agg <- spatial_agg(gdf = dist,
+                               agg = adult_malaria,
+                               mapping = mapping,
+                               gdf_id = "distname", 
+                               agg_id = "district_cod",
+                               is_spatial_join = FALSE,
+                               count_col = "malaria_deaths")
+
 
 adult_agg <- spatial_agg(gdf = dist,
                          agg = adult,
@@ -416,6 +427,9 @@ young_adult_symptom <- symptom_rate(age_sex_agg = young_adult_agg,
 older_adult_symptom <- symptom_rate(age_sex_agg = older_adult_agg,
                             all_agg = adult_agg, deaths = "malaria_deaths",
                             symptoms = adult_symptoms)
+adult_malaria_symptom <- symptom_rate(age_sex_agg = adult_malaria_agg,
+                                    all_agg = adult_agg, deaths = "malaria_deaths",
+                                    symptoms = adult_symptoms)
 
 # Creating mappping parameters
 create_map <- function(data, symptom) {
@@ -458,3 +472,4 @@ oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms", "fig-
 oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms", "fig-oaf-malaria-maps")
 young_adult_plot <- create_plots(young_adult_symptom, "Young Adult Malaria Symptoms", "fig-ya-malaria-maps")
 older_adult_plot <- create_plots(older_adult_symptom, "Older Adult Malaria Symptoms", "fig-oa-malaria-maps")
+adult_plot <- create_plots(adult_malaria_symptom, "Adult Malaria Symptoms", "fig-adult-malaria-maps")
