@@ -149,9 +149,9 @@ child$gid_dist <- as.integer(child$gid_dist)
 non_malaria <- c("Malaria", "Other infections")
 
 # Creating filters for young childs by sex, age, and malaria
-male_child_non_malaria <- child %>% filter(sex_death == "Male" & cghr10_title %in% non_malaria)
-female_child_non_malaria <- child %>% filter(sex_death == "Female" & cghr10_title %in% non_malaria)
-child_non_malaria <- child %>% filter(cghr10_title %in% non_malaria)
+male_child_non_malaria <- child %>% filter(sex_death == "Male" & cghr10_title != "Malaria" & cghr10_title != "Other infections")
+female_child_non_malaria <- child %>% filter(sex_death == "Female" & cghr10_title != "Malaria" & cghr10_title != "Other infections")
+child_non_malaria <- child %>% filter(cghr10_title != "Malaria" & cghr10_title != "Other infections")
 
 # Set mapping dataframe
 mapping <- data.frame(
