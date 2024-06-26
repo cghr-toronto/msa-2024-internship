@@ -167,7 +167,9 @@ young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
 # List of causes of death
-infections <- c("Acute respiratory infections")
+infections <- c("Acute bacterial sepsis & severe Infections", "Digestive diseases", "Fever of unknown origin", "Meningitis", "Other infectious and parasitic diseases",
+                "Respiratory infections", "HIV/AIDS", "Hepatitis", "Selected tropical diseases", "Selected vaccine preventable diseases", "Sexually-transmitted infections excl. HIV/AIDS",
+                "Tuberculosis")
 
 # Creating filters for young adults by sex, age, and malaria
 young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & wbd10_codex2_title == "Malaria")
