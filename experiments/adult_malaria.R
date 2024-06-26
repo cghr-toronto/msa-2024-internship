@@ -167,9 +167,9 @@ young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
 # List of causes of death
-infections <- c("Acute bacterial sepsis & severe Infections", "Digestive diseases", "Fever of unknown origin", "Meningitis", "Other infectious and parasitic diseases",
+infections <- c("Acute bacterial sepsis & severe Infections", "Digestive diseases", "Fever of unknown origin", "Meningitis/encephalitis", "Other infectious and parasitic diseases",
                 "Respiratory infections", "HIV/AIDS", "Hepatitis", "Selected tropical diseases", "Selected vaccine preventable diseases", "Sexually-transmitted infections excl. HIV/AIDS",
-                "Tuberculosis")
+                "Tuberculosis", "Diarrhoeal diseases")
 
 # Creating filters for young adults by sex, age, and malaria
 young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & wbd10_codex2_title == "Malaria")
@@ -188,7 +188,8 @@ older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% 
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
 adult_malaria <- adult %>% filter(wbd10_codex2_title == "Malaria")
-adult_infections <- adult %>% filter()
+adult_infections <- adult %>% filter(wbd10_codex2_title %in% infections)
+adult_non_infections <- adult %>% filter((!wbd10_codex2_title %in% infections) & wbd10_codex2_title != "Malaria")
 
 # Set mapping dataframe
 mapping <- data.frame(
