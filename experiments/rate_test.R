@@ -216,7 +216,7 @@ malaria_agg <- spatial_agg(gdf = dist,
                                  is_spatial_join = FALSE,
                                  count_col = "malaria_deaths")
 
-infections_agg <- spatial_agg(gdf = dist,
+infection_agg <- spatial_agg(gdf = dist,
                                     agg = adult_infections,
                                     mapping = mapping,
                                     gdf_id = "distname", 
@@ -224,7 +224,7 @@ infections_agg <- spatial_agg(gdf = dist,
                                     is_spatial_join = FALSE,
                                     count_col = "infection_deaths")
 
-non_infections_agg <- spatial_agg(gdf = dist,
+non_infectios_agg <- spatial_agg(gdf = dist,
                                         agg = adult_non_infections,
                                         mapping = mapping,
                                         gdf_id = "distname", 
@@ -271,14 +271,14 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
     
     # Add all deaths to malaria table
     spatial$m_deaths <- malaria_agg$malaria_deaths
-    spatial$i_deaths <- infections_agg$infections_deaths
-    spatial$ni_deaths <- non_infections_agg$non_infections_deaths
+    spatial$i_deaths <- infection_agg$infection_deaths
+    spatial$ni_deaths <- non_infection_agg$non_infection_deaths
     
     all_deaths <- c("m_deaths","i_deaths", "ni_deaths")
     
     # Create rate columns for malaria symptoms
     for (agg_deaths in all_deaths) {
-        for (symptom in symptoms) {
+        for (symptom in adult_symptoms) {
             rate_column <- paste0(symptom, agg_deaths, "_rate")
             spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[agg_deaths]]) * 1000
             spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
