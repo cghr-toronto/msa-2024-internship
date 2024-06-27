@@ -256,7 +256,7 @@ adult_malaria_agg <- spatial_agg(gdf = dist,
                                is_spatial_join = FALSE,
                                count_col = "malaria_deaths")
 
-adult_infections_agg <- spatial_agg(gdf = dist,
+adult_infection_agg <- spatial_agg(gdf = dist,
                                     agg = adult_infections,
                                     mapping = mapping,
                                     gdf_id = "distname", 
@@ -264,7 +264,7 @@ adult_infections_agg <- spatial_agg(gdf = dist,
                                     is_spatial_join = FALSE,
                                     count_col = "infection_deaths")
 
-adult_non_infections_agg <- spatial_agg(gdf = dist,
+adult_non_infection_agg <- spatial_agg(gdf = dist,
                                     agg = adult_non_infections,
                                     mapping = mapping,
                                     gdf_id = "distname", 
@@ -372,8 +372,8 @@ hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult Symptom Heatmap
 symptom_rate <- function(
         age_sex_agg,
         malaria_agg,
-        infections_agg,
-        non_infections_agg,
+        infection_agg,
+        non_infection_agg,
         deaths,
         symptoms){
 
@@ -401,8 +401,8 @@ spatial <- result %>%
 
 # Add all deaths to malaria table
 spatial$m_deaths <- malaria_agg$malaria_deaths
-spatial$i_deaths <- infections_agg$infections_deaths
-spatial$ni_deaths <- non_infections_agg$non_infections_deaths
+spatial$i_deaths <- infection_agg$infection_deaths
+spatial$ni_deaths <- non_infection_agg$non_infection_deaths
 
 all_deaths <- c("m_deaths","i_deaths", "ni_deaths")
 
