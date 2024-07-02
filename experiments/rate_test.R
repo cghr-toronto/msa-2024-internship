@@ -361,8 +361,10 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
                   panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
                   axis.text = element_blank(), 
-                  axis.ticks = element_blank(), 
+                  axis.ticks = element_blank(),
+                  axis.title.x = element_blank(),
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
             ylab(y_axis)
@@ -376,6 +378,7 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
                 theme_minimal() + 
                 theme(panel.grid.major = element_blank(), 
                       panel.grid.minor = element_blank(),
+                      legend.title = element_blank(),
                       axis.text = element_blank(), 
                       axis.ticks = element_blank(), 
                       axis.title = element_blank(),
@@ -394,13 +397,14 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
                     geom_sf(aes(fill=(rates))) +
                     guides(fill = guide_legend()) +
                     scale_fill_continuous(low="lightblue", high="darkblue") +
-                    ggtitle(paste(symptom)) +
                     geom_sf_label(aes(label = rates), size = 1.8) +
                     theme_minimal() + 
                     theme(panel.grid.major = element_blank(), 
                           panel.grid.minor = element_blank(),
+                          legend.title = element_blank(),
                           axis.text = element_blank(), 
-                          axis.ticks = element_blank(), 
+                          axis.ticks = element_blank(),
+                          axis.title.x = element_blank(),
                           axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                           plot.title = element_text(hjust = 0.5, size = 20)) +
                     ylab(y_axis)
@@ -413,6 +417,7 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
                 theme_minimal() + 
                 theme(panel.grid.major = element_blank(), 
                       panel.grid.minor = element_blank(),
+                      legend.title = element_blank(),
                       axis.text = element_blank(), 
                       axis.ticks = element_blank(), 
                       axis.title = element_blank(),
