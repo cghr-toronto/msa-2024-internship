@@ -331,21 +331,6 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
         
         ggsave(jpeg_title, plot = series, device = "jpeg", width = 26, height = 13)
     }
-    
-    pdf_maps <- function(series, title){
-        
-        pdf_output_dir <- "../figures/"
-        
-        jpeg_output_dir <- "../figures.jpgs/"
-        
-        pdf_title <- paste0(pdf_output_dir, title, ".pdf")
-        
-        jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
-        
-        ggsave(pdf_title, plot = series, device = "pdf", width = 26, height = 13)
-        
-        ggsave(jpeg_title, plot = series, device = "jpeg", width = 26, height = 13)
-    }
 
     create_map <- function(data, symptom, y_axis) {
         filtered_data <- data %>% filter(symptoms == symptom)

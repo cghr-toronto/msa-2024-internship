@@ -206,7 +206,7 @@ young_male_adult_agg <- spatial_agg(gdf = dist,
                                  gdf_id = "distname", 
                                  agg_id = "district_cod",
                                  is_spatial_join = FALSE,
-                                 count_col = "malaria_deaths")
+                                 count_col = "deaths")
 
 young_female_adult_agg <- spatial_agg(gdf = dist,
                                         agg = young_female_adult_malaria,
@@ -214,7 +214,7 @@ young_female_adult_agg <- spatial_agg(gdf = dist,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
-                                        count_col = "malaria_deaths")
+                                        count_col = "deaths")
 
 older_male_adult_agg <- spatial_agg(gdf = dist,
                                         agg = older_male_adult_malaria,
@@ -222,7 +222,7 @@ older_male_adult_agg <- spatial_agg(gdf = dist,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
-                                        count_col = "malaria_deaths")
+                                        count_col = "deaths")
 
 older_female_adult_agg <- spatial_agg(gdf = dist,
                                         agg = older_female_adult_malaria,
@@ -230,7 +230,7 @@ older_female_adult_agg <- spatial_agg(gdf = dist,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
-                                        count_col = "malaria_deaths")
+                                        count_col = "deaths")
 
 young_adult_agg <- spatial_agg(gdf = dist,
                                       agg = young_adult_malaria,
@@ -238,7 +238,7 @@ young_adult_agg <- spatial_agg(gdf = dist,
                                       gdf_id = "distname", 
                                       agg_id = "district_cod",
                                       is_spatial_join = FALSE,
-                                      count_col = "malaria_deaths")
+                                      count_col = "deaths")
 
 older_adult_agg <- spatial_agg(gdf = dist,
                                       agg = older_adult_malaria,
@@ -246,7 +246,7 @@ older_adult_agg <- spatial_agg(gdf = dist,
                                       gdf_id = "distname", 
                                       agg_id = "district_cod",
                                       is_spatial_join = FALSE,
-                                      count_col = "malaria_deaths")
+                                      count_col = "deaths")
 
 adult_malaria_agg <- spatial_agg(gdf = dist,
                                agg = adult_malaria,
@@ -373,7 +373,10 @@ symptom_rate <- function(
         age_sex_agg,
         all_agg,
         deaths,
-        symptoms){
+        symptoms,
+        malaria_agg,
+        infections_agg,
+        non_infections_agg){
     
     # Remove geometry from aggregated dataframe
     age_sex_without_geometry <- age_sex_agg  %>%
@@ -398,13 +401,21 @@ symptom_rate <- function(
         left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
     
     # Add all deaths to malaria table
-    spatial$all_deaths <- all_agg$all_deaths
+    spatial$malaria <- malaria_agg$malaria_deaths
+    spatial$infections <- infection_agg$infection_deaths
+    spatial$non_infections <- non_infection_agg$non_infection_deaths
+    spatial$all_deaths <- adult_agg$all_deaths
+    
+    # List of causes of death
+    all_deaths <- c("malaria","infections", "non_infections")
     
     # Create rate columns for malaria symptoms
-    for (symptom in symptoms) {
-        rate_column <- paste0(symptom, "_rate")
-        spatial[[rate_column]] <- (spatial[[symptom]] / spatial$all_deaths) * 1000
-        spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
+    for (agg_deaths in all_deaths) {
+        for (symptom in adult_symptoms) {
+            rate_column <- paste0(symptom, "_", agg_deaths, "_rate")
+            spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[agg_deaths]]) * 1000
+            spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
+        }
     }
     
     # Print the wide format
@@ -420,12 +431,17 @@ symptom_rate <- function(
                      names_to = "symptoms", 
                      values_to = "rates") %>% 
         select(gid, symptoms, rates) %>%
-        mutate(symptoms = str_remove(symptoms, "_rate$"))
+        mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
+        mutate(denom_group = case_when( 
+            str_ends(symptoms, "_malaria") ~ "Malaria", 
+            str_ends(symptoms, "_non_infections") ~ "Non-Infections",
+            str_ends(symptoms, "_infections") ~ "Infections"
+        )) %>%
+        mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$"))
     
     return(out)
     
 }
-
 
 # Defining symptoms to be plotted
 adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit",
@@ -433,55 +449,136 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
 
 # Running symptom_rate for each age group
 yam_symptom <- symptom_rate(age_sex_agg = young_male_adult_agg,
-                            all_agg = adult_agg, deaths = "malaria_deaths",
-                            symptoms = adult_symptoms)
+                            all_agg = adult_agg, deaths = "deaths",
+                            symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
+                            infections_agg = adult_infection_agg, non_infections_agg = non_infection_agg)
+
 yaf_symptom <- symptom_rate(age_sex_agg = young_female_adult_agg,
-                            all_agg = adult_agg, deaths = "malaria_deaths",
-                            symptoms = adult_symptoms)
+                            all_agg = adult_agg, deaths = "deaths",
+                            symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
+                            infections_agg = adult_infection_agg, non_infections_agg = non_infection_agg)
+
 oam_symptom <- symptom_rate(age_sex_agg = older_male_adult_agg,
-                            all_agg = adult_agg, deaths = "malaria_deaths",
-                            symptoms = adult_symptoms)
+                            all_agg = adult_agg, deaths = "deaths",
+                            symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
+                            infections_agg = adult_infection_agg, non_infections_agg = non_infection_agg)
+
 oaf_symptom <- symptom_rate(age_sex_agg = older_female_adult_agg,
-                            all_agg = adult_agg, deaths = "malaria_deaths",
-                            symptoms = adult_symptoms)
+                            all_agg = adult_agg, deaths = "deaths",
+                            symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
+                            infections_agg = adult_infection_agg, non_infections_agg = non_infection_agg)
+
 young_adult_symptom <- symptom_rate(age_sex_agg = young_adult_agg,
-                                    all_agg = adult_agg, deaths = "malaria_deaths",
-                                    symptoms = adult_symptoms)
+                                    all_agg = adult_agg, deaths = "deaths",
+                                    symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
+                                    infections_agg = adult_infection_agg, non_infections_agg = non_infection_agg)
+
 older_adult_symptom <- symptom_rate(age_sex_agg = older_adult_agg,
-                                    all_agg = adult_agg, deaths = "malaria_deaths",
-                                    symptoms = adult_symptoms)
-adult_malaria_symptom <- symptom_rate(age_sex_agg = adult_malaria_agg,
-                                      all_agg = adult_agg, deaths = "malaria_deaths",
-                                      symptoms = adult_symptoms)
+                                    all_agg = adult_agg, deaths = "deaths",
+                                    symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
+                                    infections_agg = adult_infection_agg, non_infections_agg = non_infection_agg)
 
 # Creating mappping parameters
-create_map <- function(data, symptom) {
+create_map <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
-    ggplot(data = filtered_data) +
-    geom_sf(aes(fill=(rates))) +
-    guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
-    scale_fill_continuous(low="lightblue", high="darkblue") +
-    annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
-    annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-    ggtitle(paste(symptom)) +
-    geom_sf_label(aes(label = rates), size = 1.8) +
-    theme_minimal() +
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          axis.text = element_blank(), 
-          axis.ticks = element_blank(), 
-          axis.title = element_blank(),
-          plot.title = element_text(hjust = 0.5))
+    
+    if (symptom == "fever") {
+        
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill=(rates))) +
+            guides(fill = guide_legend()) +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
+            ggtitle(paste(symptom)) +
+            geom_sf_label(aes(label = rates), size = 1.8) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(),
+                  axis.title.x = element_blank(),
+                  axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            ylab(y_axis)
+    } else {
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill=(rates))) +
+            guides(fill = guide_legend()) +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
+            ggtitle(paste(symptom)) +
+            geom_sf_label(aes(label = rates), size = 1.8) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(), 
+                  axis.title = element_blank(),
+                  plot.title = element_text(hjust = 0.5, size = 20))
+        
+    }
+    return(map)
+    
+}
+
+create_map_2 <- function(data, symptom, y_axis) {
+    filtered_data <- data %>% filter(symptoms == symptom)
+    
+    if (symptom == "fever") {
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill=(rates))) +
+            guides(fill = guide_legend()) +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
+            geom_sf_label(aes(label = rates), size = 1.8) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(),
+                  axis.title.x = element_blank(),
+                  axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            ylab(y_axis)
+    } else {
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill=(rates))) +
+            guides(fill = guide_legend()) +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
+            geom_sf_label(aes(label = rates), size = 1.8) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(), 
+                  axis.title = element_blank(),
+                  plot.title = element_text(hjust = 0.5, size = 20))
+    }
+    
+    return(map)
 }
 
 # Creating grouped plots parameters
 create_plots <- function(group_symptoms, plot_title, pdf_title) {
     
+    malaria_spatial <- group_symptoms %>% filter(denom_group == "Malaria")
+    infections_spatial <- group_symptoms %>% filter(denom_group == "Infections")
+    non_infections_spatial <- group_symptoms %>% filter(denom_group == "Non-Infections")
+    
     symptoms <- unique(group_symptoms$symptoms)
     
-    plots <- lapply(symptoms, create_map, data = group_symptoms)
+    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria")
+    infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, y_axis = "Infections")
+    non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial, y_axis = "Non-Infections")
     
-    combined_plot <- wrap_plots(plots) + plot_annotation(title = plot_title)
+    all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
+    
+    combined_plot <- wrap_plots(all_plots, ncol = length(malaria_plots)) + 
+        plot_annotation(title = plot_title,
+                        theme = theme(
+                            plot.title = element_text(size = 20, face = "bold", hjust = 0.5)
+                        ))
     
     out <- pdf_print(combined_plot, pdf_title)
     
@@ -495,4 +592,3 @@ oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms", "fig-
 oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms", "fig-oaf-malaria-maps")
 young_adult_plot <- create_plots(young_adult_symptom, "Young Adult Malaria Symptoms", "fig-ya-malaria-maps")
 older_adult_plot <- create_plots(older_adult_symptom, "Older Adult Malaria Symptoms", "fig-oa-malaria-maps")
-adult_plot <- create_plots(adult_malaria_symptom, "Adult Malaria Symptoms", "fig-adult-malaria-maps")
