@@ -327,19 +327,35 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
         
         jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
         
-        ggsave(pdf_title, plot = series, device = "pdf", width = 24, height = 13)
+        ggsave(pdf_title, plot = series, device = "pdf", width = 26, height = 13)
         
-        ggsave(jpeg_title, plot = series, device = "jpeg", width = 24, height = 13)
+        ggsave(jpeg_title, plot = series, device = "jpeg", width = 26, height = 13)
+    }
+    
+    pdf_maps <- function(series, title){
+        
+        pdf_output_dir <- "../figures/"
+        
+        jpeg_output_dir <- "../figures.jpgs/"
+        
+        pdf_title <- paste0(pdf_output_dir, title, ".pdf")
+        
+        jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
+        
+        ggsave(pdf_title, plot = series, device = "pdf", width = 26, height = 13)
+        
+        ggsave(jpeg_title, plot = series, device = "jpeg", width = 26, height = 13)
     }
 
     create_map <- function(data, symptom, y_axis) {
         filtered_data <- data %>% filter(symptoms == symptom)
+        
+        if (symptom == "fever") {
+            
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
-            guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
+            guides(fill = guide_legend()) +
             scale_fill_continuous(low="lightblue", high="darkblue") +
-            annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
-            annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -347,25 +363,15 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
                   panel.grid.minor = element_blank(),
                   axis.text = element_blank(), 
                   axis.ticks = element_blank(), 
-                  axis.title = element_blank(),
-                  plot.title = element_text(hjust = 0.5))
-        
-        if (symptom == "fever") {
-            map <- map + labs(y = y_axis)
-        }
-        
-        return(map)
-        
-    }
-    
-    create_map_2 <- function(data, symptom, y_axis) {
-            filtered_data <- data %>% filter(symptoms == symptom)
+                  axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            ylab(y_axis)
+        } else {
             map <- ggplot(data = filtered_data) +
                 geom_sf(aes(fill=(rates))) +
-                guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
+                guides(fill = guide_legend()) +
                 scale_fill_continuous(low="lightblue", high="darkblue") +
-                annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
-                annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
+                ggtitle(paste(symptom)) +
                 geom_sf_label(aes(label = rates), size = 1.8) +
                 theme_minimal() + 
                 theme(panel.grid.major = element_blank(), 
@@ -373,10 +379,44 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
                       axis.text = element_blank(), 
                       axis.ticks = element_blank(), 
                       axis.title = element_blank(),
-                      plot.title = element_text(hjust = 0.5)) 
+                      plot.title = element_text(hjust = 0.5, size = 20))
+        
+        }
+        return(map)
+        
+    }
+    
+    create_map_2 <- function(data, symptom, y_axis) {
+            filtered_data <- data %>% filter(symptoms == symptom)
             
             if (symptom == "fever") {
-                map <- map + labs(y = y_axis)
+                map <- ggplot(data = filtered_data) +
+                    geom_sf(aes(fill=(rates))) +
+                    guides(fill = guide_legend()) +
+                    scale_fill_continuous(low="lightblue", high="darkblue") +
+                    ggtitle(paste(symptom)) +
+                    geom_sf_label(aes(label = rates), size = 1.8) +
+                    theme_minimal() + 
+                    theme(panel.grid.major = element_blank(), 
+                          panel.grid.minor = element_blank(),
+                          axis.text = element_blank(), 
+                          axis.ticks = element_blank(), 
+                          axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
+                          plot.title = element_text(hjust = 0.5, size = 20)) +
+                    ylab(y_axis)
+            } else {
+            map <- ggplot(data = filtered_data) +
+                geom_sf(aes(fill=(rates))) +
+                guides(fill = guide_legend()) +
+                scale_fill_continuous(low="lightblue", high="darkblue") +
+                geom_sf_label(aes(label = rates), size = 1.8) +
+                theme_minimal() + 
+                theme(panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      axis.text = element_blank(), 
+                      axis.ticks = element_blank(), 
+                      axis.title = element_blank(),
+                      plot.title = element_text(hjust = 0.5, size = 20))
             }
             
             return(map)
@@ -397,7 +437,6 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
         
         combined_plot <- wrap_plots(all_plots, ncol = length(malaria_plots)) + 
             plot_annotation(title = "Young Adult Male Malaria Symptoms (13-39)",
-                            caption = "279 records",
                             theme = theme(
                                 plot.title = element_text(size = 20, face = "bold", hjust = 0.5)
                             ))
