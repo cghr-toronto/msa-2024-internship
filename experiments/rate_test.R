@@ -361,10 +361,12 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
         symptoms <- unique(group_symptoms$symptoms)
         
         malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial)
-        infections_plots <- lapply(symptoms, create_map, data = infections_spatial)
-        non_infections_plots <- lapply(symptoms, create_map, data = non_infections_spatial)
+        infection_plots <- lapply(symptoms, create_map, data = infections_spatial)
+        non_infection_plots <- lapply(symptoms, create_map, data = non_infections_spatial)
         
-        combined_plot <- wrap_plots(malaria_plots) + plot_annotation(title = plot_title)
+        all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
+        
+        combined_plot <- wrap_plots(all_plots, ncol = length(malaria_plots)) + plot_annotation(title = plot_title)
         
         out <- pdf_print(combined_plot, pdf_title)
         
