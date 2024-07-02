@@ -332,9 +332,9 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
         ggsave(jpeg_title, plot = series, device = "jpeg", width = 24, height = 13)
     }
 
-    create_map <- function(data, symptom) {
+    create_map <- function(data, symptom, y_axis) {
         filtered_data <- data %>% filter(symptoms == symptom)
-        ggplot(data = filtered_data) +
+        map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
             scale_fill_continuous(low="lightblue", high="darkblue") +
@@ -349,46 +349,55 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
                   axis.ticks = element_blank(), 
                   axis.title = element_blank(),
                   plot.title = element_text(hjust = 0.5))
+        
+        if (symptom == "fever") {
+            map <- map + labs(y = y_axis)
+        }
+        
+        return(map)
+        
     }
     
-    create_map_2 <- function(data, symptom) {
-        filtered_data <- data %>% filter(symptoms == symptom)
-        ggplot(data = filtered_data) +
-            geom_sf(aes(fill=(rates))) +
-            guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
-            scale_fill_continuous(low="lightblue", high="darkblue") +
-            annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
-            annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
-            geom_sf_label(aes(label = rates), size = 1.8) +
-            theme_minimal() + 
-            theme(panel.grid.major = element_blank(), 
-                  panel.grid.minor = element_blank(),
-                  axis.text = element_blank(), 
-                  axis.ticks = element_blank(), 
-                  axis.title = element_blank())
+    create_map_2 <- function(data, symptom, y_axis) {
+            filtered_data <- data %>% filter(symptoms == symptom)
+            map <- ggplot(data = filtered_data) +
+                geom_sf(aes(fill=(rates))) +
+                guides(fill = guide_legend(title = "Cases per 1000 deaths")) +
+                scale_fill_continuous(low="lightblue", high="darkblue") +
+                annotation_north_arrow(width = unit(0.4, "cm"),height = unit(0.5, "cm"), location = "tr") +
+                annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
+                geom_sf_label(aes(label = rates), size = 1.8) +
+                theme_minimal() + 
+                theme(panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      axis.text = element_blank(), 
+                      axis.ticks = element_blank(), 
+                      axis.title = element_blank(),
+                      plot.title = element_text(hjust = 0.5)) 
+            
+            if (symptom == "fever") {
+                map <- map + labs(y = y_axis)
+            }
+            
+            return(map)
     }
     
     # Creating grouped plots parameters
-
-        
         malaria_spatial <- new_spatial %>% filter(denom_group == "Malaria")
         infections_spatial <- new_spatial %>% filter(denom_group == "Infections")
         non_infections_spatial <- new_spatial %>% filter(denom_group == "Non-Infections")
         
         symptoms <- unique(new_spatial$symptoms)
         
-        malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial)
-        infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial)
-        non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial)
-        
-        malaria_plots[[1]] <- malaria_plots[[1]] + ylab("Malaria")
-        infection_plots[[1]] <- infection_plots[[1]] + ylab("Infections")
-        non_infection_plots[[1]] <- non_infection_plots[[1]] + ylab("Non-Infections")
+        malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria")
+        infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, y_axis = "Infections")
+        non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial, y_axis = "Non-Infections")
         
         all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
         
         combined_plot <- wrap_plots(all_plots, ncol = length(malaria_plots)) + 
-            plot_annotation(title = "Young Adult Male Malaria Symptoms",
+            plot_annotation(title = "Young Adult Male Malaria Symptoms (13-39)",
+                            caption = "279 records",
                             theme = theme(
                                 plot.title = element_text(size = 20, face = "bold", hjust = 0.5)
                             ))
