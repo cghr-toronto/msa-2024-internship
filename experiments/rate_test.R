@@ -316,6 +316,21 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
             str_ends(symptoms, "_infections") ~ "Infections"
         )) %>%
         mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$"))
+    
+    pdf_print <- function(series, title){
+        
+        pdf_output_dir <- "../figures/"
+        
+        jpeg_output_dir <- "../figures.jpgs/"
+        
+        pdf_title <- paste0(pdf_output_dir, title, ".pdf")
+        
+        jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
+        
+        ggsave(pdf_title, plot = series, device = "pdf", width = 14, height = 10)
+        
+        ggsave(jpeg_title, plot = series, device = "jpeg", width = 14, height = 10)
+    }
 
     create_map <- function(data, symptom) {
         filtered_data <- data %>% filter(symptoms == symptom)
@@ -327,7 +342,7 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
             annotation_scale(plot_unit = "m", style = "ticks", location = "bl") +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
-            theme_minimal() +
+            theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
                   panel.grid.minor = element_blank(),
                   axis.text = element_blank(), 
@@ -339,11 +354,17 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
     # Creating grouped plots parameters
     create_plots <- function(group_symptoms, plot_title, pdf_title) {
         
+        malaria_spatial <- group_symptoms %>% filter(denom_group == "Malaria")
+        infections_spatial <- group_symptoms %>% filter(denom_group == "Infections")
+        non_infections_spatial <- group_symptoms %>% filter(denom_group == "Non-Infections")
+        
         symptoms <- unique(group_symptoms$symptoms)
         
-        plots <- lapply(symptoms, create_map, data = group_symptoms)
+        malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial)
+        infections_plots <- lapply(symptoms, create_map, data = infections_spatial)
+        non_infections_plots <- lapply(symptoms, create_map, data = non_infections_spatial)
         
-        combined_plot <- wrap_plots(plots) + plot_annotation(title = plot_title)
+        combined_plot <- wrap_plots(malaria_plots) + plot_annotation(title = plot_title)
         
         out <- pdf_print(combined_plot, pdf_title)
         
@@ -351,4 +372,4 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
     }
     
     # Creating plot series for each age group
-    yam_plot <- create_plots(yam_symptom, "Young Adult Male Malaria Symptoms", "fig-yam-malaria-maps")
+    yam_plot <- create_plots(new_spatial, "Young Adult Male Malaria Symptoms", "fig-yam-malaria-maps")
