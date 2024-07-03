@@ -27,7 +27,7 @@ gid_r1 <- st_read("../tmp/data/sl_rd1_gid_v1.csv")
 gid_r2 <- st_read("../tmp/data/sl_rd2_gid_v1.csv")
 
 # Reading in ICD-10 code file
-icd <- st_read("../tmp/data/icd10_cghr10_v1.csv")
+icd <- st_read("../tmp/data/icd10_wbd10_v1.csv")
 
 # Join child datasets with GID files
 child_r1_gid <- left_join(child_r1, gid_r1, by = "geoid")

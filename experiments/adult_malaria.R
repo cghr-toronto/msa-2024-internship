@@ -291,9 +291,9 @@ pdf_print <- function(series, title){
     
     jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
     
-    ggsave(pdf_title, plot = series, device = "pdf", width = 14, height = 10)
+    ggsave(pdf_title, plot = series, device = "pdf", width = 26, height = 13)
     
-    ggsave(jpeg_title, plot = series, device = "jpeg", width = 14, height = 10)
+    ggsave(jpeg_title, plot = series, device = "jpeg", width = 26, height = 13)
     
 }
 
