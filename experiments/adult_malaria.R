@@ -12,6 +12,7 @@ library(ggspatial)
 library(tmap)
 library(prettymapr)
 library(patchwork)
+library(readxl)
 
 ## Read data
 # Reading in Adult Round 1 and Round 2 data
@@ -26,7 +27,7 @@ gid_r1 <- st_read("../tmp/data/sl_rd1_gid_v1.csv")
 gid_r2 <- st_read("../tmp/data/sl_rd2_gid_v1.csv")
 
 # Reading in ICD-10 code file
-icd <- st_read("../tmp/data/icd10_wbd10_v1.csv")
+icd <- read_xlsx("../tmp/data/ICD-10 Version2016_Jun22_CM.xlsx")
 
 # Join Adult datasets with GID files
 adult_r1_gid <- left_join(adult_r1, gid_r1, by = "geoid")
@@ -156,14 +157,11 @@ adult <- adult %>% mutate_all(na_if,"") %>%
     )
     ) 
 
-# Remove neonatal and child records from ICD codes
-icd <- filter(icd, wbd10_age == "adult")
-
 # Assign CGHR-10 title for corresponding record codes
-adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod"))
+adult <- left_join(adult, icd, by = setNames("final_icd", "final_icd_cod"))
 
 # Creating age ranges for adults
-young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
+young_adult_age <- c("15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
 # List of causes of death
@@ -172,24 +170,24 @@ infections <- c("Acute bacterial sepsis & severe Infections", "Digestive disease
                 "Tuberculosis", "Diarrhoeal diseases")
 
 # Creating filters for young adults by sex, age, and malaria
-young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & wbd10_codex2_title == "Malaria")
-young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & wbd10_codex2_title == "Malaria")
-young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & wbd10_codex2_title == "Malaria")
+young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & 'COD Group (Cathy)' == "Malaria")
+young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & 'COD Group (Cathy)' == "Malaria")
+young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & 'COD Group (Cathy)' == "Malaria")
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
 young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age)
 young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
 
 # Creating filters for older adults by sex, age, and malaria
-older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & wbd10_codex2_title == "Malaria")
-older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & wbd10_codex2_title == "Malaria")
-older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & wbd10_codex2_title == "Malaria")
+older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & 'COD Group (Cathy)' == "Malaria")
+older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & 'COD Group (Cathy)' == "Malaria")
+older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & 'COD Group (Cathy)' == "Malaria")
 older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
 older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
-adult_malaria <- adult %>% filter(wbd10_codex2_title == "Malaria")
-adult_infections <- adult %>% filter(wbd10_codex2_title %in% infections)
-adult_non_infections <- adult %>% filter((!wbd10_codex2_title %in% infections) & wbd10_codex2_title != "Malaria")
+adult_malaria <- adult %>% filter('COD Group (Cathy)' == "Malaria")
+adult_infections <- adult %>% filter('COD Group (Cathy)' %in% infections)
+adult_non_infections <- adult %>% filter((!'COD Group (Cathy)' %in% infections) & 'COD Group (Cathy)' != "Malaria")
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -303,9 +301,9 @@ non_spatial <- function(age_group){
     ns <- pivot_longer(age_group, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
                        names_to = "symptom", # New column to store the symptom names
                        values_to = "value" # New column to store the counts
-    ) %>% group_by(wbd10_codex2_title, value) %>%
+    ) %>% group_by('COD Group (Cathy)', value) %>%
         summarise(count = n(), .groups = 'drop') %>%
-        arrange(wbd10_codex2_title, value) %>%
+        arrange('COD Group (Cathy)', value) %>%
         pivot_wider(
             names_from = value,   # The values in the 'value' column will become column names
             values_from = count,  # The values in the 'count' column will fill the new columns
@@ -313,9 +311,9 @@ non_spatial <- function(age_group){
         )
     
     # Creating count for deaths per cause in non-spatial
-    death_count <- age_group %>% count(wbd10_codex2_title, sort = TRUE, name = "deaths")
-    ns <- ns %>% left_join(death_count, by = "wbd10_codex2_title")
-    colnames(ns)[colnames(ns) == "wbd10_codex2_title"] <- "cause_of_death"
+    death_count <- age_group %>% count('COD Group (Cathy)', sort = TRUE, name = "deaths")
+    ns <- ns %>% left_join(death_count, by = 'COD Group (Cathy)')
+    colnames(ns)[colnames(ns) == "COD Group (Cathy)"] <- "cause_of_death"
     
     ns <- ns %>%
         mutate(is_malaria = ifelse(cause_of_death == "Malaria", 1, 0)) %>%

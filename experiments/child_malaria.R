@@ -13,6 +13,7 @@ library(ggspatial)
 library(tmap)
 library(prettymapr)
 library(patchwork)
+library(readxl)
 
 ## Read data
 # Reading in Child Round 1 and Round 2 data
@@ -27,7 +28,7 @@ gid_r1 <- st_read("../tmp/data/sl_rd1_gid_v1.csv")
 gid_r2 <- st_read("../tmp/data/sl_rd2_gid_v1.csv")
 
 # Reading in ICD-10 code file
-icd <- st_read("../tmp/data/icd10_wbd10_v1.csv")
+icd <- read_xlsx("../tmp/data/ICD-10 Version2016_Jun22_CM.xlsx")
 
 # Join child datasets with GID files
 child_r1_gid <- left_join(child_r1, gid_r1, by = "geoid")
@@ -136,24 +137,21 @@ child <- child %>% mutate_all(na_if,"") %>%
     )
     ) 
 
-# Remove neonatal and child records from ICD codes
-icd <- filter(icd, wbd10_age == "child")
-
 # Assign wbd-10 title for corresponding record codes
-child <- left_join(child, icd, by = setNames("icd10_code", "final_icd"))
+child <- left_join(child, icd, by = "final_icd")
 
 # Convert data type of District ID column
 child$gid_dist <- as.integer(child$gid_dist)
 
 # Creating filters for young childs by sex, age, and malaria
-male_child_malaria <- child %>% filter(sex_death == "Male" & wbd10_title == "Malaria")
-female_child_malaria <- child %>% filter(sex_death == "Female" & wbd10_title == "Malaria")
+male_child_malaria <- child %>% filter(sex_death == "Male" & 'COD Group (Cathy)' == "Malaria")
+female_child_malaria <- child %>% filter(sex_death == "Female" & 'COD Group (Cathy)' == "Malaria")
 male_child <- child %>% filter(sex_death == "Male")
 female_child <- child %>% filter(sex_death == "Female")
 
-child_malaria <- child %>% filter(wbd10_title == "Malaria")
-child_infections <- child %>% filter(wbd10_codex2_title %in% infections)
-child_non_infections <- child %>% filter((!wbd10_codex2_title %in% infections) & wbd10_codex2_title != "Malaria")
+child_malaria <- child %>% filter('COD Group (Cathy)' == "Malaria")
+child_infections <- child %>% filter('COD Group (Cathy)' %in% infections)
+child_non_infections <- child %>% filter((!'COD Group (Cathy)' %in% infections) & 'COD Group (Cathy)' != "Malaria")
 
 # Set mapping dataframe
 mapping <- data.frame(
