@@ -175,7 +175,7 @@ infections <- c("Acute respiratory infections",
                 "Hepatitis", 
                 "Severe Localized Infection", 
                 "Selected vaccine preventable diseases", 
-                "Sexually-transmitted infections excl. HIV/AIDS",
+                "Other sexually transmitted infections (excl. HIV/AIDS)",
                 "Tuberculosis", 
                 "Diarrhoea",
                 "Severe Systemic Infection",
@@ -206,7 +206,7 @@ older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% 
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
 adult_malaria <- adult %>% filter(`COD Group (Cathy)` == "Malaria")
-adult_infections <- adult %>% filter(`COD Group (Cathy)` %in% infections)
+adult_infections <- adult %>% filter(`COD Group (Cathy)` %in% infections | `COD` == "Chronic viral hepatitis")
 adult_non_infections <- adult %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria")
 
 # Set mapping dataframe
@@ -358,11 +358,16 @@ hm <- function(ns_table, hm_title, pdf_title) {
     heat <- pivot_longer(ns_table, cols = -cause_of_death,
                          names_to = "symptoms",
                          values_to = "counts") %>%
-        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
+        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths") %>%
+        mutate(type_of_cause = case_when(
+            cause_of_death == "Malaria" ~ "Malaria",
+            cause_of_death %in% infections ~ "Infections",
+            TRUE ~ "Non-infections"
+        ))
     
     heat$cause_of_death <- factor(heat$cause_of_death, levels = c("malaria", unique(heat$cause_of_death)))
     
-    heat_map_plot <- ggplot(heat, aes(symptoms, cause_of_death)) +
+    heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
         geom_tile(aes(fill = counts)) +
         geom_text(aes(label = round(counts, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
