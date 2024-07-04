@@ -143,6 +143,31 @@ child <- left_join(child, icd, by = "final_icd")
 # Convert data type of District ID column
 child$gid_dist <- as.integer(child$gid_dist)
 
+# List of causes of death
+infections <- c("Acute respiratory infections", 
+                "Digestive diseases", 
+                "Fever of unknown origin", 
+                "Meningitis/encephalitis", 
+                "Other chronic respiratory infections",
+                "Other infectious diseases", 
+                "HIV/AIDS", 
+                "Hepatitis", 
+                "Severe Localized Infection", 
+                "Selected vaccine preventable diseases", 
+                "Sexually-transmitted infections excl. HIV/AIDS",
+                "Tuberculosis", 
+                "Diarrhoea",
+                "Severe Systemic Infection",
+                "Covid",
+                "Measles",
+                "Hepatitis",
+                "Helminthiases",
+                "Arthropod-borne viral fevers",
+                "Rabies",
+                "Syphilis",
+                "Tetanus",
+                "History of Covid-19")
+
 # Creating filters for young childs by sex, age, and malaria
 male_child_malaria <- child %>% filter(sex_death == "Male" & `COD Group (Cathy)` == "Malaria")
 female_child_malaria <- child %>% filter(sex_death == "Female" & `COD Group (Cathy)` == "Malaria")

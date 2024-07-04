@@ -183,7 +183,11 @@ infections <- c("Acute respiratory infections",
                 "Measles",
                 "Hepatitis",
                 "Helminthiases",
-                "Arthropod-borne viral fevers")
+                "Arthropod-borne viral fevers",
+                "Rabies",
+                "Syphilis",
+                "Tetanus",
+                "History of Covid-19")
 
 # Creating filters for young adults by sex, age, and malaria
 young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
