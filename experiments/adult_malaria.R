@@ -370,7 +370,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
         group_by(type_of_cause, symptoms) %>%
         summarise(total_count = sum(counts))
     
-    #heat$type_of_cause <- factor(heat$type_of_cause, levels = c("Malaria", "Infections", "Non-infections"))
+    heat$type_of_cause <- factor(heat$type_of_cause, levels = c("Non-infections", "Infections", "Malaria"))
     
     heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
         geom_tile(aes(fill = total_count)) +
