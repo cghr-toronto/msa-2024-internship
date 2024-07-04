@@ -366,13 +366,15 @@ hm <- function(ns_table, hm_title, pdf_title) {
     heat <- pivot_longer(ns_table, cols = -c(cause_of_death, type_of_cause),
                          names_to = "symptoms",
                          values_to = "counts") %>%
-        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths") %>%
+        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths") %>% 
+        group_by(type_of_cause, symptoms) %>%
+        summarise(total_count = sum(counts))
     
-    heat$cause_of_death <- factor(heat$cause_of_death, levels = c("malaria", unique(heat$cause_of_death)))
+    # heat$type_of_cause <- factor(heat$type_of_cause, levels = c("Malaria", unique(heat$cause_of_death)))
     
     heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
-        geom_tile(aes(fill = counts)) +
-        geom_text(aes(label = round(counts, 1))) +
+        geom_tile(aes(fill = total_count)) +
+        geom_text(aes(label = round(total_count, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
         scale_x_discrete(position = "top") +
         theme(axis.text.x = element_text(angle = 45, size = 8, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
