@@ -189,6 +189,9 @@ infections <- c("Acute respiratory infections",
                 "Tetanus",
                 "History of Covid-19")
 
+# Trip whitespaces in COD column
+adult$COD <- str_trim(adult$COD)
+
 # Creating filters for young adults by sex, age, and malaria
 young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
 young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
@@ -207,7 +210,7 @@ older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %
 
 adult_malaria <- adult %>% filter(`COD Group (Cathy)` == "Malaria")
 adult_infections <- adult %>% filter((`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
-adult_non_infections <- adult %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria")
+adult_non_infections <- adult %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -363,7 +366,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
     heat <- pivot_longer(ns_table, cols = -c(cause_of_death, type_of_cause),
                          names_to = "symptoms",
                          values_to = "counts") %>%
-        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
+        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths") %>%
     
     heat$cause_of_death <- factor(heat$cause_of_death, levels = c("malaria", unique(heat$cause_of_death)))
     
