@@ -144,14 +144,14 @@ child <- left_join(child, icd, by = "final_icd")
 child$gid_dist <- as.integer(child$gid_dist)
 
 # Creating filters for young childs by sex, age, and malaria
-male_child_malaria <- child %>% filter(sex_death == "Male" & 'COD Group (Cathy)' == "Malaria")
-female_child_malaria <- child %>% filter(sex_death == "Female" & 'COD Group (Cathy)' == "Malaria")
+male_child_malaria <- child %>% filter(sex_death == "Male" & `COD Group (Cathy)` == "Malaria")
+female_child_malaria <- child %>% filter(sex_death == "Female" & `COD Group (Cathy)` == "Malaria")
 male_child <- child %>% filter(sex_death == "Male")
 female_child <- child %>% filter(sex_death == "Female")
 
-child_malaria <- child %>% filter('COD Group (Cathy)' == "Malaria")
-child_infections <- child %>% filter('COD Group (Cathy)' %in% infections)
-child_non_infections <- child %>% filter((!'COD Group (Cathy)' %in% infections) & 'COD Group (Cathy)' != "Malaria")
+child_malaria <- child %>% filter(`COD Group (Cathy)` == "Malaria")
+child_infections <- child %>% filter(`COD Group (Cathy)` %in% infections)
+child_non_infections <- child %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria")
 
 # Set mapping dataframe
 mapping <- data.frame(
