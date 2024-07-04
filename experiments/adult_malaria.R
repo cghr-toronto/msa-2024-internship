@@ -439,7 +439,7 @@ symptom_rate <- function(
     
     # Create rate columns for malaria symptoms
     for (agg_deaths in all_deaths) {
-        for (symptom in adult_symptoms) {
+        for (symptom in symptoms) {
             rate_column <- paste0(symptom, "_", agg_deaths, "_rate")
             spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[agg_deaths]]) * 1000
             spatial[[rate_column]] <- round(spatial[[rate_column]], 2)

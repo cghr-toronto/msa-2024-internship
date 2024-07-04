@@ -14,9 +14,9 @@ library(prettymapr)
 library(patchwork)
 
 ## Read data
-# Reading in Child Round 1 and Round 2 data
-child_r1 <- st_read("../tmp/data/healsl_rd1_child_v1.csv")
-child_r2 <- st_read("../tmp/data/healsl_rd2_child_v1.csv")
+# Reading in Adult Round 1 and Round 2 data
+adult_r1 <- st_read("../tmp/data/healsl_rd1_adult_v1.csv")
+adult_r2 <- st_read("../tmp/data/healsl_rd2_adult_v1.csv")
 
 # Reading District Boundary file
 dist <- st_read("../tmp/data/sl_dist_17_v2.geojson")
@@ -26,18 +26,37 @@ gid_r1 <- st_read("../tmp/data/sl_rd1_gid_v1.csv")
 gid_r2 <- st_read("../tmp/data/sl_rd2_gid_v1.csv")
 
 # Reading in ICD-10 code file
-icd <- read_xlsx("../tmp/data/ICD-10 Version2016_Jun22_CM.xlsx")
+icd <- st_read("../tmp/data/icd10_wbd10_v1.csv")
 
-# Join child datasets with GID files
-child_r1_gid <- left_join(child_r1, gid_r1, by = "geoid")
-child_r2_gid <- left_join(child_r2, gid_r2, by = "geoid")
+# Join Adult datasets with GID files
+adult_r1_gid <- left_join(adult_r1, gid_r1, by = "geoid")
+adult_r2_gid <- left_join(adult_r2, gid_r2, by = "geoid")
 
-# Combine r1 and r2 child data
-child <- bind_rows(child_r1_gid, child_r2_gid)
+# Find matching columns
+same_cols <- colnames(adult_r2_gid)
+same_cols <- same_cols[same_cols %in% colnames(adult_r1_gid)]
+
+# Ensure both data have same columns
+adult_r1_gid <- adult_r1_gid %>% select(all_of(same_cols))
+adult_r2_gid <- adult_r2_gid %>% select(all_of(same_cols))
+
+# # Fix conflicting date type columns in round 1 and round 2 adult
+# adult_r1_gid <- adult_r1_gid %>%
+#     mutate(across(
+#         .cols = starts_with("time") | ends_with("time") | ends_with("date"),
+#         .fns = ~ na_if(., "")
+#     )) %>% 
+#     mutate(across(
+#         .cols = starts_with("time") | ends_with("time") | ends_with("date"),
+#         .fns = ~ ymd(.)
+#     ))
+
+# Combine r1 and r2 adult data
+adult <- bind_rows(adult_r1_gid, adult_r2_gid)
 
 # Get unique district names
 uniq_dname <- unique(dist$distname)
-uniq_dcod <- unique(child$district_cod)
+uniq_dcod <- unique(adult$district_cod)
 
 # See distname and district_cod
 cat(
@@ -76,7 +95,7 @@ dist <- dist %>%
 
 # Get unique district names
 uniq_dname <- unique(dist$distname)
-uniq_dcod <- unique(child$district_cod)
+uniq_dcod <- unique(adult$district_cod)
 
 # See distname and district_cod
 cat(
@@ -103,7 +122,9 @@ cat(
 )
 
 # Corrected district_cod to correct values
-child <- child %>%
+adult <- adult %>%
+    mutate(district_cod = ifelse(gid_dist == 7, "Karene",
+                                 ifelse(gid_dist == 9, "Falaba", district_cod))) %>%
     mutate(district_cod = ifelse(is.na(district_cod) | district_cod == "",
                                  case_when(
                                      gid_dist == 1 ~ "Kailahun",
@@ -126,107 +147,103 @@ child <- child %>%
                                  ),
                                  district_cod))
 
-# Created new column for child displaying final ICD-10 code cause of death
-child <- child %>% mutate_all(na_if,"") %>% 
-    mutate(final_icd = case_when(!is.na(adj_icd) ~ adj_icd,  # Use adj_icd if it is not NA
-                                 is.na(adj_icd) & !is.na(p1_recon_icd) & !is.na(p2_recon_icd) ~ p1_recon_icd,  # Use p1_recon_icd if adj_icd is NA and both p1_recon_icd and p2_recon_icd are not NA
-                                 is.na(adj_icd) & is.na(p1_recon_icd) & is.na(p2_recon_icd) ~ p1_icd,  # Use p1_icd if both adj_icd and recon_icd are NA
-                                 TRUE ~ NA_character_  # Default case, if none of the above conditions are met
+# Created new column for adult displaying final ICD-10 code cause of death
+adult <- adult %>% mutate_all(na_if,"") %>% 
+    mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
+                                     is.na(adj_icd_cod) & !is.na(p1_recon_icd_cod) & !is.na(p2_recon_icd_cod) ~ p1_recon_icd_cod,  # Use p1_recon_icd if adj_icd is NA and both p1_recon_icd and p2_recon_icd are not NA
+                                     is.na(adj_icd_cod) & is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) ~ p1_icd_cod,  # Use p1_icd if both adj_icd and recon_icd are NA
+                                     TRUE ~ NA_character_  # Default case, if none of the above conditions are met
     )
     ) 
 
-# Assign wbd-10 title for corresponding record codes
-child <- left_join(child, icd, by = "final_icd")
+# Remove neonatal and child records from ICD codes
+icd <- filter(icd, wbd10_age == "adult")
 
-# Convert data type of District ID column
-child$gid_dist <- as.integer(child$gid_dist)
+# Assign CGHR-10 title for corresponding record codes
+adult <- left_join(adult, icd, by = setNames("icd10_code", "final_icd_cod"))
+
+# Creating age ranges for adults
+young_adult_age <- c("10-14", "15-19", "20-24", "25-29", "30-34", "35-39")
+older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
 # List of causes of death
-infections <- c("Acute respiratory infections", 
+infections <- c("Acute bacterial sepsis & severe Infections", 
                 "Digestive diseases", 
                 "Fever of unknown origin", 
                 "Meningitis/encephalitis", 
-                "Other chronic respiratory infections",
-                "Other infectious diseases", 
+                "Other infectious and parasitic diseases",
+                "Respiratory infections", 
                 "HIV/AIDS", 
                 "Hepatitis", 
-                "Severe Localized Infection", 
+                "Selected tropical diseases", 
                 "Selected vaccine preventable diseases", 
-                "Other sexually transmitted infections (excl. HIV/AIDS)",
+                "Sexually-transmitted infections excl. HIV/AIDS",
                 "Tuberculosis", 
-                "Diarrhoea",
-                "Severe Systemic Infection",
-                "Covid",
-                "Measles",
-                "Hepatitis",
-                "Helminthiases",
-                "Arthropod-borne viral fevers",
-                "Rabies",
-                "Syphilis",
-                "Tetanus",
-                "History of Covid-19")
+                "Diarrhoeal diseases")
 
-# Creating filters for young childs by sex, age, and malaria
-male_child_malaria <- child %>% filter(sex_death == "Male" & `COD Group (Cathy)` == "Malaria")
-female_child_malaria <- child %>% filter(sex_death == "Female" & `COD Group (Cathy)` == "Malaria")
-male_child <- child %>% filter(sex_death == "Male")
-female_child <- child %>% filter(sex_death == "Female")
+# Creating filters for young adults by sex, age, and malaria
+young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & wbd10_codex2_title == "Malaria")
+young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & wbd10_codex2_title == "Malaria")
+young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & wbd10_codex2_title == "Malaria")
+young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
+young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age)
+young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
 
-child_malaria <- child %>% filter(`COD Group (Cathy)` == "Malaria")
-child_infections <- child %>% filter(`COD Group (Cathy)` %in% infections | (`COD` == "Chronic viral hepatitis"))
-child_non_infections <- child %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+# Creating filters for older adults by sex, age, and malaria
+older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & wbd10_codex2_title == "Malaria")
+older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & wbd10_codex2_title == "Malaria")
+older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & wbd10_codex2_title == "Malaria")
+older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
+older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
+older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
+
+adult_malaria <- adult %>% filter(wbd10_codex2_title == "Malaria")
+adult_infections <- adult %>% filter(wbd10_codex2_title %in% infections)
+adult_non_infections <- adult %>% filter((!wbd10_codex2_title %in% infections) & wbd10_codex2_title != "Malaria")
 
 # Set mapping dataframe
 mapping <- data.frame(
-    column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9", "symp10",
-               "symp11", "symp12", "symp13", "symp14"),
-    can_aggregate = c("count", "count", "count", "count", "count", "count", "count", "count", "count", 
-                      "count", "count", "count", "count", "count") 
+    column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9", "symp10", "symp11", 
+               "symp12", "symp13", "symp14"),
+    can_aggregate = c("count", "count", "count", "count", "count", "count", "count", "count", "count", "count", "count", 
+                      "count", "count", "count") 
 )
 
-# Testing out function with child malaria
-male_child_agg <- spatial_agg(gdf = dist,
-                              agg = male_child_malaria,
-                              mapping = mapping,
-                              gdf_id = "distname", 
-                              agg_id = "district_cod",
-                              is_spatial_join = FALSE,
-                              count_col = "deaths")
+# Testing out function with adult malaria
+young_male_adult_agg <- spatial_agg(gdf = dist,
+                                    agg = young_male_adult_malaria,
+                                    mapping = mapping,
+                                    gdf_id = "distname", 
+                                    agg_id = "district_cod",
+                                    is_spatial_join = FALSE,
+                                    count_col = "deaths")
 
-female_child_agg <- spatial_agg(gdf = dist,
-                                agg = female_child_malaria,
-                                mapping = mapping,
-                                gdf_id = "distname", 
-                                agg_id = "district_cod",
-                                is_spatial_join = FALSE,
-                                count_col = "deaths")
-
-child_malaria_agg <- spatial_agg(gdf = dist,
-                                 agg = child_malaria,
+malaria_agg <- spatial_agg(gdf = dist,
+                                 agg = adult_malaria,
                                  mapping = mapping,
                                  gdf_id = "distname", 
                                  agg_id = "district_cod",
                                  is_spatial_join = FALSE,
                                  count_col = "malaria_deaths")
 
-child_infection_agg <- spatial_agg(gdf = dist,
-                                   agg = child_infections,
-                                   mapping = mapping,
-                                   gdf_id = "distname", 
-                                   agg_id = "district_cod",
-                                   is_spatial_join = FALSE,
-                                   count_col = "infection_deaths")
+infection_agg <- spatial_agg(gdf = dist,
+                                    agg = adult_infections,
+                                    mapping = mapping,
+                                    gdf_id = "distname", 
+                                    agg_id = "district_cod",
+                                    is_spatial_join = FALSE,
+                                    count_col = "infection_deaths")
 
-child_non_infection_agg <- spatial_agg(gdf = dist,
-                                       agg = child_non_infections,
-                                       mapping = mapping,
-                                       gdf_id = "distname", 
-                                       agg_id = "district_cod",
-                                       is_spatial_join = FALSE,
-                                       count_col = "non_infection_deaths")
+non_infection_agg <- spatial_agg(gdf = dist,
+                                        agg = adult_non_infections,
+                                        mapping = mapping,
+                                        gdf_id = "distname", 
+                                        agg_id = "district_cod",
+                                        is_spatial_join = FALSE,
+                                        count_col = "non_infection_deaths")
 
-child_agg <- spatial_agg(gdf = dist,
-                         agg = child,
+adult_agg <- spatial_agg(gdf = dist,
+                         agg = adult,
                          mapping = mapping,
                          gdf_id = "distname", 
                          agg_id = "district_cod",
@@ -234,67 +251,186 @@ child_agg <- spatial_agg(gdf = dist,
                          count_col = "all_deaths")
 
 # Defining symptoms to be plotted
-child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "vomit",
-                    "headache", "yellowEyes")
+adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit",
+                    "weightLoss")
 
-# Remove geometry from aggregated dataframe
-age_sex_without_geometry <- age_sex_agg  %>%
-    as_tibble() %>%
-    select(-geometry, -deaths, -distname)
+# Function for creating rates for aggregated results
 
-# Creating spatial symptom count
-result <- age_sex_without_geometry %>%
-    pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
-                  names_to = "symptom", # New column to store the symptom names
-                  values_to = "count" # New column to store the counts
-    ) %>% mutate(symptom = gsub("^symp\\d+_|_count$","", symptom)) %>% # Remove prefix and suff
-    group_by(gid, symptom) %>% # Group by gid and sympt
-    summarize(total_count = sum(count) # Summarize the counts f
-    ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
-                       values_from = total_count, # Values to be filled in the wide format
-                       values_fill = 0 # Fill any missing values with 0
-    )
-
-# Join geometry to new spatial table
-spatial <- result %>%
-    left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
-
-# Add all deaths to malaria table
-spatial$malaria <- malaria_agg$malaria_deaths
-spatial$infections <- infection_agg$infection_deaths
-spatial$non_infections <- non_infection_agg$non_infection_deaths
-spatial$all_deaths <- adult_agg$all_deaths
-
-# List of causes of death
-all_deaths <- c("malaria","infections", "non_infections")
-
-# Create rate columns for malaria symptoms
-for (agg_deaths in all_deaths) {
-    for (symptom in adult_symptoms) {
-        rate_column <- paste0(symptom, "_", agg_deaths, "_rate")
-        spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[agg_deaths]]) * 1000
-        spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
+    
+    # Remove geometry from aggregated dataframe
+    age_sex_without_geometry <- young_male_adult_agg  %>%
+        as_tibble() %>%
+        select(-geometry, -deaths, -distname)
+    
+    # Creating spatial symptom count
+    result <- age_sex_without_geometry %>%
+        pivot_longer( cols = matches("^symp\\d+_"), # Matches columns starting with "symp" followed by dig
+                      names_to = "symptom", # New column to store the symptom names
+                      values_to = "count" # New column to store the counts
+        ) %>% mutate(symptom = gsub("^symp\\d+_|_count$","", symptom)) %>% # Remove prefix and suff
+        group_by(gid, symptom) %>% # Group by gid and sympt
+        summarize(total_count = sum(count) # Summarize the counts f
+        ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
+                           values_from = total_count, # Values to be filled in the wide format
+                           values_fill = 0 # Fill any missing values with 0
+        )
+    
+    # Join geometry to new spatial table
+    spatial <- result %>%
+        left_join(young_male_adult_agg %>% select(gid, geometry, deaths, distname), by = "gid")
+    
+    # Add all deaths to malaria table
+    spatial$malaria <- malaria_agg$malaria_deaths
+    spatial$infections <- infection_agg$infection_deaths
+    spatial$non_infections <- non_infection_agg$non_infection_deaths
+    spatial$all_deaths <- adult_agg$all_deaths
+    
+    all_deaths <- c("malaria","infections", "non_infections")
+    
+    # Create rate columns for malaria symptoms
+    for (agg_deaths in all_deaths) {
+        for (symptom in adult_symptoms) {
+            rate_column <- paste0(symptom, "_", agg_deaths, "_rate")
+            spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[agg_deaths]]) * 1000
+            spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
+        }
     }
-}
+    
+    # Print the wide format
+    cat("\nWide format:\n")
+    print(spatial)
+    
+    # Convert spatial to an sf and reproject crs
+    spatial <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
+    
+    # Pivoted spatial table to show rates for each symptom
+    new_spatial <- spatial %>% 
+        pivot_longer(cols = ends_with("rate"),
+                     names_to = "symptoms", 
+                     values_to = "rates") %>% 
+        select(gid, symptoms, rates) %>%
+        mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
+        mutate(denom_group = case_when( 
+            str_ends(symptoms, "_malaria") ~ "Malaria", 
+            str_ends(symptoms, "_non_infections") ~ "Non-Infections",
+            str_ends(symptoms, "_infections") ~ "Infections"
+        )) %>%
+        mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$"))
+    
+    pdf_print <- function(series, title){
+        
+        pdf_output_dir <- "../figures/"
+        
+        jpeg_output_dir <- "../figures.jpgs/"
+        
+        pdf_title <- paste0(pdf_output_dir, title, ".pdf")
+        
+        jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
+        
+        ggsave(pdf_title, plot = series, device = "pdf", width = 26, height = 13)
+        
+        ggsave(jpeg_title, plot = series, device = "jpeg", width = 26, height = 13)
+    }
 
-# Print the wide format
-cat("\nWide format:\n")
-print(spatial)
-
-# Convert spatial to an sf and reproject crs
-spatial <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
-
-# Pivoted spatial table to show rates for each symptom
-out <- spatial %>% 
-    pivot_longer(cols = ends_with("rate"),
-                 names_to = "symptoms", 
-                 values_to = "rates") %>% 
-    select(gid, symptoms, rates) %>%
-    mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
-    mutate(denom_group = case_when( 
-        str_ends(symptoms, "_malaria") ~ "Malaria", 
-        str_ends(symptoms, "_non_infections") ~ "Non-Infections",
-        str_ends(symptoms, "_infections") ~ "Infections"
-    )) %>%
-    mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$"))
+    create_map <- function(data, symptom, y_axis) {
+        filtered_data <- data %>% filter(symptoms == symptom)
+        
+        if (symptom == "fever") {
+            
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill=(rates))) +
+            guides(fill = guide_legend()) +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
+            ggtitle(paste(symptom)) +
+            geom_sf_label(aes(label = rates), size = 1.8) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(),
+                  axis.title.x = element_blank(),
+                  axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            ylab(y_axis)
+        } else {
+            map <- ggplot(data = filtered_data) +
+                geom_sf(aes(fill=(rates))) +
+                guides(fill = guide_legend()) +
+                scale_fill_continuous(low="lightblue", high="darkblue") +
+                ggtitle(paste(symptom)) +
+                geom_sf_label(aes(label = rates), size = 1.8) +
+                theme_minimal() + 
+                theme(panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      legend.title = element_blank(),
+                      axis.text = element_blank(), 
+                      axis.ticks = element_blank(), 
+                      axis.title = element_blank(),
+                      plot.title = element_text(hjust = 0.5, size = 20))
+        
+        }
+        return(map)
+        
+    }
+    
+    create_map_2 <- function(data, symptom, y_axis) {
+            filtered_data <- data %>% filter(symptoms == symptom)
+            
+            if (symptom == "fever") {
+                map <- ggplot(data = filtered_data) +
+                    geom_sf(aes(fill=(rates))) +
+                    guides(fill = guide_legend()) +
+                    scale_fill_continuous(low="lightblue", high="darkblue") +
+                    geom_sf_label(aes(label = rates), size = 1.8) +
+                    theme_minimal() + 
+                    theme(panel.grid.major = element_blank(), 
+                          panel.grid.minor = element_blank(),
+                          legend.title = element_blank(),
+                          axis.text = element_blank(), 
+                          axis.ticks = element_blank(),
+                          axis.title.x = element_blank(),
+                          axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
+                          plot.title = element_text(hjust = 0.5, size = 20)) +
+                    ylab(y_axis)
+            } else {
+            map <- ggplot(data = filtered_data) +
+                geom_sf(aes(fill=(rates))) +
+                guides(fill = guide_legend()) +
+                scale_fill_continuous(low="lightblue", high="darkblue") +
+                geom_sf_label(aes(label = rates), size = 1.8) +
+                theme_minimal() + 
+                theme(panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      legend.title = element_blank(),
+                      axis.text = element_blank(), 
+                      axis.ticks = element_blank(), 
+                      axis.title = element_blank(),
+                      plot.title = element_text(hjust = 0.5, size = 20))
+            }
+            
+            return(map)
+    }
+    
+    # Creating grouped plots parameters
+        malaria_spatial <- new_spatial %>% filter(denom_group == "Malaria")
+        infections_spatial <- new_spatial %>% filter(denom_group == "Infections")
+        non_infections_spatial <- new_spatial %>% filter(denom_group == "Non-Infections")
+        
+        symptoms <- unique(new_spatial$symptoms)
+        
+        malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria")
+        infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, y_axis = "Infections")
+        non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial, y_axis = "Non-Infections")
+        
+        all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
+        
+        combined_plot <- wrap_plots(all_plots, ncol = length(malaria_plots)) + 
+            plot_annotation(title = "Young Adult Male Malaria Symptoms (13-39)",
+                            theme = theme(
+                                plot.title = element_text(size = 20, face = "bold", hjust = 0.5)
+                            ))
+        
+        yam_plot <- pdf_print(combined_plot, "fig-yam-malaria-maps")
+        
  
