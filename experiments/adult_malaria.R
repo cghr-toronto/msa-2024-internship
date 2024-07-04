@@ -206,7 +206,7 @@ older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% 
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
 adult_malaria <- adult %>% filter(`COD Group (Cathy)` == "Malaria")
-adult_infections <- adult %>% filter(`COD Group (Cathy)` %in% infections | `COD` == "Chronic viral hepatitis")
+adult_infections <- adult %>% filter((`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
 adult_non_infections <- adult %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria")
 
 # Set mapping dataframe
@@ -338,7 +338,12 @@ non_spatial <- function(age_group){
     ns <- ns %>%
         mutate(is_malaria = ifelse(cause_of_death == "Malaria", 1, 0)) %>%
         arrange(is_malaria) %>%
-        select(-is_malaria)
+        select(-is_malaria) %>%
+        mutate(type_of_cause = case_when(
+            cause_of_death == "Malaria" ~ "Malaria",
+            cause_of_death %in% infections ~ "Infections",
+            TRUE ~ "Non-infections"
+        ))
     
     return(ns)
 }
@@ -355,15 +360,10 @@ non_spatial_oaf <- non_spatial(older_female_adult)
 # Creating heat map with non-spatial table
 hm <- function(ns_table, hm_title, pdf_title) {
     
-    heat <- pivot_longer(ns_table, cols = -cause_of_death,
+    heat <- pivot_longer(ns_table, cols = -c(cause_of_death, type_of_cause),
                          names_to = "symptoms",
                          values_to = "counts") %>%
-        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths") %>%
-        mutate(type_of_cause = case_when(
-            cause_of_death == "Malaria" ~ "Malaria",
-            cause_of_death %in% infections ~ "Infections",
-            TRUE ~ "Non-infections"
-        ))
+        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths")
     
     heat$cause_of_death <- factor(heat$cause_of_death, levels = c("malaria", unique(heat$cause_of_death)))
     
