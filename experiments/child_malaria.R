@@ -254,15 +254,15 @@ child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "vomit",
 cm_symptom <- symptom_rate(age_sex_agg = male_child_agg,
                             all_agg = child_agg, deaths = "deaths",
                             symptoms = child_symptoms, malaria_agg = child_malaria_agg,
-                           infections_agg = child_infection_agg, non_infections_agg = child_non_infection_agg)
+                           infection_agg = child_infection_agg, non_infection_agg = child_non_infection_agg)
 cf_symptom <- symptom_rate(age_sex_agg = female_child_agg,
                             all_agg = child_agg, deaths = "deaths",
                             symptoms = child_symptoms, malaria_agg = child_malaria_agg,
-                           infections_agg = child_infection_agg, non_infections_agg = child_non_infection_agg)
+                           infection_agg = child_infection_agg, non_infection_agg = child_non_infection_agg)
 child_symptom <- symptom_rate(age_sex_agg = child_malaria_agg,
                            all_agg = child_agg, deaths = "deaths",
                            symptoms = child_symptoms, malaria_agg = child_malaria_agg,
-                           infections_agg = child_infection_agg, non_infections_agg = child_non_infection_agg)
+                           infection_agg = child_infection_agg, non_infection_agg = child_non_infection_agg)
 
 # Creating maps for each age group
 cm_plot <- create_plots(cm_symptom, "Child Male Malaria Symptoms", "fig-cm-malaria-maps")
