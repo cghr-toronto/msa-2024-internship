@@ -175,8 +175,8 @@ male_child <- child %>% filter(sex_death == "Male")
 female_child <- child %>% filter(sex_death == "Female")
 
 child_malaria <- child %>% filter(`COD Group (Cathy)` == "Malaria")
-child_infections <- child %>% filter(`COD Group (Cathy)` %in% infections)
-child_non_infections <- child %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria")
+child_infections <- child %>% filter(`COD Group (Cathy)` %in% infections | (`COD` == "Chronic viral hepatitis"))
+child_non_infections <- child %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -254,15 +254,15 @@ child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "vomit",
 cm_symptom <- symptom_rate(age_sex_agg = male_child_agg,
                             all_agg = child_agg, deaths = "deaths",
                             symptoms = child_symptoms, malaria_agg = child_malaria_agg,
-                           infections_agg = child_infection_agg, non_infections_agg = non_infection_agg)
+                           infections_agg = child_infection_agg, non_infections_agg = child_non_infection_agg)
 cf_symptom <- symptom_rate(age_sex_agg = female_child_agg,
                             all_agg = child_agg, deaths = "deaths",
                             symptoms = child_symptoms, malaria_agg = child_malaria_agg,
-                           infections_agg = child_infection_agg, non_infections_agg = non_infection_agg)
+                           infections_agg = child_infection_agg, non_infections_agg = child_non_infection_agg)
 child_symptom <- symptom_rate(age_sex_agg = child_malaria_agg,
                            all_agg = child_agg, deaths = "deaths",
                            symptoms = child_symptoms, malaria_agg = child_malaria_agg,
-                           infections_agg = child_infection_agg, non_infections_agg = non_infection_agg)
+                           infections_agg = child_infection_agg, non_infections_agg = child_non_infection_agg)
 
 # Creating maps for each age group
 cm_plot <- create_plots(cm_symptom, "Child Male Malaria Symptoms", "fig-cm-malaria-maps")
