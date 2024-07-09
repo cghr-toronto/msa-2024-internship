@@ -516,7 +516,7 @@ create_map <- function(data, symptom, y_axis) {
     breaks <- 6
     min_val <- min(filtered_data$rates, na.rm = TRUE)
     max_val <- max(filtered_data$rates, na.rm = TRUE)
-    break_points <- pretty(c(min_val, max_val), n = breaks)
+    break_points <- seq(min_val, max_val, length.out = breaks + 1)
     
     # Create custom labels using the break points
     break_labels <- sapply(1:(length(break_points) - 1), function(i) {
@@ -574,7 +574,7 @@ create_map_2 <- function(data, symptom, y_axis) {
     breaks <- 6
     min_val <- min(filtered_data$rates, na.rm = TRUE)
     max_val <- max(filtered_data$rates, na.rm = TRUE)
-    break_points <- pretty(c(min_val, max_val), n = breaks)
+    break_points <- seq(min_val, max_val, length.out = breaks + 1)
     
     # Create custom labels using the break points
     break_labels <- sapply(1:(length(break_points) - 1), function(i) {
