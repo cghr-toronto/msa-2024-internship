@@ -513,11 +513,11 @@ older_adult_symptom <- symptom_rate(age_sex_agg = older_adult_agg,
 create_map <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
-    breaks_data <- filtered_data %>% mutate(rates = cut(rates, breaks = 6))
+    filtered_data <- filtered_data %>% mutate(rates = cut(rates, breaks = 6))
     
     if (symptom == "fever") {
         
-        map <- ggplot(data = breaks_data) +
+        map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
             scale_fill_discrete(low="lightblue", high="darkblue", ) +
@@ -534,7 +534,7 @@ create_map <- function(data, symptom, y_axis) {
                   plot.title = element_text(hjust = 0.5, size = 20)) +
             ylab(y_axis)
     } else {
-        map <- ggplot(data = breaks_data) +
+        map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
             scale_fill_continuous(low="lightblue", high="darkblue", breaks = breaks) +
@@ -557,10 +557,10 @@ create_map <- function(data, symptom, y_axis) {
 create_map_2 <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
-    breaks_data <- filtered_data %>% mutate(rates = cut(rates, breaks = 6))
+    filtered_data <- filtered_data %>% mutate(rates = cut(rates, breaks = 6))
     
     if (symptom == "fever") {
-        map <- ggplot(data = breaks_data) +
+        map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
             scale_fill_continuous(low="lightblue", high="darkblue", breaks = breaks) +
@@ -576,7 +576,7 @@ create_map_2 <- function(data, symptom, y_axis) {
                   plot.title = element_text(hjust = 0.5, size = 20)) +
             ylab(y_axis)
     } else {
-        map <- ggplot(data = breaks_data) +
+        map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
             scale_fill_continuous(low="lightblue", high="darkblue", breaks = breaks) +
