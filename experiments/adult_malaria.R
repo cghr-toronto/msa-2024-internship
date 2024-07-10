@@ -513,28 +513,12 @@ older_adult_symptom <- symptom_rate(age_sex_agg = older_adult_agg,
 create_map <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
-    breaks <- 6
-    min_val <- min(filtered_data$rates, na.rm = TRUE)
-    max_val <- max(filtered_data$rates, na.rm = TRUE)
-    break_points <- seq(min_val, max_val, length.out = breaks + 1)
-    
-    # Create custom labels using the break points
-    break_labels <- sapply(1:(length(break_points) - 1), function(i) {
-        paste0(round(break_points[i], 2), " - ", round(break_points[i + 1], 2))
-    })
-    
-    filtered_data <- filtered_data %>%
-        mutate(rates = cut(rates, 
-                           breaks = break_points, 
-                           labels = break_labels, 
-                           include.lowest = TRUE))
-    
     if (symptom == "fever") {
         
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_brewer(palette = "Blues", na.value = "grey50") +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -551,7 +535,7 @@ create_map <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_brewer(palette = "Blues", na.value = "grey50") +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -571,27 +555,11 @@ create_map <- function(data, symptom, y_axis) {
 create_map_2 <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
-    breaks <- 6
-    min_val <- min(filtered_data$rates, na.rm = TRUE)
-    max_val <- max(filtered_data$rates, na.rm = TRUE)
-    break_points <- seq(min_val, max_val, length.out = breaks + 1)
-    
-    # Create custom labels using the break points
-    break_labels <- sapply(1:(length(break_points) - 1), function(i) {
-        paste0(round(break_points[i], 2), " - ", round(break_points[i + 1], 2))
-    })
-    
-    filtered_data <- filtered_data %>%
-        mutate(rates = cut(rates, 
-                           breaks = break_points, 
-                           labels = break_labels, 
-                           include.lowest = TRUE))
-    
     if (symptom == "fever") {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_brewer(palette = "Blues", na.value = "grey50") +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
@@ -607,7 +575,7 @@ create_map_2 <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_brewer(palette = "Blues", na.value = "grey50") +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
