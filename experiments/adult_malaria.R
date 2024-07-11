@@ -189,26 +189,27 @@ infections <- c("Acute respiratory infections",
                 "Tetanus",
                 "History of Covid-19")
 
-# Trip whitespaces in COD column
+# Trim whitespaces in COD column
 adult$COD <- str_trim(adult$COD)
 
-# Creating filters for young adults by sex, age, and malaria
-young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
-young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
-young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
+# Creating filters for different adult age/sex groups
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
 young_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age)
 young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age)
-
-# Creating filters for older adults by sex, age, and malaria
-older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & `COD Group (Cathy)` == "Malaria")
-older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & `COD Group (Cathy)` == "Malaria")
-older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & `COD Group (Cathy)` == "Malaria")
 older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
 older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
+
+# Creating filters for adults for malaria
+young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
+young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
+young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
+older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & `COD Group (Cathy)` == "Malaria")
+older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & `COD Group (Cathy)` == "Malaria")
+older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & `COD Group (Cathy)` == "Malaria")
 adult_malaria <- adult %>% filter(`COD Group (Cathy)` == "Malaria")
 
+# Creating filters for adults for infections
 adult_infections <- adult %>% filter((`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
 adult_yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
 adult_yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
@@ -217,6 +218,7 @@ adult_oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & 
 young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
 older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
 
+# Creating filters for adults for non-infections
 adult_non_infections <- adult %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
 adult_yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
 adult_yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
@@ -507,13 +509,16 @@ hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult Symptom Heatmap
 
 # Function for creating rates for aggregated results
 symptom_rate <- function(
-        age_sex_agg,
+        age_sex_malaria_agg,
         all_agg,
         deaths,
         symptoms,
         malaria_agg,
         infection_agg,
         non_infection_agg){
+    
+    cod_rate <- function(
+        )
     
     # Remove geometry from aggregated dataframe
     age_sex_without_geometry <- age_sex_agg  %>%
@@ -586,34 +591,46 @@ adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "v
 
 # Running symptom_rate for each age group
 yam_symptom <- symptom_rate(age_sex_agg = young_male_adult_agg,
-                            all_agg = adult_agg, deaths = "deaths",
-                            symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
-                            infection_agg = adult_infection_agg, non_infection_agg = adult_non_infection_agg)
+                            deaths = "deaths",
+                            symptoms = adult_symptoms, 
+                            malaria_agg = adult_malaria_agg,
+                            infection_agg = adult_infection_agg, 
+                            non_infection_agg = adult_non_infection_agg)
 
 yaf_symptom <- symptom_rate(age_sex_agg = young_female_adult_agg,
-                            all_agg = adult_agg, deaths = "deaths",
-                            symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
-                            infection_agg = adult_infection_agg, non_infection_agg = adult_non_infection_agg)
+                            deaths = "deaths",
+                            symptoms = adult_symptoms, 
+                            malaria_agg = adult_malaria_agg,
+                            infection_agg = adult_infection_agg, 
+                            non_infection_agg = adult_non_infection_agg)
 
 oam_symptom <- symptom_rate(age_sex_agg = older_male_adult_agg,
-                            all_agg = adult_agg, deaths = "deaths",
-                            symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
-                            infection_agg = adult_infection_agg, non_infection_agg = adult_non_infection_agg)
+                            deaths = "deaths",
+                            symptoms = adult_symptoms, 
+                            malaria_agg = adult_malaria_agg,
+                            infection_agg = adult_infection_agg, 
+                            non_infection_agg = adult_non_infection_agg)
 
 oaf_symptom <- symptom_rate(age_sex_agg = older_female_adult_agg,
-                            all_agg = adult_agg, deaths = "deaths",
-                            symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
-                            infection_agg = adult_infection_agg, non_infection_agg = adult_non_infection_agg)
+                            deaths = "deaths",
+                            symptoms = adult_symptoms, 
+                            malaria_agg = adult_malaria_agg,
+                            infection_agg = adult_infection_agg, 
+                            non_infection_agg = adult_non_infection_agg)
 
 young_adult_symptom <- symptom_rate(age_sex_agg = young_adult_agg,
-                                    all_agg = adult_agg, deaths = "deaths",
-                                    symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
-                                    infection_agg = adult_infection_agg, non_infection_agg = adult_non_infection_agg)
+                                    deaths = "deaths",
+                                    symptoms = adult_symptoms, 
+                                    malaria_agg = adult_malaria_agg,
+                                    infection_agg = adult_infection_agg, 
+                                    non_infection_agg = adult_non_infection_agg)
 
 older_adult_symptom <- symptom_rate(age_sex_agg = older_adult_agg,
-                                    all_agg = adult_agg, deaths = "deaths",
-                                    symptoms = adult_symptoms, malaria_agg = adult_malaria_agg,
-                                    infection_agg = adult_infection_agg, non_infection_agg = adult_non_infection_agg)
+                                    deaths = "deaths",
+                                    symptoms = adult_symptoms, 
+                                    malaria_agg = adult_malaria_agg,
+                                    infection_agg = adult_infection_agg, 
+                                    non_infection_agg = adult_non_infection_agg)
 
 # Creating mappping parameters
 create_map <- function(data, symptom, y_axis) {
