@@ -207,10 +207,23 @@ older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age
 older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
 older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
-
 adult_malaria <- adult %>% filter(`COD Group (Cathy)` == "Malaria")
+
 adult_infections <- adult %>% filter((`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
+adult_yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
+adult_yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
+adult_oam_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
+adult_oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
+young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
+older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
+
 adult_non_infections <- adult %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+adult_yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+adult_yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+adult_oam_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+adult_oaf_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+young_adult_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -221,7 +234,7 @@ mapping <- data.frame(
 )
 
 # Testing out function with adult malaria
-young_male_adult_agg <- spatial_agg(gdf = dist,
+yam_malaria_agg <- spatial_agg(gdf = dist,
                                  agg = young_male_adult_malaria,
                                  mapping = mapping,
                                  gdf_id = "distname", 
@@ -229,7 +242,7 @@ young_male_adult_agg <- spatial_agg(gdf = dist,
                                  is_spatial_join = FALSE,
                                  count_col = "deaths")
 
-young_female_adult_agg <- spatial_agg(gdf = dist,
+yaf_malaria_agg <- spatial_agg(gdf = dist,
                                         agg = young_female_adult_malaria,
                                         mapping = mapping,
                                         gdf_id = "distname", 
@@ -237,15 +250,14 @@ young_female_adult_agg <- spatial_agg(gdf = dist,
                                         is_spatial_join = FALSE,
                                         count_col = "deaths")
 
-older_male_adult_agg <- spatial_agg(gdf = dist,
+oam_malaria_agg <- spatial_agg(gdf = dist,
                                         agg = older_male_adult_malaria,
                                         mapping = mapping,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "deaths")
-
-older_female_adult_agg <- spatial_agg(gdf = dist,
+oaf_malaria_agg <- spatial_agg(gdf = dist,
                                         agg = older_female_adult_malaria,
                                         mapping = mapping,
                                         gdf_id = "distname", 
@@ -253,7 +265,7 @@ older_female_adult_agg <- spatial_agg(gdf = dist,
                                         is_spatial_join = FALSE,
                                         count_col = "deaths")
 
-young_adult_agg <- spatial_agg(gdf = dist,
+young_adult_malaria_agg <- spatial_agg(gdf = dist,
                                       agg = young_adult_malaria,
                                       mapping = mapping,
                                       gdf_id = "distname", 
@@ -261,7 +273,7 @@ young_adult_agg <- spatial_agg(gdf = dist,
                                       is_spatial_join = FALSE,
                                       count_col = "deaths")
 
-older_adult_agg <- spatial_agg(gdf = dist,
+older_adult_malaria_agg <- spatial_agg(gdf = dist,
                                       agg = older_adult_malaria,
                                       mapping = mapping,
                                       gdf_id = "distname", 
@@ -277,6 +289,53 @@ adult_malaria_agg <- spatial_agg(gdf = dist,
                                is_spatial_join = FALSE,
                                count_col = "malaria_deaths")
 
+yam_infections_agg <- spatial_agg(gdf = dist,
+                               agg = yam_infections,
+                               mapping = mapping,
+                               gdf_id = "distname", 
+                               agg_id = "district_cod",
+                               is_spatial_join = FALSE,
+                               count_col = "deaths")
+
+yaf_infections_agg <- spatial_agg(gdf = dist,
+                               agg = yaf_infections,
+                               mapping = mapping,
+                               gdf_id = "distname", 
+                               agg_id = "district_cod",
+                               is_spatial_join = FALSE,
+                               count_col = "deaths")
+
+oaf_infections_agg <- spatial_agg(gdf = dist,
+                               agg = oam_infections,
+                               mapping = mapping,
+                               gdf_id = "distname", 
+                               agg_id = "district_cod",
+                               is_spatial_join = FALSE,
+                               count_col = "deaths")
+oaf_infections_agg <- spatial_agg(gdf = dist,
+                               agg = oaf_infections,
+                               mapping = mapping,
+                               gdf_id = "distname", 
+                               agg_id = "district_cod",
+                               is_spatial_join = FALSE,
+                               count_col = "deaths")
+
+young_adult_infections_agg <- spatial_agg(gdf = dist,
+                                       agg = young_adult_infections,
+                                       mapping = mapping,
+                                       gdf_id = "distname", 
+                                       agg_id = "district_cod",
+                                       is_spatial_join = FALSE,
+                                       count_col = "deaths")
+
+older_adult_infections_agg <- spatial_agg(gdf = dist,
+                                       agg = older_adult_infections,
+                                       mapping = mapping,
+                                       gdf_id = "distname", 
+                                       agg_id = "district_cod",
+                                       is_spatial_join = FALSE,
+                                       count_col = "deaths")
+
 adult_infection_agg <- spatial_agg(gdf = dist,
                                     agg = adult_infections,
                                     mapping = mapping,
@@ -284,6 +343,53 @@ adult_infection_agg <- spatial_agg(gdf = dist,
                                     agg_id = "district_cod",
                                     is_spatial_join = FALSE,
                                     count_col = "infection_deaths")
+
+yam_non_infections_agg <- spatial_agg(gdf = dist,
+                               agg = yam_non_infections,
+                               mapping = mapping,
+                               gdf_id = "distname", 
+                               agg_id = "district_cod",
+                               is_spatial_join = FALSE,
+                               count_col = "deaths")
+
+yaf_non_infections_agg <- spatial_agg(gdf = dist,
+                               agg = yaf_non_infections,
+                               mapping = mapping,
+                               gdf_id = "distname", 
+                               agg_id = "district_cod",
+                               is_spatial_join = FALSE,
+                               count_col = "deaths")
+
+oaf_non_infections_agg <- spatial_agg(gdf = dist,
+                               agg = oam_non_infections,
+                               mapping = mapping,
+                               gdf_id = "distname", 
+                               agg_id = "district_cod",
+                               is_spatial_join = FALSE,
+                               count_col = "deaths")
+oaf_non_infections_agg <- spatial_agg(gdf = dist,
+                               agg = oaf_non_infections,
+                               mapping = mapping,
+                               gdf_id = "distname", 
+                               agg_id = "district_cod",
+                               is_spatial_join = FALSE,
+                               count_col = "deaths")
+
+young_adult_non_infections_agg <- spatial_agg(gdf = dist,
+                                       agg = young_adult_non_infections,
+                                       mapping = mapping,
+                                       gdf_id = "distname", 
+                                       agg_id = "district_cod",
+                                       is_spatial_join = FALSE,
+                                       count_col = "deaths")
+
+older_adult_non_infections_agg <- spatial_agg(gdf = dist,
+                                       agg = older_adult_non_infections,
+                                       mapping = mapping,
+                                       gdf_id = "distname", 
+                                       agg_id = "district_cod",
+                                       is_spatial_join = FALSE,
+                                       count_col = "deaths")
 
 adult_non_infection_agg <- spatial_agg(gdf = dist,
                                     agg = adult_non_infections,
@@ -511,14 +617,14 @@ older_adult_symptom <- symptom_rate(age_sex_agg = older_adult_agg,
 
 # Creating mappping parameters
 create_map <- function(data, symptom, y_axis) {
-    filtered_data <- data %>% filter(symptoms == symptom)
+    filtered_data <- data %>% filter(symptoms == symptom) 
     
     if (symptom == "fever") {
         
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(low="lightblue", high="darkblue") +
+            # scale_fill_continuous(breaks=break_points) +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -535,7 +641,7 @@ create_map <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(low="lightblue", high="darkblue") +
+            # scale_fill_continuous(breaks=break_points) +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -555,11 +661,22 @@ create_map <- function(data, symptom, y_axis) {
 create_map_2 <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
+    # Define the maximum and minimum value and number of intervals
+    min_val <- floor(min(filtered_data$rates, na.rm = TRUE))
+    max_val <- ceiling(max(filtered_data$rates, na.rm = TRUE))
+    breaks_numbers <- 6
+    
+    # Calculate the interval width
+    interval_width <- round((max_val - min_val) / breaks_numbers)
+    
+    # Generate the sequence of break points
+    break_points <- seq(min_val, max_val, by = interval_width)
+    
     if (symptom == "fever") {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(low="lightblue", high="darkblue") +
+            scale_fill_continuous(breaks=break_points) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
@@ -575,7 +692,7 @@ create_map_2 <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(low="lightblue", high="darkblue") +
+            scale_fill_continuous(breaks=break_points) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
@@ -617,9 +734,9 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
 }
 
 # Creating plot series for each age group
-yam_plot <- create_plots(yam_symptom, "Young Adult Male Malaria Symptoms", "fig-yam-malaria-maps")
-yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms", "fig-yaf-malaria-maps")
-oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms", "fig-oam-malaria-maps")
-oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms", "fig-oaf-malaria-maps")
-young_adult_plot <- create_plots(young_adult_symptom, "Young Adult Malaria Symptoms", "fig-ya-malaria-maps")
-older_adult_plot <- create_plots(older_adult_symptom, "Older Adult Malaria Symptoms", "fig-oa-malaria-maps")
+yam_plot <- create_plots(yam_symptom, "Young Adult (15-39) Male Malaria Symptoms (per 1000 deaths)", "fig-yam-malaria-maps")
+yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms (15-39)", "fig-yaf-malaria-maps")
+oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms (40-69)", "fig-oam-malaria-maps")
+oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms (40-69)", "fig-oaf-malaria-maps")
+young_adult_plot <- create_plots(young_adult_symptom, "Young Adult Malaria Symptoms (15-39)", "fig-ya-malaria-maps")
+older_adult_plot <- create_plots(older_adult_symptom, "Older Adult Malaria Symptoms (40-69)", "fig-oa-malaria-maps")
