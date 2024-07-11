@@ -307,7 +307,7 @@ yaf_infections_agg <- spatial_agg(gdf = dist,
                                is_spatial_join = FALSE,
                                count_col = "deaths")
 
-oaf_infections_agg <- spatial_agg(gdf = dist,
+oam_infections_agg <- spatial_agg(gdf = dist,
                                agg = oam_infections,
                                mapping = mapping,
                                gdf_id = "distname", 
@@ -362,7 +362,7 @@ yaf_non_infections_agg <- spatial_agg(gdf = dist,
                                is_spatial_join = FALSE,
                                count_col = "deaths")
 
-oaf_non_infections_agg <- spatial_agg(gdf = dist,
+oam_non_infections_agg <- spatial_agg(gdf = dist,
                                agg = oam_non_infections,
                                mapping = mapping,
                                gdf_id = "distname", 
@@ -576,13 +576,13 @@ symptom_rate <- function(
                               cod = "malaria",
                               rate_symptoms = symptoms)
     
-    infection_rates <- cod_rate(age_sex_agg = age_sex_infection_agg,
+    infection_rates <- cod_rate(age_sex_agg = age_sex_infections_agg,
                               cod_agg = infection_agg,
                               cod_agg_deaths = "infection_deaths",
                               cod = "infections",
                               rate_symptoms = symptoms)
     
-    non_infection_rates <- cod_rate(age_sex_agg = age_sex_non_infection_agg,
+    non_infection_rates <- cod_rate(age_sex_agg = age_sex_non_infections_agg,
                                 cod_agg = non_infection_agg,
                                 cod_agg_deaths = "non_infection_deaths",
                                 cod = "non_infections",
@@ -658,8 +658,8 @@ young_adult_symptom <- symptom_rate(age_sex_malaria_agg = young_adult_malaria_ag
                                     non_infection_agg = adult_non_infection_agg)
 
 older_adult_symptom <- symptom_rate(age_sex_malaria_agg = older_adult_malaria_agg,
-                                    age_sex_infections_agg = older_infections_agg,
-                                    age_sex_non_infections_agg = older_non_infections_agg,
+                                    age_sex_infections_agg = older_adult_infections_agg,
+                                    age_sex_non_infections_agg = older_adult_non_infections_agg,
                                     deaths = "deaths",
                                     symptoms = adult_symptoms, 
                                     malaria_agg = adult_malaria_agg,
