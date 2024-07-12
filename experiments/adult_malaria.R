@@ -551,8 +551,6 @@ symptom_rate <- function(
     spatial <- result %>%
         left_join(age_sex_agg %>% select(gid, geometry, deaths, cod_agg_deaths, distname), by = "gid")
     
-    browser()
-    
     # Create rate columns for malaria symptoms
         for (symptom in symptoms) {
             rate_column <- paste0(symptom, "_", cod, "_rate")
@@ -565,7 +563,13 @@ symptom_rate <- function(
     print(spatial)
     
     # Convert spatial to an sf and reproject crs
-    out <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
+    spatial <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
+    
+    out <- spatial %>% 
+        pivot_longer(cols = ends_with("rate"),
+                     names_to = "symptoms", 
+                     values_to = "rates") %>%
+        select(gid, symptoms, rates)
     
     return(out)
     }
@@ -573,29 +577,22 @@ symptom_rate <- function(
     malaria_rates <- cod_rate(age_sex_agg = age_sex_malaria_agg,
                               cod_agg = malaria_agg,
                               cod_agg_deaths = "malaria_deaths",
-                              cod = "malaria",
-                              rate_symptoms = symptoms)
+                              cod = "malaria")
     
     infection_rates <- cod_rate(age_sex_agg = age_sex_infections_agg,
                               cod_agg = infection_agg,
                               cod_agg_deaths = "infection_deaths",
-                              cod = "infections",
-                              rate_symptoms = symptoms)
+                              cod = "infections")
     
     non_infection_rates <- cod_rate(age_sex_agg = age_sex_non_infections_agg,
                                 cod_agg = non_infection_agg,
                                 cod_agg_deaths = "non_infection_deaths",
-                                cod = "non_infections",
-                                rate_symptoms = symptoms)
+                                cod = "non_infections")
     
     comb_rows <- bind_rows(malaria_rates, infection_rates, non_infection_rates)
-    
+
     # Pivoted spatial table to show rates for each symptom
-    out <- comb_rows %>% 
-        pivot_longer(cols = ends_with("rate"),
-                     names_to = "symptoms", 
-                     values_to = "rates") %>% 
-        select(gid, symptoms, rates) %>% mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
+    out <- comb_rows %>%  mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
         mutate(denom_group = case_when( 
             str_ends(symptoms, "_malaria") ~ "Malaria", 
             str_ends(symptoms, "_non_infections") ~ "Non-Infections",
@@ -767,9 +764,9 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
     
     symptoms <- unique(group_symptoms$symptoms)
     
-    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria")
-    infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, y_axis = "Infections")
-    non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial, y_axis = "Non-Infections")
+    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 1000\nMalaria deaths)")
+    infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, y_axis = "Infections\n(per 1000\nInfection deaths)")
+    non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial, y_axis = "Non-Infections\n(per 1000\nNon-Infection deaths)")
     
     all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
     
@@ -785,7 +782,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
 }
 
 # Creating plot series for each age group
-yam_plot <- create_plots(yam_symptom, "Young Adult (15-39) Male Malaria Symptoms (per 1000 deaths)", "fig-yam-malaria-maps")
+yam_plot <- create_plots(yam_symptom, "Young Adult (15-39) Male Malaria Symptoms", "fig-yam-malaria-maps")
 yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms (15-39)", "fig-yaf-malaria-maps")
 oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms (40-69)", "fig-oam-malaria-maps")
 oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms (40-69)", "fig-oaf-malaria-maps")
