@@ -507,32 +507,16 @@ hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult Symptom Heatmap
 hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult Symptom Heatmap", "fig-oam-heatmap")
 hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult Symptom Heatmap", "fig-oaf-heatmap")
 
-# Function for creating rates for aggregated results
-symptom_rate <- function(
-        age_sex_malaria_agg,
-        age_sex_infections_agg,
-        age_sex_non_infections_agg,
-        deaths,
-        symptoms,
-        malaria_agg,
-        infection_agg,
-        non_infection_agg){
-    
-    age_sex_malaria_agg$malaria_deaths <- malaria_agg$malaria_deaths
-    age_sex_infections_agg$infection_deaths <- infection_agg$infection_deaths
-    age_sex_non_infections_agg$non_infection_deaths <- non_infection_agg$non_infection_deaths
-    
-    cod_rate <- function(
+cod_rate <- function(
         age_sex_agg,
-        cod_agg,
-        cod_agg_deaths,
         cod,
-        rate_symptoms){
+        symptoms,
+        deaths){
     
     # Remove geometry from aggregated dataframe
     age_sex_without_geometry <- age_sex_agg  %>%
         as_tibble() %>%
-        select(-geometry, -deaths, -cod_agg_deaths, -distname)
+        select(-geometry, -deaths, -distname)
     
     # Creating spatial symptom count
     result <- age_sex_without_geometry %>%
@@ -549,14 +533,14 @@ symptom_rate <- function(
     
     # Join geometry to new spatial table
     spatial <- result %>%
-        left_join(age_sex_agg %>% select(gid, geometry, deaths, cod_agg_deaths, distname), by = "gid")
+        left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
     
     # Create rate columns for malaria symptoms
-        for (symptom in symptoms) {
-            rate_column <- paste0(symptom, "_", cod, "_rate")
-            spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[cod_agg_deaths]]) * 1000
-            spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
-        }
+    for (symptom in symptoms) {
+        rate_column <- paste0(symptom, "_", cod, "_rate")
+        spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[deaths]]) * 1000
+        spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
+    }
     
     # Print the wide format
     cat("\nWide format:\n")
@@ -572,22 +556,30 @@ symptom_rate <- function(
         select(gid, symptoms, rates)
     
     return(out)
-    }
+}
+# Function for creating rates for aggregated results
+symptom_rate <- function(
+        age_sex_malaria_agg,
+        age_sex_infections_agg,
+        age_sex_non_infections_agg,
+        deaths,
+        symptoms){
+    
     
     malaria_rates <- cod_rate(age_sex_agg = age_sex_malaria_agg,
-                              cod_agg = malaria_agg,
-                              cod_agg_deaths = "malaria_deaths",
-                              cod = "malaria")
+                              cod = "malaria",
+                              symptoms = symptoms,
+                              deaths = deaths)
     
     infection_rates <- cod_rate(age_sex_agg = age_sex_infections_agg,
-                              cod_agg = infection_agg,
-                              cod_agg_deaths = "infection_deaths",
-                              cod = "infections")
+                              cod = "infections",
+                              symptoms = symptoms,
+                              deaths = deaths)
     
     non_infection_rates <- cod_rate(age_sex_agg = age_sex_non_infections_agg,
-                                cod_agg = non_infection_agg,
-                                cod_agg_deaths = "non_infection_deaths",
-                                cod = "non_infections")
+                                cod = "non_infections",
+                                symptoms = symptoms,
+                                deaths = deaths)
     
     comb_rows <- bind_rows(malaria_rates, infection_rates, non_infection_rates)
 
@@ -613,55 +605,36 @@ yam_symptom <- symptom_rate(age_sex_malaria_agg = yam_malaria_agg,
                             age_sex_infections_agg = yam_infections_agg,
                             age_sex_non_infections_agg = yam_non_infections_agg,
                             deaths = "deaths",
-                            symptoms = adult_symptoms, 
-                            malaria_agg = adult_malaria_agg,
-                            infection_agg = adult_infection_agg, 
-                            non_infection_agg = adult_non_infection_agg)
+                            symptoms = adult_symptoms)
 
 yaf_symptom <- symptom_rate(age_sex_malaria_agg = yaf_malaria_agg,
                             age_sex_infections_agg = yaf_infections_agg,
                             age_sex_non_infections_agg = yaf_non_infections_agg,
                             deaths = "deaths",
-                            symptoms = adult_symptoms, 
-                            malaria_agg = adult_malaria_agg,
-                            infection_agg = adult_infection_agg, 
-                            non_infection_agg = adult_non_infection_agg)
+                            symptoms = adult_symptoms)
 
 oam_symptom <- symptom_rate(age_sex_malaria_agg = oam_malaria_agg,
                             age_sex_infections_agg = oam_infections_agg,
                             age_sex_non_infections_agg = oam_non_infections_agg,
-                            deaths = "deaths",
-                            symptoms = adult_symptoms, 
-                            malaria_agg = adult_malaria_agg,
-                            infection_agg = adult_infection_agg, 
-                            non_infection_agg = adult_non_infection_agg)
+                            deaths = "deaths")
 
 oaf_symptom <- symptom_rate(age_sex_malaria_agg = oaf_malaria_agg,
                             age_sex_infections_agg = oaf_infections_agg,
                             age_sex_non_infections_agg = oaf_non_infections_agg,
                             deaths = "deaths",
-                            symptoms = adult_symptoms, 
-                            malaria_agg = adult_malaria_agg,
-                            infection_agg = adult_infection_agg, 
-                            non_infection_agg = adult_non_infection_agg)
+                            symptoms = adult_symptoms)
 
 young_adult_symptom <- symptom_rate(age_sex_malaria_agg = young_adult_malaria_agg,
                                     age_sex_infections_agg = young_adult_infections_agg,
                                     age_sex_non_infections_agg = young_adult_non_infections_agg,
                                     deaths = "deaths",
-                                    symptoms = adult_symptoms, 
-                                    malaria_agg = adult_malaria_agg,
-                                    infection_agg = adult_infection_agg, 
-                                    non_infection_agg = adult_non_infection_agg)
+                                    symptoms = adult_symptoms)
 
 older_adult_symptom <- symptom_rate(age_sex_malaria_agg = older_adult_malaria_agg,
                                     age_sex_infections_agg = older_adult_infections_agg,
                                     age_sex_non_infections_agg = older_adult_non_infections_agg,
                                     deaths = "deaths",
-                                    symptoms = adult_symptoms, 
-                                    malaria_agg = adult_malaria_agg,
-                                    infection_agg = adult_infection_agg, 
-                                    non_infection_agg = adult_non_infection_agg)
+                                    symptoms = adult_symptoms)
 
 # Creating mappping parameters
 create_map <- function(data, symptom, y_axis) {
