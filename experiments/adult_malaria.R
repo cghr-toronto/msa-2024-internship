@@ -8,8 +8,6 @@ library(dplyr)
 library(magrittr)
 library(stringr)
 library(lubridate)
-library(ggspatial)
-library(tmap)
 library(prettymapr)
 library(patchwork)
 library(readxl)
@@ -352,6 +350,7 @@ oam_non_infections_agg <- spatial_agg(gdf = dist,
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
                                count_col = "deaths")
+
 oaf_non_infections_agg <- spatial_agg(gdf = dist,
                                agg = oaf_non_infections,
                                mapping = mapping,
@@ -613,7 +612,7 @@ create_map <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(breaks = scales::pretty_breaks(n = 6)) +
+            scale_fill_steps(n.b) +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -630,7 +629,7 @@ create_map <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(breaks = scales::pretty_breaks(n = 6)) +
+            scale_fill_steps(n.breaks = 6) +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -654,7 +653,7 @@ create_map_2 <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(breaks = scales::pretty_breaks(n = 6)) +
+            scale_fill_steps(n.breaks = 6) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
@@ -670,7 +669,7 @@ create_map_2 <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(breaks = scales::pretty_breaks(n = 6)) +
+            scale_fill_steps(n.breaks = 6) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
