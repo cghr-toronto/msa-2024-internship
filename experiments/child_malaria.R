@@ -169,14 +169,20 @@ infections <- c("Acute respiratory infections",
                 "History of Covid-19")
 
 # Creating filters for young childs by sex, age, and malaria
-male_child_malaria <- child %>% filter(sex_death == "Male" & `COD Group (Cathy)` == "Malaria")
-female_child_malaria <- child %>% filter(sex_death == "Female" & `COD Group (Cathy)` == "Malaria")
 male_child <- child %>% filter(sex_death == "Male")
 female_child <- child %>% filter(sex_death == "Female")
 
 child_malaria <- child %>% filter(`COD Group (Cathy)` == "Malaria")
+male_child_malaria <- child %>% filter(sex_death == "Male" & `COD Group (Cathy)` == "Malaria")
+female_child_malaria <- child %>% filter(sex_death == "Female" & `COD Group (Cathy)` == "Malaria")
+
 child_infections <- child %>% filter(`COD Group (Cathy)` %in% infections | (`COD` == "Chronic viral hepatitis"))
+male_child_infections <- child %>% filter(sex_death == "Male" & `COD Group (Cathy)` %in% infections | (`COD` == "Chronic viral hepatitis"))
+female_child_infections <- child %>% filter(sex_death == "Female" & `COD Group (Cathy)` %in% infections | (`COD` == "Chronic viral hepatitis"))
+
 child_non_infections <- child %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+male_child_non_infections <- child %>% filter(sex_death == "Male" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+female_child_non_infections <- child %>% filter(sex_death == "Female" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -187,16 +193,16 @@ mapping <- data.frame(
 )
 
 # Testing out function with child malaria
-male_child_agg <- spatial_agg(gdf = dist,
-                                        agg = male_child_malaria,
+cm_malaria_agg <- spatial_agg(gdf = dist,
+                                        agg = cm_malaria,
                                         mapping = mapping,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "deaths")
 
-female_child_agg <- spatial_agg(gdf = dist,
-                                          agg = female_child_malaria,
+cf_malaria_agg <- spatial_agg(gdf = dist,
+                                          agg = cf_malaria,
                                           mapping = mapping,
                                           gdf_id = "distname", 
                                           agg_id = "district_cod",
@@ -209,7 +215,23 @@ child_malaria_agg <- spatial_agg(gdf = dist,
                                 gdf_id = "distname", 
                                 agg_id = "district_cod",
                                 is_spatial_join = FALSE,
-                                count_col = "malaria_deaths")
+                                count_col = "deaths")
+
+cm_infection_agg <- spatial_agg(gdf = dist,
+                                   agg = male_child_infections,
+                                   mapping = mapping,
+                                   gdf_id = "distname", 
+                                   agg_id = "district_cod",
+                                   is_spatial_join = FALSE,
+                                   count_col = "deaths")
+
+cf_infection_agg <- spatial_agg(gdf = dist,
+                                   agg = female_child_infections,
+                                   mapping = mapping,
+                                   gdf_id = "distname", 
+                                   agg_id = "district_cod",
+                                   is_spatial_join = FALSE,
+                                   count_col = "deaths")
 
 child_infection_agg <- spatial_agg(gdf = dist,
                                    agg = child_infections,
@@ -217,7 +239,23 @@ child_infection_agg <- spatial_agg(gdf = dist,
                                    gdf_id = "distname", 
                                    agg_id = "district_cod",
                                    is_spatial_join = FALSE,
-                                   count_col = "infection_deaths")
+                                   count_col = "deaths")
+
+cm_non_infection_agg <- spatial_agg(gdf = dist,
+                                       agg = male_child_non_infections,
+                                       mapping = mapping,
+                                       gdf_id = "distname", 
+                                       agg_id = "district_cod",
+                                       is_spatial_join = FALSE,
+                                       count_col = "deaths")
+
+cf_non_infection_agg <- spatial_agg(gdf = dist,
+                                       agg = emale_child_non_infections,
+                                       mapping = mapping,
+                                       gdf_id = "distname", 
+                                       agg_id = "district_cod",
+                                       is_spatial_join = FALSE,
+                                       count_col = "deaths")
 
 child_non_infection_agg <- spatial_agg(gdf = dist,
                                        agg = child_non_infections,
@@ -225,15 +263,7 @@ child_non_infection_agg <- spatial_agg(gdf = dist,
                                        gdf_id = "distname", 
                                        agg_id = "district_cod",
                                        is_spatial_join = FALSE,
-                                       count_col = "non_infection_deaths")
-
-child_agg <- spatial_agg(gdf = dist,
-                         agg = child,
-                         mapping = mapping,
-                         gdf_id = "distname", 
-                         agg_id = "district_cod",
-                         is_spatial_join = FALSE,
-                         count_col = "all_deaths")
+                                       count_col = "deaths")
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial_children <- non_spatial(child)
@@ -251,16 +281,26 @@ child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "vomit",
                     "headache", "yellowEyes")
 
 # Running symptom_rate for each sex group
-cm_symptom <- symptom_rate(age_sex_agg = male_child_agg,
-                            all_agg = child_agg, deaths = "deaths",
-                            symptoms = child_symptoms, malaria_agg = child_malaria_agg,
-                           infection_agg = child_infection_agg, non_infection_agg = child_non_infection_agg)
-cf_symptom <- symptom_rate(age_sex_agg = female_child_agg,
-                            all_agg = child_agg, deaths = "deaths",
-                            symptoms = child_symptoms, malaria_agg = child_malaria_agg,
-                           infection_agg = child_infection_agg, non_infection_agg = child_non_infection_agg)
+cm_symptom <- symptom_rate(age_sex_malaria_agg = cm_malaria_agg,
+                           age_sex_infections_agg = cm_infections_agg,
+                           age_sex_non_infections_agg = cm_non_infections_agg,
+                           deaths = "deaths",
+                           symptoms = child_symptoms)
+
+cf_symptom <- symptom_rate(age_sex_malaria_agg = cf_malaria_agg,
+                           age_sex_infections_agg = cf_infections_agg,
+                           age_sex_non_infections_agg = cf_non_infections_agg,
+                           deaths = "deaths",
+                           symptoms = child_symptoms)
+
+child_symptom <- symptom_rate(age_sex_malaria_agg = child_malaria_agg,
+                           age_sex_infections_agg = child_infections_agg,
+                           age_sex_non_infections_agg = child_non_infections_agg,
+                           deaths = "deaths",
+                           symptoms = child_symptoms)
 
 # Creating maps for each age group
 cm_plot <- create_plots(cm_symptom, "Child Male Malaria Symptoms", "fig-cm-malaria-maps")
 cf_plot <- create_plots(cf_symptom, "Child Female Malaria Symptoms", "fig-cf-malaria-maps")
+child_plot <- create_plots(child_symptom, "Child Malaria Symptoms", "fig-child-malaria-maps")
 
