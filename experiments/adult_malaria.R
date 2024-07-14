@@ -256,6 +256,7 @@ oam_malaria_agg <- spatial_agg(gdf = dist,
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
                                         count_col = "deaths")
+
 oaf_malaria_agg <- spatial_agg(gdf = dist,
                                         agg = older_female_adult_malaria,
                                         mapping = mapping,
@@ -303,6 +304,7 @@ oam_infections_agg <- spatial_agg(gdf = dist,
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
                                count_col = "deaths")
+
 oaf_infections_agg <- spatial_agg(gdf = dist,
                                agg = oaf_infections,
                                mapping = mapping,
