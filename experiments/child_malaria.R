@@ -194,7 +194,7 @@ mapping <- data.frame(
 
 # Testing out function with child malaria
 cm_malaria_agg <- spatial_agg(gdf = dist,
-                                        agg = cm_malaria,
+                                        agg = male_child_malaria,
                                         mapping = mapping,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
@@ -202,7 +202,7 @@ cm_malaria_agg <- spatial_agg(gdf = dist,
                                         count_col = "deaths")
 
 cf_malaria_agg <- spatial_agg(gdf = dist,
-                                          agg = cf_malaria,
+                                          agg = female_child_malaria,
                                           mapping = mapping,
                                           gdf_id = "distname", 
                                           agg_id = "district_cod",
