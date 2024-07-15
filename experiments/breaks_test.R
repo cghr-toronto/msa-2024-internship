@@ -359,13 +359,13 @@ yam_symptom <- symptom_rate(age_sex_malaria_agg = yam_malaria_agg,
                             symptoms = adult_symptoms)
 
 
-yam_cough <- yam_symptom %>% filter(symptoms == "fever")
+yam_test <- yam_symptom %>% filter(symptoms == "cough")
 
-map <- ggplot(data = yam_cough) +
+map <- ggplot(data = yam_test) +
     geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend()) +
     scale_fill_continuous(breaks = scales::pretty_breaks(n = 6)) +
-    ggtitle("Fever") +
+    ggtitle("Testing cough") +
     geom_sf_label(aes(label = rates), size = 1.8) +
     theme_minimal() + 
     theme(panel.grid.major = element_blank(), 
@@ -374,7 +374,7 @@ map <- ggplot(data = yam_cough) +
           axis.text = element_blank(), 
           axis.ticks = element_blank(),
           axis.title.x = element_blank(),
-          axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
+          axis.title.y = element_blank(),
           plot.title = element_text(hjust = 0.5, size = 20)) 
 
 map
