@@ -454,7 +454,8 @@ hm <- function(ns_table, hm_title, pdf_title) {
         geom_text(aes(label = round(total_count, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
         scale_x_discrete(position = "top") +
-        theme(axis.text.x = element_text(angle = 45, size = 8, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
+        theme(axis.text.x = element_text(angle = 25, size = 13, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
+              axis.text.y = element_text(size = 13),
               axis.title.x = element_blank(),
               panel.grid.major = element_blank(),  # Remove major grid lines
               panel.grid.minor = element_blank(),  # Remove minor grid lines
@@ -617,7 +618,7 @@ create_map <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_steps(breaks = breaks) +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -634,7 +635,7 @@ create_map <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_steps(breaks = breaks) +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -660,7 +661,7 @@ create_map_2 <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_steps(breaks = breaks) +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
@@ -676,7 +677,7 @@ create_map_2 <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_steps(n.breaks = 6) +
+            scale_fill_continuous(low="lightblue", high="darkblue") +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
