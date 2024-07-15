@@ -359,13 +359,15 @@ yam_symptom <- symptom_rate(age_sex_malaria_agg = yam_malaria_agg,
                             symptoms = adult_symptoms)
 
 
-yam_test <- yam_symptom %>% filter(symptoms == "cough")
+yam_test <- yam_symptom %>% filter(denom_group == "Malaria", symptoms == "breathingProblem")
+
+breaks <- pretty(range(yam_test$rates), n = 6)
 
 map <- ggplot(data = yam_test) +
     geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend()) +
-    scale_fill_continuous(breaks = scales::pretty_breaks(n = 6)) +
-    ggtitle("Testing cough") +
+    scale_fill_steps(breaks = breaks) +
+    ggtitle("Testing BP") +
     geom_sf_label(aes(label = rates), size = 1.8) +
     theme_minimal() + 
     theme(panel.grid.major = element_blank(), 
