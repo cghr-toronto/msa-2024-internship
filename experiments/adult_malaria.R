@@ -437,6 +437,7 @@ non_spatial_oam <- non_spatial(older_male_adult)
 non_spatial_oaf <- non_spatial(older_female_adult)
 
 
+
 # Creating heat map with non-spatial table
 hm <- function(ns_table, hm_title, pdf_title) {
     
@@ -447,20 +448,42 @@ hm <- function(ns_table, hm_title, pdf_title) {
         group_by(type_of_cause, symptoms) %>%
         summarise(total_count = sum(counts))
     
+    row_sums <- heat %>%
+        group_by(type_of_cause) %>%
+        summarize(row_sum = sum(total_count, na.rm = TRUE))
+    
+    col_sums <- heat %>%
+        group_by(symptoms) %>%
+        summarize(col_sum = sum(total_count, na.rm = TRUE))
+    
+    # Merge the sums back into the original data frame
+    heat <- heat %>%
+        left_join(row_sums, by = "type_of_cause") %>%
+        left_join(col_sums, by = "symptoms")
+    
+    # Create new axis labels with sums
+    row_labels <- unique(paste0(heat$type_of_cause, " (", heat$row_sum, ")"))
+    col_labels <- unique(paste0(heat$symptoms, " (", heat$col_sum, ")"))
+    
+    browser()
+    
     heat$type_of_cause <- factor(heat$type_of_cause, levels = c("Non-infections", "Infections", "Malaria"))
     
+    # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
         geom_tile(aes(fill = total_count)) +
         geom_text(aes(label = round(total_count, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
-        scale_x_discrete(position = "top") +
+        scale_x_discrete(labels = col_labels, position = "top") +
+        scale_y_discrete(labels = row_labels) +
         theme(axis.text.x = element_text(angle = 25, size = 13, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
               axis.text.y = element_text(size = 13),
               axis.title.x = element_blank(),
-              panel.grid.major = element_blank(),  # Remove major grid lines
-              panel.grid.minor = element_blank(),  # Remove minor grid lines
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
               panel.background = element_blank()) +
         ggtitle(hm_title)
+    
     
     # Exporting heat map as pdf
     out <- pdf_print(heat_map_plot, pdf_title)

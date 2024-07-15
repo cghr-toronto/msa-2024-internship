@@ -361,7 +361,16 @@ yam_symptom <- symptom_rate(age_sex_malaria_agg = yam_malaria_agg,
 
 yam_test <- yam_symptom %>% filter(denom_group == "Malaria", symptoms == "breathingProblem")
 
-breaks <- pretty(range(yam_test$rates), n = 6)
+min_val <- min(yam_test$rates, na.rm = TRUE)
+max_val <- max(yam_test$rates, na.rm = TRUE)
+
+breaks <- 6
+
+# Calculate the interval width
+interval_width <- max_val / breaks
+
+# Generate the sequence of break points
+break_points <- seq(0, max_val, by = interval_width)
 
 map <- ggplot(data = yam_test) +
     geom_sf(aes(fill=(rates))) +
