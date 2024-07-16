@@ -456,6 +456,16 @@ hm <- function(ns_table, hm_title, pdf_title) {
         group_by(symptoms) %>%
         summarize(col_sum = sum(total_count, na.rm = TRUE))
     
+    # Find indices for different types of causes
+    ni_index <- which(row_sums$type_of_cause == "Non-infections")
+    inf_index <- which(row_sums$type_of_cause == "Infections")
+    m_index <- which(row_sums$type_of_cause == "Malaria")
+    
+    # Extract values and convert to numeric
+    non_infections <- as.numeric(row_sums$row_sum[ni_index])
+    infections <- as.numeric(row_sums$row_sum[inf_index])
+    malaria <- as.numeric(row_sums$row_sum[m_index])
+    
     # Merge the sums back into the original data frame
     heat <- heat %>%
         left_join(row_sums, by = "type_of_cause") %>%
@@ -465,9 +475,10 @@ hm <- function(ns_table, hm_title, pdf_title) {
     row_labels <- unique(paste0(heat$type_of_cause, " (", heat$row_sum, ")"))
     col_labels <- unique(paste0(heat$symptoms, " (", heat$col_sum, ")"))
     
+    heat$type_of_cause <- factor(heat$type_of_cause, levels = c(paste0("Non-infections", non_infections)), 
+                                                                (paste0("Infections", infections)), 
+                                                                (paste0("Malaria", malaria)))
     browser()
-    
-    heat$type_of_cause <- factor(heat$type_of_cause, levels = c("Non-infections", "Infections", "Malaria"))
     
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +

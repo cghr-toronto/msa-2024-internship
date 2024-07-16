@@ -370,12 +370,12 @@ breaks <- 6
 interval_width <- max_val / breaks
 
 # Generate the sequence of break points
-break_points <- seq(0, max_val, by = interval_width)
+break_points <- seq(min_val, max_val, by = interval_width)
 
 map <- ggplot(data = yam_test) +
     geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend()) +
-    scale_fill_steps(breaks = breaks) +
+    scale_discrete_manual(aesthetics = c("colour"), breaks = break_points) +
     ggtitle("Testing BP") +
     geom_sf_label(aes(label = rates), size = 1.8) +
     theme_minimal() + 
