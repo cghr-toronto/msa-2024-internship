@@ -482,7 +482,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
     col_sums$col_perc <- round((col_sums$col_sum / all_symptoms) * 100)
     
     # Create new axis labels with sums
-    col_labels <- glue("{col_sums$symptoms} ({col_sums$col_sum}, {col_sums$col_perc}%)")
+    col_labels <- glue("{col_sums$symptoms}\n({col_sums$col_sum}, {col_sums$col_perc}%)")
     
     # Find indices for different types of causes
     ni_index <- which(row_sums$type_of_cause == "Non-infections")
@@ -506,14 +506,14 @@ hm <- function(ns_table, hm_title, pdf_title) {
 
     heat <- heat %>%
         mutate(type_of_cause = case_when(
-            type_of_cause == "Malaria" ~ glue("Malaria ({malaria}, {malaria_perc}%)"),
-            type_of_cause == "Infections" ~ glue("Infections ({infections}, {infections_perc}%)"),
-            type_of_cause == "Non-infections" ~ glue("Non-infections ({non_infections}, {non_infections_perc}%)")
+            type_of_cause == "Malaria" ~ glue("Malaria\n({malaria}, {malaria_perc}%)"),
+            type_of_cause == "Infections" ~ glue("Infections\n({infections}, {infections_perc}%)"),
+            type_of_cause == "Non-infections" ~ glue("Non-infections\n({non_infections}, {non_infections_perc}%)")
         ))
         
-    heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Non-infections ({non_infections}, {non_infections_perc}%)"), 
-                                                                glue("Infections ({infections}, {infections_perc}%)"), 
-                                                                glue("Malaria ({malaria}, {malaria_perc}%)")))
+    heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Non-infections\n({non_infections}, {non_infections_perc}%)"), 
+                                                                glue("Infections\n({infections}, {infections_perc}%)"), 
+                                                                glue("Malaria\n({malaria}, {malaria_perc}%)")))
     
     heat$total_perc <- round(((heat$total_count / heat$row_sum) * 100))
     
@@ -523,7 +523,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
         geom_text(aes(label = glue("{total_count} ({total_perc}%)"))) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
         scale_x_discrete(labels = col_labels, position = "top") +
-        theme(axis.text.x = element_text(angle = 25, size = 9, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
+        theme(axis.text.x = element_text(angle = 25, size = 12, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
               axis.text.y = element_text(size = 13),
               axis.title.x = element_blank(),
               axis.title.y = element_blank(),
