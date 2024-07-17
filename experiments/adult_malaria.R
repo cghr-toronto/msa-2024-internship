@@ -406,9 +406,9 @@ pdf_print_hm <- function(series, title){
     
     jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
     
-    ggsave(pdf_title, plot = series, device = "pdf", width = 26, height = 6)
+    ggsave(pdf_title, plot = series, device = "pdf", width = 29, height = 6)
     
-    ggsave(jpeg_title, plot = series, device = "jpeg", width = 26, height = 6)
+    ggsave(jpeg_title, plot = series, device = "jpeg", width = 29, height = 6)
     
 }
 
@@ -521,14 +521,16 @@ hm <- function(ns_table, hm_title, pdf_title) {
     heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
         geom_tile(aes(fill = total_count, height = -1)) +
         geom_text(aes(label = glue("{total_count} ({total_perc}%)"))) +
-        scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths") +
+        scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
         scale_x_discrete(labels = col_labels, position = "top") +
-        theme(axis.text.x = element_text(angle = 25, size = 13, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
+        theme(axis.text.x = element_text(angle = 25, size = 9, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
               axis.text.y = element_text(size = 13),
               axis.title.x = element_blank(),
+              axis.title.y = element_blank(),
               panel.grid.major = element_blank(),
               panel.grid.minor = element_blank(),
-              panel.background = element_blank()) +
+              panel.background = element_blank(),
+              legend.position = "top") +
         ggtitle(hm_title)
     
     
