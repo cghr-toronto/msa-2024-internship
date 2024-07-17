@@ -520,7 +520,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
         geom_tile(aes(fill = total_count, height = -1)) +
-        geom_text(aes(label = paste0(total_count, ", ", total_perc,"%"))) +
+        geom_text(aes(label = glue("{total_count} ({total_perc} %)"))) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths") +
         scale_x_discrete(labels = col_labels, position = "top") +
         theme(axis.text.x = element_text(angle = 25, size = 13, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
