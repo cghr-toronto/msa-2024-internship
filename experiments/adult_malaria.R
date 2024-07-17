@@ -12,6 +12,7 @@ library(prettymapr)
 library(patchwork)
 library(readxl)
 library(glue)
+library(forcats)
 
 ## Read data
 # Reading in Adult Round 1 and Round 2 data
@@ -466,33 +467,33 @@ hm <- function(ns_table, hm_title, pdf_title) {
         summarise(total_count = sum(counts))
     
     # Calculating sum of each cause of death
-    row_sums <- heat %>%
+    toc_sums <- heat %>%
         group_by(type_of_cause) %>%
-        summarize(row_sum = sum(total_count, na.rm = TRUE))
+        summarize(toc_sum = sum(total_count, na.rm = TRUE))
     
-    all_deaths <- sum(row_sums$row_sum)
+    all_deaths <- sum(toc_sums$toc_sum)
     
     # Calculating sum of each symptom death
-    col_sums <- heat %>%
+    symp_sums <- heat %>%
         group_by(symptoms) %>%
-        summarize(col_sum = sum(total_count, na.rm = TRUE))
+        summarize(symp_sum = sum(total_count, na.rm = TRUE))
     
-    all_symptoms <- sum(col_sums$col_sum)
+    all_symptoms <- sum(symp_sums$symp_sum)
     
-    col_sums$col_perc <- round((col_sums$col_sum / all_symptoms) * 100)
+    symp_sums$symp_perc <- round((symp_sums$symp_sum / all_symptoms) * 100)
     
     # Create new axis labels with sums
-    col_labels <- glue("{col_sums$symptoms}\n({col_sums$col_sum}, {col_sums$col_perc}%)")
+    symp_labels <- glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, {symp_sums$symp_perc}%)")
     
     # Find indices for different types of causes
-    ni_index <- which(row_sums$type_of_cause == "Non-infections")
-    inf_index <- which(row_sums$type_of_cause == "Infections")
-    m_index <- which(row_sums$type_of_cause == "Malaria")
+    ni_index <- which(toc_sums$type_of_cause == "Non-infections")
+    inf_index <- which(toc_sums$type_of_cause == "Infections")
+    m_index <- which(toc_sums$type_of_cause == "Malaria")
     
     # Extract values and convert to numeric
-    non_infections <- as.numeric(row_sums$row_sum[ni_index])
-    infections <- as.numeric(row_sums$row_sum[inf_index])
-    malaria <- as.numeric(row_sums$row_sum[m_index])
+    non_infections <- as.numeric(toc_sums$toc_sum[ni_index])
+    infections <- as.numeric(toc_sums$toc_sum[inf_index])
+    malaria <- as.numeric(toc_sums$toc_sum[m_index])
     
     # Calculating percentage of cause of death
     non_infections_perc <- round((non_infections / all_deaths) * 100)
@@ -501,8 +502,8 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
     # Merge the sums back into the original data frame
     heat <- heat %>%
-        left_join(row_sums, by = "type_of_cause") %>%
-        left_join(col_sums, by = "symptoms")
+        left_join(toc_sums, by = "type_of_cause") %>%
+        left_join(symp_sums, by = "symptoms")
 
     heat <- heat %>%
         mutate(type_of_cause = case_when(
@@ -515,14 +516,14 @@ hm <- function(ns_table, hm_title, pdf_title) {
                                                                 glue("Infections\n({infections}, {infections_perc}%)"),
                                                                 glue("Non-infections\n({non_infections}, {non_infections_perc}%)")))
     
-    heat$total_perc <- round(((heat$total_count / heat$row_sum) * 100))
+    heat$total_perc <- round(((heat$total_count / heat$toc_sum) * 100))
     
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(type_of_cause, symptoms)) +
         geom_tile(aes(fill = total_count, height = -1)) +
         geom_text(aes(label = glue("{total_count}\n({total_perc}%)"))) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
-        scale_y_discrete(labels = col_labels) +
+        scale_y_discrete(labels = symp_labels) +
         scale_x_discrete(position = "top") +
         theme(axis.text.x = element_text(size = 10.5),
               axis.text.y = element_text(size = 10.5),
