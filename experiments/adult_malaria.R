@@ -463,6 +463,13 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
     all_symptoms <- sum(col_sums$col_sum)
     
+    col_sums$col_perc <- round((col_sums$col_sum / all_symptoms) * 100)
+    
+    browser()
+    
+    # Create new axis labels with sums
+    col_labels <- glue("{col_sums$symptoms} ({col_sums$col_sum}, {col_sums$col_perc}%)")
+    
     # Find indices for different types of causes
     ni_index <- which(row_sums$type_of_cause == "Non-infections")
     inf_index <- which(row_sums$type_of_cause == "Infections")
@@ -482,13 +489,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
     heat <- heat %>%
         left_join(row_sums, by = "type_of_cause") %>%
         left_join(col_sums, by = "symptoms")
-    
-    # Create new axis labels with sums
-    row_labels <- unique(paste0(heat$type_of_cause, " (", heat$row_sum, ")"))
-    col_labels <- unique(paste0(heat$symptoms, " (", heat$col_sum, ")"))
-    
-    browser()
-    
+
     heat <- heat %>%
         mutate(type_of_cause = case_when(
             type_of_cause == "Malaria" ~ glue("Malaria ({malaria}, {malaria_perc}%)"),
