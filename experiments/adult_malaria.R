@@ -681,14 +681,22 @@ older_adult_symptom <- symptom_rate(age_sex_malaria_agg = older_adult_malaria_ag
 create_map <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
-    breaks <- pretty(range(filtered_data$rates), n = 5)
+    min_val <- min(filtered_data$rates, na.rm = TRUE)
+    max_val <- max(filtered_data$rates, na.rm = TRUE)
+    
+    breaks <- 6
+    
+    # Calculate the interval width
+    interval_width <- max_val / breaks
+    
+    # Generate the sequence of break points
+    break_points <- seq(min_val, max_val, len = 6)
     
     if (symptom == "fever") {
         
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(low="lightblue", high="darkblue") +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -700,12 +708,12 @@ create_map <- function(data, symptom, y_axis) {
                   axis.title.x = element_blank(),
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            ylab(y_axis)
+            ylab(y_axis) +
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points) 
     } else {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(low="lightblue", high="darkblue") +
             ggtitle(paste(symptom)) +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
@@ -715,7 +723,8 @@ create_map <- function(data, symptom, y_axis) {
                   axis.text = element_blank(), 
                   axis.ticks = element_blank(), 
                   axis.title = element_blank(),
-                  plot.title = element_text(hjust = 0.5, size = 20))
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points) 
         
     }
     return(map)
@@ -725,13 +734,21 @@ create_map <- function(data, symptom, y_axis) {
 create_map_2 <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
-    breaks <- pretty(range(filtered_data$rates), n = 5)
+    min_val <- min(filtered_data$rates, na.rm = TRUE)
+    max_val <- max(filtered_data$rates, na.rm = TRUE)
+    
+    breaks <- 6
+    
+    # Calculate the interval width
+    interval_width <- max_val / breaks
+    
+    # Generate the sequence of break points
+    break_points <- seq(min_val, max_val, len = 6)
     
     if (symptom == "fever") {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(low="lightblue", high="darkblue") +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
@@ -742,12 +759,12 @@ create_map_2 <- function(data, symptom, y_axis) {
                   axis.title.x = element_blank(),
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            ylab(y_axis)
+            ylab(y_axis) +
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points) 
     } else {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            scale_fill_continuous(low="lightblue", high="darkblue") +
             geom_sf_label(aes(label = rates), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
@@ -756,7 +773,8 @@ create_map_2 <- function(data, symptom, y_axis) {
                   axis.text = element_blank(), 
                   axis.ticks = element_blank(), 
                   axis.title = element_blank(),
-                  plot.title = element_text(hjust = 0.5, size = 20))
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points) 
     }
     
     return(map)
