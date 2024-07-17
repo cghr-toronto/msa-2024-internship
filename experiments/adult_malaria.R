@@ -453,9 +453,13 @@ hm <- function(ns_table, hm_title, pdf_title) {
         group_by(type_of_cause) %>%
         summarize(row_sum = sum(total_count, na.rm = TRUE))
     
+    all_deaths <- sum(row_sums$row_sum)
+    
     col_sums <- heat %>%
         group_by(symptoms) %>%
         summarize(col_sum = sum(total_count, na.rm = TRUE))
+    
+    all_symptoms <- sum(col_sums$col_sum)
     
     # Find indices for different types of causes
     ni_index <- which(row_sums$type_of_cause == "Non-infections")

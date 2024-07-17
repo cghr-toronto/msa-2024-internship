@@ -364,18 +364,17 @@ yam_test <- yam_symptom %>% filter(denom_group == "Malaria", symptoms == "breath
 min_val <- min(yam_test$rates, na.rm = TRUE)
 max_val <- max(yam_test$rates, na.rm = TRUE)
 
-breaks <- 5
+breaks <- 6
 
 # Calculate the interval width
 interval_width <- max_val / breaks
 
 # Generate the sequence of break points
-break_points <- seq(min_val, max_val, len = 6)
+break_points <- seq(min_val, max_val, len = 8)
 
 map <- ggplot(data = yam_test) +
     geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend()) +
-    scale_discrete_manual(aesthetics = c("colour"), breaks = break_points) +
     ggtitle("Testing BP") +
     geom_sf_label(aes(label = rates), size = 1.8) +
     theme_minimal() + 
@@ -386,6 +385,7 @@ map <- ggplot(data = yam_test) +
           axis.ticks = element_blank(),
           axis.title.x = element_blank(),
           axis.title.y = element_blank(),
-          plot.title = element_text(hjust = 0.5, size = 20)) 
+          plot.title = element_text(hjust = 0.5, size = 20)) +
+    scale_discrete_manual(aes(fill = rates), breaks = break_points) 
 
 map
