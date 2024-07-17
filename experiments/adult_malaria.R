@@ -406,9 +406,9 @@ pdf_print_hm <- function(series, title){
     
     jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
     
-    ggsave(pdf_title, plot = series, device = "pdf", width = 24, height = 6)
+    ggsave(pdf_title, plot = series, device = "pdf", width = 6, height = 24)
     
-    ggsave(jpeg_title, plot = series, device = "jpeg", width = 24, height = 6)
+    ggsave(jpeg_title, plot = series, device = "jpeg", width = 6, height = 24)
     
 }
 
@@ -511,20 +511,21 @@ hm <- function(ns_table, hm_title, pdf_title) {
             type_of_cause == "Non-infections" ~ glue("Non-infections\n({non_infections}, {non_infections_perc}%)")
         ))
         
-    heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Non-infections\n({non_infections}, {non_infections_perc}%)"), 
-                                                                glue("Infections\n({infections}, {infections_perc}%)"), 
-                                                                glue("Malaria\n({malaria}, {malaria_perc}%)")))
+    heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Malaria\n({malaria}, {malaria_perc}%)"),
+                                                                glue("Infections\n({infections}, {infections_perc}%)"),
+                                                                glue("Non-infections\n({non_infections}, {non_infections_perc}%)")))
     
     heat$total_perc <- round(((heat$total_count / heat$row_sum) * 100))
     
     # Create the heatmap with modified axis labels
-    heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
+    heat_map_plot <- ggplot(heat, aes(type_of_cause, symptoms)) +
         geom_tile(aes(fill = total_count, height = -1)) +
         geom_text(aes(label = glue("{total_count}\n({total_perc}%)"))) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
-        scale_x_discrete(labels = col_labels, position = "top") +
-        theme(axis.text.x = element_text(angle = 25, size = 12, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
-              axis.text.y = element_text(size = 13),
+        scale_y_discrete(labels = col_labels) +
+        scale_x_discrete(position = "top") +
+        theme(axis.text.x = element_text(angle = 25, size = 10.5, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
+              axis.text.y = element_text(size = 10.5),
               axis.title.x = element_blank(),
               axis.title.y = element_blank(),
               axis.ticks = element_blank(),
