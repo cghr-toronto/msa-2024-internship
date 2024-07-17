@@ -449,12 +449,14 @@ hm <- function(ns_table, hm_title, pdf_title) {
         group_by(type_of_cause, symptoms) %>%
         summarise(total_count = sum(counts))
     
+    # Calculating sum of each cause of death
     row_sums <- heat %>%
         group_by(type_of_cause) %>%
         summarize(row_sum = sum(total_count, na.rm = TRUE))
     
     all_deaths <- sum(row_sums$row_sum)
     
+    # Calculating sum of each symptom death
     col_sums <- heat %>%
         group_by(symptoms) %>%
         summarize(col_sum = sum(total_count, na.rm = TRUE))
@@ -471,6 +473,11 @@ hm <- function(ns_table, hm_title, pdf_title) {
     infections <- as.numeric(row_sums$row_sum[inf_index])
     malaria <- as.numeric(row_sums$row_sum[m_index])
     
+    # Calculating percentage of cause of death
+    non_infections_perc <- round((non_infections / all_deaths) * 100)
+    infections_perc <- round((infections / all_deaths) * 100)
+    malaria_perc <- round((malaria / all_deaths) * 100)
+    
     # Merge the sums back into the original data frame
     heat <- heat %>%
         left_join(row_sums, by = "type_of_cause") %>%
@@ -484,14 +491,14 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
     heat <- heat %>%
         mutate(type_of_cause = case_when(
-            type_of_cause == "Malaria" ~ glue("Malaria ({malaria})"),
-            type_of_cause == "Infections" ~ glue("Infections ({infections})"),
-            type_of_cause == "Non-infections" ~ glue("Non-infections ({non_infections})")
+            type_of_cause == "Malaria" ~ glue("Malaria ({malaria}, {malaria_perc}%)"),
+            type_of_cause == "Infections" ~ glue("Infections ({infections}, {infections_perc}%)"),
+            type_of_cause == "Non-infections" ~ glue("Non-infections ({non_infections}, {non_infections_perc}%)")
         ))
         
-    heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Non-infections ({non_infections})"), 
-                                                                glue("Infections ({infections})"), 
-                                                                glue("Malaria ({malaria})")))
+    heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Non-infections ({non_infections}, {non_infections_perc}%)"), 
+                                                                glue("Infections ({infections}, {infections_perc}%)"), 
+                                                                glue("Malaria ({malaria}, {malaria_perc}%)")))
     
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
