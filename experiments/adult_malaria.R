@@ -524,7 +524,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
         scale_y_discrete(labels = col_labels) +
         scale_x_discrete(position = "top") +
-        theme(axis.text.x = element_text(angle = 25, size = 10.5, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
+        theme(axis.text.x = element_text(size = 10.5),
               axis.text.y = element_text(size = 10.5),
               axis.title.x = element_blank(),
               axis.title.y = element_blank(),
