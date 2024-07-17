@@ -465,8 +465,6 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
     col_sums$col_perc <- round((col_sums$col_sum / all_symptoms) * 100)
     
-    browser()
-    
     # Create new axis labels with sums
     col_labels <- glue("{col_sums$symptoms} ({col_sums$col_sum}, {col_sums$col_perc}%)")
     
@@ -501,9 +499,13 @@ hm <- function(ns_table, hm_title, pdf_title) {
                                                                 glue("Infections ({infections}, {infections_perc}%)"), 
                                                                 glue("Malaria ({malaria}, {malaria_perc}%)")))
     
+    browser()
+    
+    heat$total_perc <- round(((heat$total_count / heat$row_sum) * 100), 2)
+    
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
-        geom_tile(aes(fill = total_count)) +
+        geom_tile(aes(fill = total_count, total_perc)) +
         geom_text(aes(label = round(total_count, 1))) +
         scale_fill_gradient(low = "white", high = "red") +
         scale_x_discrete(labels = col_labels, position = "top") +
