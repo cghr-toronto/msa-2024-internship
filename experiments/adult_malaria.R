@@ -396,6 +396,22 @@ pdf_print <- function(series, title){
     
 }
 
+pdf_print_hm <- function(series, title){
+    
+    pdf_output_dir <- "../figures/"
+    
+    jpeg_output_dir <- "../figures.jpgs/"
+    
+    pdf_title <- paste0(pdf_output_dir, title, ".pdf")
+    
+    jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
+    
+    ggsave(pdf_title, plot = series, device = "pdf", width = 26, height = 6)
+    
+    ggsave(jpeg_title, plot = series, device = "jpeg", width = 26, height = 6)
+    
+}
+
 # Creating non-spatial table of symptom and causes of death
 non_spatial <- function(age_group){
     
@@ -499,13 +515,13 @@ hm <- function(ns_table, hm_title, pdf_title) {
                                                                 glue("Infections ({infections}, {infections_perc}%)"), 
                                                                 glue("Malaria ({malaria}, {malaria_perc}%)")))
     
-    heat$total_perc <- round(((heat$total_count / heat$row_sum) * 100), 2)
+    heat$total_perc <- round(((heat$total_count / heat$row_sum) * 100))
     
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(symptoms, type_of_cause)) +
-        geom_tile(aes(fill = total_count)) +
+        geom_tile(aes(fill = total_count, height = -1)) +
         geom_text(aes(label = paste0(total_count, ", ", total_perc,"%"))) +
-        scale_fill_gradient(low = "white", high = "red") +
+        scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths") +
         scale_x_discrete(labels = col_labels, position = "top") +
         theme(axis.text.x = element_text(angle = 25, size = 13, hjust = 0, vjust = 0, margin = margin(t = 30, r = 30)),
               axis.text.y = element_text(size = 13),
@@ -517,7 +533,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
     
     # Exporting heat map as pdf
-    out <- pdf_print(heat_map_plot, pdf_title)
+    out <- pdf_print_hm(heat_map_plot, pdf_title)
     
     return(out)
     
