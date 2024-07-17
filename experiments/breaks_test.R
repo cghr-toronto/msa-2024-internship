@@ -359,7 +359,7 @@ yam_symptom <- symptom_rate(age_sex_malaria_agg = yam_malaria_agg,
                             symptoms = adult_symptoms)
 
 
-yam_test <- yam_symptom %>% filter(denom_group == "Malaria", symptoms == "breathingProblem")
+yam_test <- yam_symptom %>% filter(denom_group == "Malaria", symptoms == "fever")
 
 min_val <- min(yam_test$rates, na.rm = TRUE)
 max_val <- max(yam_test$rates, na.rm = TRUE)
@@ -370,12 +370,12 @@ breaks <- 6
 interval_width <- max_val / breaks
 
 # Generate the sequence of break points
-break_points <- seq(min_val, max_val, len = 8)
+break_points <- seq(min_val, max_val, len = 6)
 
 map <- ggplot(data = yam_test) +
     geom_sf(aes(fill=(rates))) +
     guides(fill = guide_legend()) +
-    ggtitle("Testing BP") +
+    ggtitle("Testing fever") +
     geom_sf_label(aes(label = rates), size = 1.8) +
     theme_minimal() + 
     theme(panel.grid.major = element_blank(), 
@@ -386,6 +386,6 @@ map <- ggplot(data = yam_test) +
           axis.title.x = element_blank(),
           axis.title.y = element_blank(),
           plot.title = element_text(hjust = 0.5, size = 20)) +
-    scale_discrete_manual(aes(fill = rates), breaks = break_points) 
+    scale_fill_continuous(breaks = break_points) 
 
 map
