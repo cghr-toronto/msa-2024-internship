@@ -514,7 +514,6 @@ hm <- function(ns_table, hm_title, pdf_title) {
     heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Malaria\n({malaria}, {malaria_perc}%)"),
                                                                 glue("Infections\n({infections}, {infections_perc}%)"),
                                                                 glue("Non-infections\n({non_infections}, {non_infections_perc}%)")))
-    browser()
     
     heat <- heat %>% group_by(symptoms) %>% mutate(symp_total = sum(total_count))
     
@@ -535,7 +534,8 @@ hm <- function(ns_table, hm_title, pdf_title) {
               panel.grid.major = element_blank(),
               panel.grid.minor = element_blank(),
               panel.background = element_blank(),
-              legend.position = "right") 
+              legend.position = "right",
+              plot.title = element_text(hjust = 0.5, face = "bold", size = 14)) 
     
     # Exporting heat map as pdf
     out <- pdf_print_hm(heat_map_plot, pdf_title)
@@ -544,7 +544,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
 }
 
-hm_adult <- hm(non_spatial_adult, "Adult Symptom Heatmap", "fig-adult-heatmap")
+hm_adult <- hm(non_spatial_adult, "Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap")
 hm_young_adult <- hm(non_spatial_young_adult, "Young Adult Symptom Heatmap", "fig-young-adult-heatmap")
 hm_older_adult <- hm(non_spatial_older_adult, "Older Adult Symptom Heatmap", "fig-older-adult-heatmap")
 hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult Symptom Heatmap", "fig-yam-heatmap")
