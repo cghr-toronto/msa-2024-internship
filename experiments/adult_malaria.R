@@ -511,7 +511,11 @@ hm <- function(ns_table, hm_title, pdf_title) {
             type_of_cause == "Infections" ~ glue("Infections\n({infections}, {infections_perc}%)"),
             type_of_cause == "Non-infections" ~ glue("Non-infections\n({non_infections}, {non_infections_perc}%)")
         )) %>%
-        mutate(symptoms = glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, {symp_sums$symp_perc}%)"))
+        mutate(symptoms = ifelse(symp_perc < 1,
+                                 glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, <1%)"),
+                                 glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, {symp_sums$symp_perc}%)")
+                                 )
+               )
     
     heat$symptoms <- fct_reorder(heat$symptoms, heat$symp_sum, .desc = FALSE)
     
