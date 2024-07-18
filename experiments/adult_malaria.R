@@ -514,8 +514,11 @@ hm <- function(ns_table, hm_title, pdf_title) {
     heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Malaria\n({malaria}, {malaria_perc}%)"),
                                                                 glue("Infections\n({infections}, {infections_perc}%)"),
                                                                 glue("Non-infections\n({non_infections}, {non_infections_perc}%)")))
+    browser()
     
-    heat$total_perc <- round(((heat$total_count / heat$toc_sum) * 100))
+    heat <- heat %>% group_by(symptoms) %>% mutate(symp_total = sum(total_count))
+    
+    heat$total_perc <- round(((heat$total_count / heat$symp_total) * 100))
     
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(type_of_cause, symptoms)) +
@@ -523,6 +526,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
         geom_text(aes(label = glue("{total_count}\n({total_perc}%)"))) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
         scale_x_discrete(position = "top") +
+        ggtitle(hm_title) +
         theme(axis.text.x = element_text(size = 10.5),
               axis.text.y = element_text(size = 10.5),
               axis.title.x = element_blank(),
@@ -531,9 +535,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
               panel.grid.major = element_blank(),
               panel.grid.minor = element_blank(),
               panel.background = element_blank(),
-              legend.position = "top") +
-        ggtitle(hm_title)
-    
+              legend.position = "right") 
     
     # Exporting heat map as pdf
     out <- pdf_print_hm(heat_map_plot, pdf_title)
