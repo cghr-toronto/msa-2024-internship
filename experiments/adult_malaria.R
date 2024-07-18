@@ -454,10 +454,14 @@ non_spatial_older_adult <- non_spatial(older_adult)
 non_spatial_oam <- non_spatial(older_male_adult)
 non_spatial_oaf <- non_spatial(older_female_adult)
 
-
+total_deaths <- function(ns_table, deaths){
+    as.numeric(sum(ns_table$deaths))
+}
 
 # Creating heat map with non-spatial table
 hm <- function(ns_table, hm_title, pdf_title) {
+    
+    death_total <- total_deaths(ns_table, deaths) 
     
     heat <- pivot_longer(ns_table, cols = -c(cause_of_death, type_of_cause),
                          names_to = "symptoms",
@@ -525,7 +529,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
         geom_text(aes(label = glue("{total_count}\n({total_perc}%)"))) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
         scale_x_discrete(position = "top") +
-        ggtitle(hm_title) +
+        ggtitle(glue("{hm_title}\n(n = {death_total})")) +
         theme(axis.text.x = element_text(size = 10.5),
               axis.text.y = element_text(size = 10.5),
               axis.title.x = element_blank(),
@@ -544,13 +548,13 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
 }
 
-hm_adult <- hm(non_spatial_adult, "Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap")
-hm_young_adult <- hm(non_spatial_young_adult, "Young Adult Symptom Heatmap", "fig-young-adult-heatmap")
-hm_older_adult <- hm(non_spatial_older_adult, "Older Adult Symptom Heatmap", "fig-older-adult-heatmap")
-hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult Symptom Heatmap", "fig-yam-heatmap")
-hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult Symptom Heatmap", "fig-yaf-heatmap")
-hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult Symptom Heatmap", "fig-oam-heatmap")
-hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult Symptom Heatmap", "fig-oaf-heatmap")
+hm_adult <- hm(non_spatial_adult, glue("Adult Deaths by Symptom\nSierra Leone 2019-2022"), "fig-adult-heatmap")
+hm_young_adult <- hm(non_spatial_young_adult, "Young Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap")
+hm_older_adult <- hm(non_spatial_older_adult, "Older Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap")
+hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap")
+hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap")
+hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap")
+hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap")
 
 cod_rate <- function(
         age_sex_agg,
