@@ -647,7 +647,9 @@ symptom_rate <- function(
             str_ends(symptoms, "_non_infections") ~ "Non-Infections",
             str_ends(symptoms, "_infections") ~ "Infections"
         )) %>%
-        mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$"))
+        mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$")) 
+    
+    out$rates[is.nan(out$rates)] <- 0
     
     return(out)
     
