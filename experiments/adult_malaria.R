@@ -556,13 +556,13 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
 }
 
-hm_adult <- hm(non_spatial_adult, glue("Adult (15-69) Deaths by Symptom\nSierra Leone 2019-2022"), "fig-adult-heatmap")
-hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap")
-hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap")
-hm_young_male_adult <- hm(non_spatial_yam, "Young Male (15-39) Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap")
-hm_young_female_adult <- hm(non_spatial_yaf, "Young Female (15-39) Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap")
-hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap")
-hm_older_female_adult <- hm(non_spatial_oaf, "Older Female (40-69) Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap")
+hm_adult <- hm(non_spatial_adult, glue("Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022"), "fig-adult-heatmap")
+hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap")
+hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap")
+hm_young_male_adult <- hm(non_spatial_yam, "Young Male (15-39 Years) Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap")
+hm_young_female_adult <- hm(non_spatial_yaf, "Young Female (15-39 Years) Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap")
+hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap")
+hm_older_female_adult <- hm(non_spatial_oaf, "Older Female (40-69 Years) Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap")
 
 cod_rate <- function(
         age_sex_agg,
@@ -823,9 +823,9 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
 }
 
 # Creating plot series for each age group
-yam_plot <- create_plots(yam_symptom, "Young Adult (15-39) Male Malaria Symptoms", "fig-yam-malaria-maps")
-yaf_plot <- create_plots(yaf_symptom, "Young Adult (15-39) Female Malaria Symptoms", "fig-yaf-malaria-maps")
-oam_plot <- create_plots(oam_symptom, "Older Adult (40-69) Male Malaria Symptoms", "fig-oam-malaria-maps")
-oaf_plot <- create_plots(oaf_symptom, "Older Adult  (40-69) Female Malaria Symptoms", "fig-oaf-malaria-maps")
-young_adult_plot <- create_plots(young_adult_symptom, "Young (15-39) Adult Malaria Symptoms", "fig-ya-malaria-maps")
-older_adult_plot <- create_plots(older_adult_symptom, "Older  (40-69) Adult Malaria Symptoms", "fig-oa-malaria-maps")
+yam_plot <- create_plots(yam_symptom, "Young Adult (15-39 Years) Male Malaria Symptoms", "fig-yam-malaria-maps")
+yaf_plot <- create_plots(yaf_symptom, "Young Adult (15-39 Years) Female Malaria Symptoms", "fig-yaf-malaria-maps")
+oam_plot <- create_plots(oam_symptom, "Older Adult (40-69 Years) Male Malaria Symptoms", "fig-oam-malaria-maps")
+oaf_plot <- create_plots(oaf_symptom, "Older Adult  (40-69 Years) Female Malaria Symptoms", "fig-oaf-malaria-maps")
+young_adult_plot <- create_plots(young_adult_symptom, "Young (15-39 Years) Adult Malaria Symptoms", "fig-ya-malaria-maps")
+older_adult_plot <- create_plots(older_adult_symptom, "Older  (40-69 Years) Adult Malaria Symptoms", "fig-oa-malaria-maps")
