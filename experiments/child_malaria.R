@@ -271,9 +271,9 @@ non_spatial_cm <- non_spatial(male_child)
 non_spatial_cf <- non_spatial(female_child)
 
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child Symptom Heatmap", "fig-child-heatmap")
-hm_male_child <- hm(non_spatial_cm, "Male Child Symptom Heatmap", "fig-cm-heatmap")
-hm_female_child <- hm(non_spatial_cf, "Female Child Symptom Heatmap", "fig-cf-heatmap")
+hm_children <- hm(non_spatial_children, "Child Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap")
+hm_male_child <- hm(non_spatial_cm, "Male Child Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap")
+hm_female_child <- hm(non_spatial_cf, "Female Child Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap")
 
 # Defining symptoms to be plotted
 child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "vomit",
