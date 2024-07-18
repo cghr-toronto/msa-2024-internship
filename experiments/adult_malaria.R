@@ -556,13 +556,13 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
 }
 
-hm_adult <- hm(non_spatial_adult, glue("Adult Deaths by Symptom\nSierra Leone 2019-2022"), "fig-adult-heatmap")
-hm_young_adult <- hm(non_spatial_young_adult, "Young Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap")
-hm_older_adult <- hm(non_spatial_older_adult, "Older Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap")
-hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap")
-hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap")
-hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap")
-hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap")
+hm_adult <- hm(non_spatial_adult, glue("Adult (15-69) Deaths by Symptom\nSierra Leone 2019-2022"), "fig-adult-heatmap")
+hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap")
+hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap")
+hm_young_male_adult <- hm(non_spatial_yam, "Young Male (15-39) Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap")
+hm_young_female_adult <- hm(non_spatial_yaf, "Young Female (15-39) Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap")
+hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap")
+hm_older_female_adult <- hm(non_spatial_oaf, "Older Female (40-69) Adult Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap")
 
 cod_rate <- function(
         age_sex_agg,
@@ -726,7 +726,7 @@ create_map <- function(data, symptom, y_axis) {
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
             ylab(y_axis) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points) 
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
     } else {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
@@ -741,7 +741,7 @@ create_map <- function(data, symptom, y_axis) {
                   axis.ticks = element_blank(), 
                   axis.title = element_blank(),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points) 
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
         
     }
     return(map)
@@ -777,7 +777,7 @@ create_map_2 <- function(data, symptom, y_axis) {
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
             ylab(y_axis) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points) 
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
     } else {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
@@ -791,7 +791,7 @@ create_map_2 <- function(data, symptom, y_axis) {
                   axis.ticks = element_blank(), 
                   axis.title = element_blank(),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points) 
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
     }
     
     return(map)
