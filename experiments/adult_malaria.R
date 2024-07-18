@@ -654,8 +654,7 @@ symptom_rate <- function(
 }
 
 # Defining symptoms to be plotted
-adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit",
-                         "weightLoss")
+adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss")
 
 # Running symptom_rate for each age group
 yam_symptom <- symptom_rate(age_sex_malaria_agg = yam_malaria_agg,

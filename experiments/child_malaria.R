@@ -271,13 +271,12 @@ non_spatial_cm <- non_spatial(male_child)
 non_spatial_cf <- non_spatial(female_child)
 
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap")
-hm_male_child <- hm(non_spatial_cm, "Male Child Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap")
-hm_female_child <- hm(non_spatial_cf, "Female Child Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap")
+hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap")
+hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap")
+hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap")
 
 # Defining symptoms to be plotted
-child_symptoms <- c("fever", "convulsion", "difficultyBreathing", "vomit",
-                    "headache", "yellowEyes")
+child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough")
 
 # Running symptom_rate for each sex group
 cm_symptom <- symptom_rate(age_sex_malaria_agg = cm_malaria_agg,
