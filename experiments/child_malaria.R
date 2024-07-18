@@ -299,7 +299,7 @@ child_symptom <- symptom_rate(age_sex_malaria_agg = child_malaria_agg,
                            symptoms = child_symptoms)
  
 # Creating maps for each age group
-cm_plot <- create_plots(cm_symptom, "Child Male Malaria Symptoms (1m-11y)", "fig-cm-malaria-maps")
-cf_plot <- create_plots(cf_symptom, "Child Female Malaria Symptoms (1m-11y)", "fig-cf-malaria-maps")
-child_plot <- create_plots(child_symptom, "Child Malaria Symptoms (1m-11y)", "fig-child-malaria-maps")
+cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Malaria Symptoms", "fig-cm-malaria-maps")
+cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Malaria Symptoms", "fig-cf-malaria-maps")
+child_plot <- create_plots(child_symptom, "Child (1m-11y) Malaria Symptoms", "fig-child-malaria-maps")
 

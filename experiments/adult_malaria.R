@@ -825,8 +825,8 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
 
 # Creating plot series for each age group
 yam_plot <- create_plots(yam_symptom, "Young Adult (15-39) Male Malaria Symptoms", "fig-yam-malaria-maps")
-yaf_plot <- create_plots(yaf_symptom, "Young Adult Female Malaria Symptoms (15-39)", "fig-yaf-malaria-maps")
-oam_plot <- create_plots(oam_symptom, "Older Adult Male Malaria Symptoms (40-69)", "fig-oam-malaria-maps")
-oaf_plot <- create_plots(oaf_symptom, "Older Adult Female Malaria Symptoms (40-69)", "fig-oaf-malaria-maps")
-young_adult_plot <- create_plots(young_adult_symptom, "Young Adult Malaria Symptoms (15-39)", "fig-ya-malaria-maps")
-older_adult_plot <- create_plots(older_adult_symptom, "Older Adult Malaria Symptoms (40-69)", "fig-oa-malaria-maps")
+yaf_plot <- create_plots(yaf_symptom, "Young Adult (15-39) Female Malaria Symptoms", "fig-yaf-malaria-maps")
+oam_plot <- create_plots(oam_symptom, "Older Adult (40-69) Male Malaria Symptoms", "fig-oam-malaria-maps")
+oaf_plot <- create_plots(oaf_symptom, "Older Adult  (40-69) Female Malaria Symptoms", "fig-oaf-malaria-maps")
+young_adult_plot <- create_plots(young_adult_symptom, "Young (15-39) Adult Malaria Symptoms", "fig-ya-malaria-maps")
+older_adult_plot <- create_plots(older_adult_symptom, "Older  (40-69) Adult Malaria Symptoms", "fig-oa-malaria-maps")
