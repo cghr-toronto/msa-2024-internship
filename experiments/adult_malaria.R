@@ -478,12 +478,8 @@ hm <- function(ns_table, hm_title, pdf_title) {
         group_by(symptoms) %>%
         summarize(symp_sum = sum(total_count, na.rm = TRUE))
     
-    all_symptoms <- sum(symp_sums$symp_sum)
-    
-    symp_sums$symp_perc <- round((symp_sums$symp_sum / all_symptoms) * 100)
-    
-    # Create new axis labels with sums
-    symp_labels <- glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, {symp_sums$symp_perc}%)")
+    # Calculating percentage for symptoms
+    symp_sums$symp_perc <- round((symp_sums$symp_sum / all_deaths) * 100)
     
     # Find indices for different types of causes
     ni_index <- which(toc_sums$type_of_cause == "Non-infections")
@@ -504,14 +500,17 @@ hm <- function(ns_table, hm_title, pdf_title) {
     heat <- heat %>%
         left_join(toc_sums, by = "type_of_cause") %>%
         left_join(symp_sums, by = "symptoms")
-
+    
     heat <- heat %>%
         mutate(type_of_cause = case_when(
             type_of_cause == "Malaria" ~ glue("Malaria\n({malaria}, {malaria_perc}%)"),
             type_of_cause == "Infections" ~ glue("Infections\n({infections}, {infections_perc}%)"),
             type_of_cause == "Non-infections" ~ glue("Non-infections\n({non_infections}, {non_infections_perc}%)")
-        ))
-        
+        )) %>%
+        mutate(symptoms = glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, {symp_sums$symp_perc}%)"))
+    
+    heat$symptoms <- fct_reorder(heat$symptoms, heat$symp_sum, .desc = FALSE)
+    
     heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Malaria\n({malaria}, {malaria_perc}%)"),
                                                                 glue("Infections\n({infections}, {infections_perc}%)"),
                                                                 glue("Non-infections\n({non_infections}, {non_infections_perc}%)")))
@@ -523,7 +522,6 @@ hm <- function(ns_table, hm_title, pdf_title) {
         geom_tile(aes(fill = total_count, height = -1)) +
         geom_text(aes(label = glue("{total_count}\n({total_perc}%)"))) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
-        scale_y_discrete(labels = symp_labels) +
         scale_x_discrete(position = "top") +
         theme(axis.text.x = element_text(size = 10.5),
               axis.text.y = element_text(size = 10.5),
