@@ -696,7 +696,7 @@ older_adult_symptom <- symptom_rate(age_sex_malaria_agg = older_adult_malaria_ag
                                     symptoms = adult_symptoms)
 
 # Creating mappping parameters
-create_map <- function(data, symptom, x_axis) {
+create_map <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
     min_val <- min(filtered_data$rates, na.rm = TRUE)
@@ -710,6 +710,13 @@ create_map <- function(data, symptom, x_axis) {
     # Generate the sequence of break points
     break_points <- seq(min_val, max_val, len = 6)
     
+    theBreaks = mapmisc::colourScale(filtered_data$rates, dec=0, style = 'equal', breaks=6,
+                                     col='Spectral')
+    break_points = theBreaks$breaks
+    terra::plot(terra::vect(filtered_data), col=theBreaks$plot)
+    mapmisc::legendBreaks("topright", theBreaks, bty='n')
+
+
     if (symptom == "fever") {
         
         map <- ggplot(data = filtered_data) +
@@ -726,7 +733,7 @@ create_map <- function(data, symptom, x_axis) {
                   axis.title.x = element_blank(),
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            ylab(x_axis) +
+            ylab(y_axis) +
             scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
     } else {
         map <- ggplot(data = filtered_data) +
@@ -749,7 +756,7 @@ create_map <- function(data, symptom, x_axis) {
     
 }
 
-create_map_2 <- function(data, symptom, x_axis) {
+create_map_2 <- function(data, symptom, y_axis) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
     min_val <- min(filtered_data$rates, na.rm = TRUE)
@@ -777,7 +784,7 @@ create_map_2 <- function(data, symptom, x_axis) {
                   axis.title.x = element_blank(),
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            ylab(x_axis) +
+            ylab(y_axis) +
             scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
     } else {
         map <- ggplot(data = filtered_data) +
@@ -807,13 +814,13 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
     
     symptoms <- unique(group_symptoms$symptoms)
     
-    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, x_axis = "Malaria\n(per 100\nMalaria deaths)")
-    infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, x_axis = "Infections\n(per 100\nInfection deaths)")
-    non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial, x_axis = "Non-Infections\n(per 100\nNon-Infection deaths)")
+    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)")
+    infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)")
+    non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial, y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)")
     
     all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
     
-    combined_plot <- wrap_plots(all_plots, nrow = length(malaria_plots)) + 
+    combined_plot <- wrap_plots(all_plots, ncol = length(malaria_plots)) + 
         plot_annotation(title = plot_title,
                         theme = theme(
                             plot.title = element_text(size = 20, face = "bold", hjust = 0.5)

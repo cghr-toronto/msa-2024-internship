@@ -360,40 +360,82 @@ yam_symptom <- symptom_rate(age_sex_malaria_agg = yam_malaria_agg,
                             symptoms = adult_symptoms)
 
 
-yam_test <- yam_symptom %>% filter(denom_group == "Malaria", symptoms == "cough")
+# Creating mappping parameters
+create_map <- function(data, symptom, y_axis) {
+    filtered_data <- data %>% filter(symptoms == symptom)
+    
+    min_val <- min(filtered_data$rates, na.rm = TRUE)
+    max_val <- max(filtered_data$rates, na.rm = TRUE)
+    
+    breaks <- 6
+    
+    # Calculate the interval width
+    interval_width <- max_val / breaks
+    
+    # Generate the sequence of break points
+    break_points <- seq(min_val, max_val, len = 6)
+    
+    theBreaks = mapmisc::colourScale(filtered_data$rates, dec=0, style = 'equal', breaks=6,
+                                     col='Spectral')
+    break_points = theBreaks$breaks
+    mapmisc::map.new(terra::vect(filtered_data))
+    terra::plot(terra::vect(filtered_data), col=theBreaks$plot, add=TRUE)
+    mapmisc::legendBreaks("topright", theBreaks, bty='n')
+        
+    
+    return(map)
+    
+}
 
-min_val <- min(yam_test$rates, na.rm = TRUE)
-max_val <- max(yam_test$rates, na.rm = TRUE)
+create_map_2 <- function(data, symptom, y_axis) {
+    filtered_data <- data %>% filter(symptoms == symptom)
+    
+    min_val <- min(filtered_data$rates, na.rm = TRUE)
+    max_val <- max(filtered_data$rates, na.rm = TRUE)
+    
+    breaks <- 6
+    
+    # Calculate the interval width
+    interval_width <- max_val / breaks
+    
+    # Generate the sequence of break points
+    break_points <- seq(min_val, max_val, len = 6)
+    
+    theBreaks = mapmisc::colourScale(filtered_data$rates, dec=0, style = 'equal', breaks=6,
+                                     col='Spectral')
+    break_points = theBreaks$breaks
+    mapmisc::map.new(terra::vect(filtered_data))
+    terra::plot(terra::vect(filtered_data), col=theBreaks$plot, add=TRUE)
+    mapmisc::legendBreaks("topright", theBreaks, bty='n')
+    
+    return(mapmisc)
+}
 
-breaks <- 6
+# Creating grouped plots parameters
+create_plots <- function(group_symptoms, plot_title, pdf_title) {
+    
+    malaria_spatial <- group_symptoms %>% filter(denom_group == "Malaria")
+    infections_spatial <- group_symptoms %>% filter(denom_group == "Infections")
+    non_infections_spatial <- group_symptoms %>% filter(denom_group == "Non-Infections")
+    
+    symptoms <- unique(group_symptoms$symptoms)
+    
+    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)")
+    infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)")
+    non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial, y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)")
+    
+    all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
+    
+    combined_plot <- wrap_plots(all_plots, ncol = length(malaria_plots)) + 
+        plot_annotation(title = plot_title,
+                        theme = theme(
+                            plot.title = element_text(size = 20, face = "bold", hjust = 0.5)
+                        ))
+    
+    out <- pdf_print(combined_plot, pdf_title)
+    
+    return(out)
+}
 
-# Calculate the interval width
-interval_width <- max_val / breaks
-
-# Generate the sequence of break points
-break_points <- seq(min_val, max_val, len = 6)
-
-theBreaks = mapmisc::colourScale(yam_test$rates, dec=0, style = 'equal', breaks=6,
-                                 col='Spectral')
-break_points = theBreaks$breaks
-mapmisc::map.new(terra::vect(yam_test))
-terra::plot(terra::vect(yam_test), col=theBreaks$plot, add=TRUE)
-mapmisc::legendBreaks("topright", theBreaks, bty='n')
-
-map <- ggplot(data = yam_test) +
-    geom_sf(aes(fill=(rates))) +
-    guides(fill = guide_legend()) +
-    ggtitle("Testing fever") +
-    geom_sf_label(aes(label = rates), size = 1.8) +
-    theme_minimal() + 
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(),
-          legend.title = element_blank(),
-          axis.text = element_blank(), 
-          axis.ticks = element_blank(),
-          axis.title.x = element_blank(),
-          axis.title.y = element_blank(),
-          plot.title = element_text(hjust = 0.5, size = 20)) +
-    scale_fill_continuous(breaks = break_points) 
-
-map
+# Creating plot series for each age group
+yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Malaria Symptoms", "fig-yam-malaria-maps")
