@@ -500,9 +500,14 @@ hm <- function(ns_table, hm_title, pdf_title) {
         left_join(toc_sums, by = "type_of_cause") %>%
         left_join(symp_sums, by = "symptoms")
     
-    heat <- heat %>%
+    heat <- heat %>% 
+        mutate(total_perc = case_when(
+            type_of_cause == "Malaria" ~ round((total_count / malaria) * 100),
+            type_of_cause == "Infections" ~ round((total_count / infections) * 100),
+            type_of_cause == "Non-infections" ~ round((total_count / non_infections) * 100)
+        )) %>%
         mutate(type_of_cause = case_when(
-            type_of_cause == "Malaria" ~ glue("Malaria\n(n={malaria}"),
+            type_of_cause == "Malaria" ~ glue("Malaria\n(n={malaria})"),
             type_of_cause == "Infections" ~ glue("Infections\n(n={infections})"),
             type_of_cause == "Non-infections" ~ glue("Non-infections\n(n={non_infections})")
         )) %>%
@@ -517,15 +522,8 @@ hm <- function(ns_table, hm_title, pdf_title) {
     heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Malaria\n(n={malaria})"),
                                                                 glue("Infections\n(n={infections})"),
                                                                 glue("Non-infections\n(n={non_infections})")))
-    
-    heat <- heat %>% 
-        mutate(total_perc = case_when(
-            type_of_cause == "Malaria" ~ round((total_count / malaria) * 100),
-            type_of_cause == "Infections" ~ round((total_count / infections) * 100),
-            type_of_cause == "Non-infections" ~ round((total_count / non_infections) * 100)
-        ))
+
         
-    
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(type_of_cause, symptoms)) +
         geom_tile(aes(fill = total_count)) +
