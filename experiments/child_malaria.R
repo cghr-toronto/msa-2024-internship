@@ -14,6 +14,7 @@ library(tmap)
 library(prettymapr)
 library(patchwork)
 library(readxl)
+library(spdep)
 
 ## Read data
 # Reading in Child Round 1 and Round 2 data

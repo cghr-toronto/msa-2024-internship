@@ -13,6 +13,7 @@ library(patchwork)
 library(readxl)
 library(glue)
 library(forcats)
+library(spdep)
 
 ## Read data
 # Reading in Adult Round 1 and Round 2 data
@@ -485,15 +486,15 @@ hm <- function(ns_table, hm_title, pdf_title) {
     # Calculating percentage for symptoms
     symp_sums$symp_perc <- round((symp_sums$symp_sum / all_deaths) * 100)
     
+    # Find indices for different types of causes
+    ni_index <- which(toc_sums$type_of_cause == "Non-infections")
+    inf_index <- which(toc_sums$type_of_cause == "Infections")
+    m_index <- which(toc_sums$type_of_cause == "Malaria")
+    
     # Extract values and convert to numeric
     non_infections <- as.numeric(toc_sums$toc_sum[ni_index])
     infections <- as.numeric(toc_sums$toc_sum[inf_index])
     malaria <- as.numeric(toc_sums$toc_sum[m_index])
-    
-    # Calculating percentage of cause of death
-    non_infections_perc <- round((non_infections / all_deaths) * 100)
-    infections_perc <- round((infections / all_deaths) * 100)
-    malaria_perc <- round((malaria / all_deaths) * 100)
     
     # Merge the sums back into the original data frame
     heat <- heat %>%
@@ -828,3 +829,16 @@ oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Malaria Sy
 oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Malaria Symptoms", "fig-oaf-malaria-maps")
 young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Malaria Symptoms", "fig-ya-malaria-maps")
 older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Malaria Symptoms", "fig-oa-malaria-maps")
+
+malaria_cough <- yam_symptom %>% filter(denom_group == "Malaria" & symptoms == "cough")
+infections_cough <- yam_symptom %>% filter(denom_group == "Infections"& symptoms == "cough")
+
+
+# Testing moran's I
+nb <- poly2nb(malaria_cough, queen = TRUE)
+
+lw <- nb2listw(nb, style="W", zero.policy=TRUE)
+
+I1 <- moran(malaria_cough$rates, lw, length(nb), Szero(lw))[1]
+
+moran.test(malaria_cough$rates,lw, alternative="greater")
