@@ -455,6 +455,7 @@ non_spatial_older_adult <- non_spatial(older_adult)
 non_spatial_oam <- non_spatial(older_male_adult)
 non_spatial_oaf <- non_spatial(older_female_adult)
 
+# Test----
 total_deaths <- function(ns_table, deaths){
     as.numeric(sum(ns_table$deaths))
 }
@@ -463,6 +464,10 @@ total_deaths <- function(ns_table, deaths){
 hm <- function(ns_table, hm_title, pdf_title) {
     
     death_total <- total_deaths(ns_table, deaths) 
+    
+    malaria <- sum(ns_table$deaths[ns_table$type_of_cause == "Malaria"], na.rm = TRUE)
+    infections <- sum(ns_table$deaths[ns_table$type_of_cause == "Infections"], na.rm = TRUE)
+    non_infections <- sum(ns_table$deaths[ns_table$type_of_cause == "Non-infections"], na.rm = TRUE)
 
     heat <- pivot_longer(ns_table, cols = -c(cause_of_death, type_of_cause),
                          names_to = "symptoms",
@@ -484,17 +489,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
         summarize(symp_sum = sum(total_count, na.rm = TRUE))
     
     # Calculating percentage for symptoms
-    symp_sums$symp_perc <- round((symp_sums$symp_sum / all_deaths) * 100)
-    
-    # Find indices for different types of causes
-    ni_index <- which(toc_sums$type_of_cause == "Non-infections")
-    inf_index <- which(toc_sums$type_of_cause == "Infections")
-    m_index <- which(toc_sums$type_of_cause == "Malaria")
-    
-    # Extract values and convert to numeric
-    non_infections <- as.numeric(toc_sums$toc_sum[ni_index])
-    infections <- as.numeric(toc_sums$toc_sum[inf_index])
-    malaria <- as.numeric(toc_sums$toc_sum[m_index])
+    symp_sums$symp_perc <- round((symp_sums$symp_sum / death_total) * 100)
     
     # Merge the sums back into the original data frame
     heat <- heat %>%
@@ -830,15 +825,15 @@ oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Malaria 
 young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Malaria Symptoms", "fig-ya-malaria-maps")
 older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Malaria Symptoms", "fig-oa-malaria-maps")
 
-malaria_cough <- yam_symptom %>% filter(denom_group == "Malaria" & symptoms == "cough")
-infections_cough <- yam_symptom %>% filter(denom_group == "Infections"& symptoms == "cough")
+malaria_test <- yam_symptom %>% filter(denom_group == "Malaria" & symptoms == "abdominalProblem")
+infections_test <- yam_symptom %>% filter(denom_group == "Infections"& symptoms == "cough")
 
 
-# Testing moran's I
-nb <- poly2nb(malaria_cough, queen = TRUE)
+# Testing global moran's I
+nb <- poly2nb(malaria_test, queen = TRUE)
 
 lw <- nb2listw(nb, style="W", zero.policy=TRUE)
 
-I1 <- moran(malaria_cough$rates, lw, length(nb), Szero(lw))[1]
+I1 <- moran(malaria_test$rates, lw, length(nb), Szero(lw))[1]
 
-moran.test(malaria_cough$rates,lw, alternative="greater")
+moran.test(malaria_test$rates,lw, alternative="greater")
