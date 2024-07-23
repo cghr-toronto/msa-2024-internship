@@ -462,11 +462,7 @@ total_deaths <- function(ns_table, deaths){
 hm <- function(ns_table, hm_title, pdf_title) {
     
     death_total <- total_deaths(ns_table, deaths) 
-    
-    malaria <- sum(ns_table$deaths[ns_table$type_of_cause == "Malaria"], na.rm = TRUE)
-    infections <- sum(ns_table$deaths[ns_table$type_of_cause == "Infections"], na.rm = TRUE)
-    non_infections <- sum(ns_table$deaths[ns_table$type_of_cause == "Non-infections"], na.rm = TRUE)
-    
+
     heat <- pivot_longer(ns_table, cols = -c(cause_of_death, type_of_cause),
                          names_to = "symptoms",
                          values_to = "counts") %>%
@@ -489,6 +485,15 @@ hm <- function(ns_table, hm_title, pdf_title) {
     # Calculating percentage for symptoms
     symp_sums$symp_perc <- round((symp_sums$symp_sum / all_deaths) * 100)
     
+    # Extract values and convert to numeric
+    non_infections <- as.numeric(toc_sums$toc_sum[ni_index])
+    infections <- as.numeric(toc_sums$toc_sum[inf_index])
+    malaria <- as.numeric(toc_sums$toc_sum[m_index])
+    
+    # Calculating percentage of cause of death
+    non_infections_perc <- round((non_infections / all_deaths) * 100)
+    infections_perc <- round((infections / all_deaths) * 100)
+    malaria_perc <- round((malaria / all_deaths) * 100)
     
     # Merge the sums back into the original data frame
     heat <- heat %>%
@@ -719,7 +724,7 @@ create_map <- function(data, symptom, y_axis) {
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
             ylab(y_axis) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 1)) 
     } else {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
@@ -734,7 +739,7 @@ create_map <- function(data, symptom, y_axis) {
                   axis.ticks = element_blank(), 
                   axis.title = element_blank(),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 1)) 
         
     }
     return(map)
@@ -770,7 +775,7 @@ create_map_2 <- function(data, symptom, y_axis) {
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
             ylab(y_axis) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 1)) 
     } else {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
@@ -784,7 +789,7 @@ create_map_2 <- function(data, symptom, y_axis) {
                   axis.ticks = element_blank(), 
                   axis.title = element_blank(),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 1)) 
     }
     
     return(map)
