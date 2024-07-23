@@ -375,14 +375,41 @@ create_map <- function(data, symptom, y_axis) {
     # Generate the sequence of break points
     break_points <- seq(min_val, max_val, len = 6)
     
-    theBreaks = mapmisc::colourScale(filtered_data$rates, dec=0, style = 'equal', breaks=6,
-                                     col='Spectral')
-    break_points = theBreaks$breaks
-    mapmisc::map.new(terra::vect(filtered_data))
-    terra::plot(terra::vect(filtered_data), col=theBreaks$plot, add=TRUE)
-    mapmisc::legendBreaks("topright", theBreaks, bty='n')
+    if (symptom == "fever") {
         
-    
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill=(rates))) +
+            guides(fill = guide_legend()) +
+            ggtitle(paste(symptom)) +
+            geom_sf_label(aes(label = rates), size = 1.8) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(),
+                  axis.title.x = element_blank(),
+                  axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            ylab(y_axis) +
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
+    } else {
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill=(rates))) +
+            guides(fill = guide_legend()) +
+            ggtitle(paste(symptom)) +
+            geom_sf_label(aes(label = rates), size = 1.8) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(), 
+                  axis.title = element_blank(),
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
+        
+    }
     return(map)
     
 }
@@ -401,24 +428,60 @@ create_map_2 <- function(data, symptom, y_axis) {
     # Generate the sequence of break points
     break_points <- seq(min_val, max_val, len = 6)
     
-    theBreaks = mapmisc::colourScale(filtered_data$rates, dec=0, style = 'equal', breaks=6,
-                                     col='Spectral')
-    break_points = theBreaks$breaks
-    mapmisc::map.new(terra::vect(filtered_data))
-    terra::plot(terra::vect(filtered_data), col=theBreaks$plot, add=TRUE)
-    mapmisc::legendBreaks("topright", theBreaks, bty='n')
+    if (symptom == "fever") {
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill=(rates))) +
+            guides(fill = guide_legend()) +
+            geom_sf_label(aes(label = rates), size = 1.8) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(),
+                  axis.title.x = element_blank(),
+                  axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            ylab(y_axis) +
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
+    } else {
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill=(rates))) +
+            guides(fill = guide_legend()) +
+            geom_sf_label(aes(label = rates), size = 1.8) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  legend.title = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(), 
+                  axis.title = element_blank(),
+                  plot.title = element_text(hjust = 0.5, size = 20)) +
+            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 0.01)) 
+    }
     
-    return(mapmisc)
+    return(map)
 }
 
-# Creating grouped plots parameters
-create_plots <- function(group_symptoms, plot_title, pdf_title) {
+
     
-    malaria_spatial <- group_symptoms %>% filter(denom_group == "Malaria")
-    infections_spatial <- group_symptoms %>% filter(denom_group == "Infections")
-    non_infections_spatial <- group_symptoms %>% filter(denom_group == "Non-Infections")
+    malaria_spatial <- yam_symptom %>% filter(denom_group == "Malaria")
+    infections_spatial <- yam_symptom %>% filter(denom_group == "Infections")
+    non_infections_spatial <- yam_symptom %>% filter(denom_group == "Non-Infections")
     
-    symptoms <- unique(group_symptoms$symptoms)
+    symptoms <- unique(yam_symptom$symptoms)
+    
+    png('myfile.png', height=480, width=1080)
+    par(mfcol = c(3,6), mar = c(0,0,0,0), bty='n')
+    for(Dsymptom in symptoms) {
+        toPlot = malaria_spatial[malaria_spatial$symptoms == Dsymptom, ]
+        theCol = mapmisc::colourScale(malaria_spatial$rates, breaks = 6, style='equal', 
+                                     col='Spectral', rev=TRUE)
+#        mapmisc::map.new(malaria_spatial)
+        terra::plot(terra::vect(malaria_spatial), col=theCol$plot)
+        mapmisc::legendBreaks('topleft', theCol, bty='n', title=Dsymptom)
+    }
+    dev.off()    
     
     malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)")
     infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)")
@@ -433,9 +496,5 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
                         ))
     
     out <- pdf_print(combined_plot, pdf_title)
-    
-    return(out)
-}
 
-# Creating plot series for each age group
-yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Malaria Symptoms", "fig-yam-malaria-maps")
+

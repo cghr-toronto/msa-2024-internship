@@ -709,13 +709,6 @@ create_map <- function(data, symptom, y_axis) {
     
     # Generate the sequence of break points
     break_points <- seq(min_val, max_val, len = 6)
-    
-    theBreaks = mapmisc::colourScale(filtered_data$rates, dec=0, style = 'equal', breaks=6,
-                                     col='Spectral')
-    break_points = theBreaks$breaks
-    terra::plot(terra::vect(filtered_data), col=theBreaks$plot)
-    mapmisc::legendBreaks("topright", theBreaks, bty='n')
-
 
     if (symptom == "fever") {
         
