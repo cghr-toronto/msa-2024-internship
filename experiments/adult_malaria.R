@@ -463,6 +463,10 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
     death_total <- total_deaths(ns_table, deaths) 
     
+    malaria <- sum(ns_table$deaths[ns_table$type_of_cause == "Malaria"], na.rm = TRUE)
+    infections <- sum(ns_table$deaths[ns_table$type_of_cause == "Infections"], na.rm = TRUE)
+    non_infections <- sum(ns_table$deaths[ns_table$type_of_cause == "Non-infections"], na.rm = TRUE)
+    
     heat <- pivot_longer(ns_table, cols = -c(cause_of_death, type_of_cause),
                          names_to = "symptoms",
                          values_to = "counts") %>%
@@ -485,15 +489,6 @@ hm <- function(ns_table, hm_title, pdf_title) {
     # Calculating percentage for symptoms
     symp_sums$symp_perc <- round((symp_sums$symp_sum / all_deaths) * 100)
     
-    # Find indices for different types of causes
-    ni_index <- which(toc_sums$type_of_cause == "Non-infections")
-    inf_index <- which(toc_sums$type_of_cause == "Infections")
-    m_index <- which(toc_sums$type_of_cause == "Malaria")
-    
-    # Extract values and convert to numeric
-    non_infections <- as.numeric(toc_sums$toc_sum[ni_index])
-    infections <- as.numeric(toc_sums$toc_sum[inf_index])
-    malaria <- as.numeric(toc_sums$toc_sum[m_index])
     
     # Merge the sums back into the original data frame
     heat <- heat %>%
