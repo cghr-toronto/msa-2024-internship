@@ -166,29 +166,18 @@ young_adult_age <- c("15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 
 # List of causes of death
-infections <- c("Acute respiratory infections", 
-                "Digestive diseases", 
-                "Fever of unknown origin", 
+infections <- c("Fever of unknown origin", 
                 "Meningitis/encephalitis", 
-                "Other chronic respiratory infections",
-                "Other infectious diseases", 
-                "HIV/AIDS", 
-                "Hepatitis", 
-                "Severe Localized Infection", 
                 "Selected vaccine preventable diseases", 
-                "Other sexually transmitted infections (excl. HIV/AIDS)",
                 "Tuberculosis", 
                 "Diarrhoea",
-                "Severe Systemic Infection",
-                "Covid",
-                "Measles",
-                "Hepatitis",
-                "Helminthiases",
-                "Arthropod-borne viral fevers",
-                "Rabies",
-                "Syphilis",
-                "Tetanus",
-                "History of Covid-19")
+                "Hepatitis", 
+                "Sexually-transmitted infections",
+                "Respiratory infections",
+                "Post COVID-19 condition",
+                "Multisystem inflammatory syndrme associated with COVID-19",
+                "Need for immunization against COVID-19",
+                "Other infectious and parasitic")
 
 # Trim whitespaces in COD column
 adult$COD <- str_trim(adult$COD)
@@ -202,31 +191,31 @@ older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% 
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
 # Creating filters for adults for malaria
-adult_malaria <- adult %>% filter(`COD Group (Cathy)` == "Malaria")
-young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
-young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
-young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & `COD Group (Cathy)` == "Malaria")
-older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & `COD Group (Cathy)` == "Malaria")
-older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & `COD Group (Cathy)` == "Malaria")
-older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & `COD Group (Cathy)` == "Malaria")
+adult_malaria <- adult %>% filter(`WBD category` == "Malaria")
+young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & `WBD category` == "Malaria")
+young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & `WBD category` == "Malaria")
+young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & `WBD category` == "Malaria")
+older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & `WBD category` == "Malaria")
+older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & `WBD category` == "Malaria")
+older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & `WBD category` == "Malaria")
 
 # Creating filters for adults for infections
-adult_infections <- adult %>% filter((`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
-yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
-yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
-oam_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
-oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
-young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
-older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & (`COD Group (Cathy)` %in% infections) | (`COD` == "Chronic viral hepatitis"))
+adult_infections <- adult %>% filter((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections"))
+yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
+yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
+oam_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
+oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
+young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
+older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
 
 # Creating filters for adults for non-infections
-adult_non_infections <- adult %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
-yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
-yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
-oam_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
-oaf_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
-young_adult_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
-older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+adult_non_infections <- adult %>% filter((!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
+yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
+yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
+oam_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
+oaf_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
+young_adult_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
+older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -382,37 +371,22 @@ older_adult_non_infections_agg <- spatial_agg(gdf = dist,
                                        count_col = "deaths")
 
 # Creating PDF export parameters
-pdf_print <- function(series, title){
+pdf_print <- function(series, title, width, height){
     
     pdf_output_dir <- "../figures/"
     
-    jpeg_output_dir <- "../figures.jpgs/"
+    jpeg_output_dir <- "../figures/figures.jpgs/"
     
     pdf_title <- paste0(pdf_output_dir, title, ".pdf")
     
     jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
     
-    ggsave(pdf_title, plot = series, device = "pdf", width = 26, height = 13)
+    ggsave(pdf_title, plot = series, device = "pdf", width = width, height = height)
     
-    ggsave(jpeg_title, plot = series, device = "jpeg", width = 26, height = 13)
-    
-}
-
-pdf_print_hm <- function(series, title){
-    
-    pdf_output_dir <- "../figures/"
-    
-    jpeg_output_dir <- "../figures.jpgs/"
-    
-    pdf_title <- paste0(pdf_output_dir, title, ".pdf")
-    
-    jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
-    
-    ggsave(pdf_title, plot = series, device = "pdf", width = 6, height = 24)
-    
-    ggsave(jpeg_title, plot = series, device = "jpeg", width = 6, height = 24)
+    ggsave(jpeg_title, plot = series, device = "jpeg", width = width, height = height)
     
 }
+    
 
 # Creating non-spatial table of symptom and causes of death
 non_spatial <- function(age_group){
@@ -420,9 +394,9 @@ non_spatial <- function(age_group){
     ns <- pivot_longer(age_group, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
                        names_to = "symptom", # New column to store the symptom names
                        values_to = "value" # New column to store the counts
-    ) %>% group_by(`COD Group (Cathy)`, value) %>%
+    ) %>% group_by(`WBD category`, value) %>%
         summarise(count = n(), .groups = 'drop') %>%
-        arrange(`COD Group (Cathy)`, value) %>%
+        arrange(`WBD category`, value) %>%
         pivot_wider(
             names_from = value,   # The values in the 'value' column will become column names
             values_from = count,  # The values in the 'count' column will fill the new columns
@@ -430,9 +404,9 @@ non_spatial <- function(age_group){
         )
     
     # Creating count for deaths per cause in non-spatial
-    death_count <- age_group %>% count(`COD Group (Cathy)`, sort = TRUE, name = "deaths")
-    ns <- ns %>% left_join(death_count, by = "COD Group (Cathy)")
-    colnames(ns)[colnames(ns) == "COD Group (Cathy)"] <- "cause_of_death"
+    death_count <- age_group %>% count(`WBD category`, sort = TRUE, name = "deaths")
+    ns <- ns %>% left_join(death_count, by = "WBD category")
+    colnames(ns)[colnames(ns) == "WBD category"] <- "cause_of_death"
     
     ns <- ns %>%
         mutate(is_malaria = ifelse(cause_of_death == "Malaria", 1, 0)) %>%
@@ -543,7 +517,7 @@ hm <- function(ns_table, hm_title, pdf_title) {
               plot.title = element_text(hjust = 0.5, face = "bold", size = 14)) 
     
     # Exporting heat map as pdf
-    out <- pdf_print_hm(heat_map_plot, pdf_title)
+    out <- pdf_print(heat_map_plot, pdf_title, width = 6, height = 24)
     
     return(out)
     
@@ -592,7 +566,6 @@ cod_rate <- function(
         spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
     }
     
-    browser()
     # Print the wide format
     cat("\nWide format:\n")
     print(spatial)
@@ -825,7 +798,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
                             plot.title = element_text(size = 20, face = "bold", hjust = 0.5)
                         ))
     
-    out <- pdf_print(combined_plot, pdf_title)
+    out <- pdf_print(combined_plot, pdf_title, width = 26, height = 13)
     
     return(out)
 }
