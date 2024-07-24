@@ -592,6 +592,7 @@ cod_rate <- function(
         spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
     }
     
+    browser()
     # Print the wide format
     cat("\nWide format:\n")
     print(spatial)
@@ -720,7 +721,10 @@ create_map <- function(data, symptom, y_axis) {
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
             ylab(y_axis) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 1)) 
+            scale_fill_continuous(low="lightblue", 
+                                  high="darkblue", 
+                                  breaks = break_points, 
+                                  labels = scales::number_format(accuracy = 1)) 
     } else {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
@@ -735,7 +739,10 @@ create_map <- function(data, symptom, y_axis) {
                   axis.ticks = element_blank(), 
                   axis.title = element_blank(),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 1)) 
+            scale_fill_continuous(low="lightblue", 
+                                  high="darkblue", 
+                                  breaks = break_points, 
+                                  labels = scales::number_format(accuracy = 1)) 
         
     }
     return(map)
@@ -771,7 +778,10 @@ create_map_2 <- function(data, symptom, y_axis) {
                   axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
             ylab(y_axis) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 1)) 
+            scale_fill_continuous(low="lightblue", 
+                                  high="darkblue", 
+                                  breaks = break_points, 
+                                  labels = scales::number_format(accuracy = 1)) 
     } else {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
@@ -785,7 +795,10 @@ create_map_2 <- function(data, symptom, y_axis) {
                   axis.ticks = element_blank(), 
                   axis.title = element_blank(),
                   plot.title = element_text(hjust = 0.5, size = 20)) +
-            scale_fill_continuous(low="lightblue", high="darkblue", breaks = break_points, labels = scales::number_format(accuracy = 1)) 
+            scale_fill_continuous(low="lightblue", 
+                                  high="darkblue",
+                                  breaks = break_points, 
+                                  labels = scales::number_format(accuracy = 1)) 
     }
     
     return(map)
@@ -825,15 +838,3 @@ oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Malaria 
 young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Malaria Symptoms", "fig-ya-malaria-maps")
 older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Malaria Symptoms", "fig-oa-malaria-maps")
 
-malaria_test <- yam_symptom %>% filter(denom_group == "Malaria" & symptoms == "abdominalProblem")
-infections_test <- yam_symptom %>% filter(denom_group == "Infections"& symptoms == "cough")
-
-
-# Testing global moran's I
-nb <- poly2nb(malaria_test, queen = TRUE)
-
-lw <- nb2listw(nb, style="W", zero.policy=TRUE)
-
-I1 <- moran(malaria_test$rates, lw, length(nb), Szero(lw))[1]
-
-moran.test(malaria_test$rates,lw, alternative="greater")
