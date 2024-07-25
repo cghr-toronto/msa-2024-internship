@@ -557,8 +557,8 @@ cod_rate <- function(
         ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
                            values_from = total_count, # Values to be filled in the wide format
                            values_fill = 0 # Fill any missing values with 0
-        )
-    
+        ) %>% select(all_of(adult_symptoms)) 
+
     # Join geometry to new spatial table
     spatial <- result %>%
         left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
@@ -581,7 +581,7 @@ cod_rate <- function(
         pivot_longer(cols = ends_with("rate"),
                      names_to = "symptoms", 
                      values_to = "rates") %>%
-        select(gid, symptoms, rates)
+        select(gid, symptoms, rates, deaths, all_of(adult_symptoms))
     
     return(out)
 }
@@ -623,7 +623,6 @@ symptom_rate <- function(
     out$rates[is.nan(out$rates)] <- 0
     
     return(out)
-    
 }
 
 # Defining symptoms to be plotted
@@ -723,7 +722,6 @@ create_map <- function(data, symptom, y_axis) {
         
     }
     return(map)
-    
 }
 
 create_map_2 <- function(data, symptom, y_axis) {
