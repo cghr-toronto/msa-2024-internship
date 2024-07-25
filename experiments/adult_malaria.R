@@ -168,7 +168,7 @@ older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 # List of causes of death
 infections <- c("Fever of unknown origin", 
                 "Meningitis/encephalitis", 
-                "Selected vaccine preventable diseases", 
+                "Selected vaccine-preventable", 
                 "Tuberculosis", 
                 "Diarrhoea",
                 "Hepatitis", 
@@ -178,9 +178,13 @@ infections <- c("Fever of unknown origin",
                 "Multisystem inflammatory syndrme associated with COVID-19",
                 "Need for immunization against COVID-19",
                 "Other infectious and parasitic")
+    
+infections_2 <- c("Other chronic respiratory infections",
+                  "Covid")
 
-# Trim whitespaces in COD column
+# Trim whitespaces in adult columns
 adult$COD <- str_trim(adult$COD)
+adult$`ICD-Chapter`<- str_trim(adult$`ICD-Chapter`)
 
 # Creating filters for different adult age/sex groups
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
@@ -200,22 +204,22 @@ older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_gro
 older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & `WBD category` == "Malaria")
 
 # Creating filters for adults for infections
-adult_infections <- adult %>% filter((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections"))
-yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
-yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
-oam_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
-oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
-young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
-older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & ((`WBD category` %in% infections) | (`COD Group (Cathy)` == "Other chronic respiratory infections")))
+adult_infections <- adult %>% filter((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis"))
+yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
+yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
+oam_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
+oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
+young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
+older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
 
 # Creating filters for adults for non-infections
-adult_non_infections <- adult %>% filter((!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
-yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
-yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
-oam_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
-oaf_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
-young_adult_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
-older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD Group (Cathy)` != "Other chronic respiratory infections"))
+adult_non_infections <- adult %>% filter((!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
+yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
+yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
+oam_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
+oaf_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
+young_adult_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
+older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
 
 # Set mapping dataframe
 mapping <- data.frame(
