@@ -679,6 +679,8 @@ create_map <- function(data, symptom, y_axis) {
     
     # Generate the sequence of break points
     break_points <- seq(min_val, max_val, len = 6)
+    
+    filtered_data <- filtered_data %>% mutate(label = glue("{get(symptom)}/{deaths}"))
 
     if (symptom == "fever") {
         
@@ -686,7 +688,7 @@ create_map <- function(data, symptom, y_axis) {
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
             ggtitle(paste(symptom)) +
-            geom_sf_label(aes(label = rates), size = 1.8) +
+            geom_sf_label(aes(label = label), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
                   panel.grid.minor = element_blank(),
@@ -706,7 +708,7 @@ create_map <- function(data, symptom, y_axis) {
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
             ggtitle(paste(symptom)) +
-            geom_sf_label(aes(label = rates), size = 1.8) +
+            geom_sf_label(aes(label = label), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
                   panel.grid.minor = element_blank(),
@@ -738,11 +740,13 @@ create_map_2 <- function(data, symptom, y_axis) {
     # Generate the sequence of break points
     break_points <- seq(min_val, max_val, len = 6)
     
+    filtered_data <- filtered_data %>% mutate(label = glue("{get(symptom)}/{deaths}"))
+    
     if (symptom == "fever") {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            geom_sf_label(aes(label = rates), size = 1.8) +
+            geom_sf_label(aes(label = label), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
                   panel.grid.minor = element_blank(),
@@ -761,7 +765,7 @@ create_map_2 <- function(data, symptom, y_axis) {
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
-            geom_sf_label(aes(label = rates), size = 1.8) +
+            geom_sf_label(aes(label = label), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
                   panel.grid.minor = element_blank(),
