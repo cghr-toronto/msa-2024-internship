@@ -666,7 +666,7 @@ older_adult_symptom <- symptom_rate(age_sex_malaria_agg = older_adult_malaria_ag
                                     symptoms = adult_symptoms)
 
 # Creating mappping parameters
-create_map <- function(data, symptom, y_axis) {
+create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE, first_map) {
     filtered_data <- data %>% filter(symptoms == symptom)
     
     min_val <- min(filtered_data$rates, na.rm = TRUE)
@@ -682,8 +682,6 @@ create_map <- function(data, symptom, y_axis) {
     
     filtered_data <- filtered_data %>% mutate(label = glue("{get(symptom)}/{deaths}"))
 
-    if (symptom == "fever") {
-        
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
@@ -696,90 +694,24 @@ create_map <- function(data, symptom, y_axis) {
                   axis.text = element_blank(), 
                   axis.ticks = element_blank(),
                   axis.title.x = element_blank(),
-                  axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
-                  plot.title = element_text(hjust = 0.5, size = 20)) +
-            ylab(y_axis) +
+                  axis.title.y = if (symptom == first_map) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
+                  plot.title = if (gplot_title) element_text(hjust = 0.5, size = 20) else element_blank()) +
+            ylab(if (symptom == first_map) y_axis else NULL) +
             scale_fill_continuous(low="lightblue", 
                                   high="darkblue", 
                                   breaks = break_points, 
-                                  labels = scales::number_format(accuracy = 1)) 
-    } else {
-        map <- ggplot(data = filtered_data) +
-            geom_sf(aes(fill=(rates))) +
-            guides(fill = guide_legend()) +
-            ggtitle(paste(symptom)) +
-            geom_sf_label(aes(label = label), size = 1.8) +
-            theme_minimal() + 
-            theme(panel.grid.major = element_blank(), 
-                  panel.grid.minor = element_blank(),
-                  legend.title = element_blank(),
-                  axis.text = element_blank(), 
-                  axis.ticks = element_blank(), 
-                  axis.title = element_blank(),
-                  plot.title = element_text(hjust = 0.5, size = 20)) +
-            scale_fill_continuous(low="lightblue", 
-                                  high="darkblue", 
-                                  breaks = break_points, 
-                                  labels = scales::number_format(accuracy = 1)) 
+                                  labels = scales::number_format(accuracy = 1))
         
-    }
-    return(map)
-}
-
-create_map_2 <- function(data, symptom, y_axis) {
-    filtered_data <- data %>% filter(symptoms == symptom)
-    
-    min_val <- min(filtered_data$rates, na.rm = TRUE)
-    max_val <- max(filtered_data$rates, na.rm = TRUE)
-    
-    breaks <- 6
-    
-    # Calculate the interval width
-    interval_width <- max_val / breaks
-    
-    # Generate the sequence of break points
-    break_points <- seq(min_val, max_val, len = 6)
-    
-    filtered_data <- filtered_data %>% mutate(label = glue("{get(symptom)}/{deaths}"))
-    
-    if (symptom == "fever") {
-        map <- ggplot(data = filtered_data) +
-            geom_sf(aes(fill=(rates))) +
-            guides(fill = guide_legend()) +
-            geom_sf_label(aes(label = label), size = 1.8) +
-            theme_minimal() + 
-            theme(panel.grid.major = element_blank(), 
-                  panel.grid.minor = element_blank(),
-                  legend.title = element_blank(),
-                  axis.text = element_blank(), 
-                  axis.ticks = element_blank(),
-                  axis.title.x = element_blank(),
-                  axis.title.y = element_text(angle = 0, vjust = 0.5, size = 20),
-                  plot.title = element_text(hjust = 0.5, size = 20)) +
-            ylab(y_axis) +
-            scale_fill_continuous(low="lightblue", 
-                                  high="darkblue", 
-                                  breaks = break_points, 
-                                  labels = scales::number_format(accuracy = 1)) 
-    } else {
-        map <- ggplot(data = filtered_data) +
-            geom_sf(aes(fill=(rates))) +
-            guides(fill = guide_legend()) +
-            geom_sf_label(aes(label = label), size = 1.8) +
-            theme_minimal() + 
-            theme(panel.grid.major = element_blank(), 
-                  panel.grid.minor = element_blank(),
-                  legend.title = element_blank(),
-                  axis.text = element_blank(), 
-                  axis.ticks = element_blank(), 
-                  axis.title = element_blank(),
-                  plot.title = element_text(hjust = 0.5, size = 20)) +
-            scale_fill_continuous(low="lightblue", 
-                                  high="darkblue",
-                                  breaks = break_points, 
-                                  labels = scales::number_format(accuracy = 1)) 
-    }
-    
+        # Conditionally add labels
+        if (labels) {
+            map <- map + geom_sf_label(aes(label = label), size = 1.8)
+        }
+        
+        # Conditionally add the title
+        if (gplot_title) {
+            map <- map + ggtitle(paste(symptom))
+        }
+        
     return(map)
 }
 
@@ -792,9 +724,11 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
     
     symptoms <- unique(group_symptoms$symptoms)
     
-    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)")
-    infection_plots <- lapply(symptoms, create_map_2, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)")
-    non_infection_plots <- lapply(symptoms, create_map_2, data = non_infections_spatial, y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)")
+    fm <- symptoms[[1]]
+    
+    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)", labels = TRUE, gplot_title = TRUE, first_map = fm)
+    infection_plots <- lapply(symptoms, create_map, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)", labels = TRUE, gplot_title = FALSE, first_map = fm)
+    non_infection_plots <- lapply(symptoms, create_map, data = non_infections_spatial, y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)", labels = TRUE, gplot_title = FALSE, first_map = fm)
     
     all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
     
