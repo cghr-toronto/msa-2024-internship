@@ -434,14 +434,11 @@ non_spatial_oam <- non_spatial(older_male_adult)
 non_spatial_oaf <- non_spatial(older_female_adult)
 
 # Test----
-total_deaths <- function(ns_table, deaths){
-    as.numeric(sum(ns_table$deaths))
-}
 
 # Creating heat map with non-spatial table
-hm <- function(ns_table, hm_title, pdf_title) {
+hm <- function(ns_table, hm_title, pdf_title, labels = TRUE) {
     
-    death_total <- total_deaths(ns_table, deaths) 
+    death_total <- as.numeric(sum(ns_table$deaths)) 
     
     malaria <- sum(ns_table$deaths[ns_table$type_of_cause == "Malaria"], na.rm = TRUE)
     infections <- sum(ns_table$deaths[ns_table$type_of_cause == "Infections"], na.rm = TRUE)
@@ -484,14 +481,16 @@ hm <- function(ns_table, hm_title, pdf_title) {
             type_of_cause == "Malaria" ~ glue("Malaria\n(n={malaria})"),
             type_of_cause == "Infections" ~ glue("Infections\n(n={infections})"),
             type_of_cause == "Non-infections" ~ glue("Non-infections\n(n={non_infections})")
-        )) %>%
-        mutate(symptoms = ifelse(symp_perc < 1,
+        )) 
+    
+    
+        if (labels) { heat <- heat %>% mutate(symptoms = ifelse(symp_perc < 1,
                                  glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, <1%)"),
                                  glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, {symp_sums$symp_perc}%)")
                                  )
-               )
-    
-    heat$symptoms <- fct_reorder(heat$symptoms, heat$symp_sum, .desc = FALSE)
+        ) %>% heat$symptoms <- fct_reorder(heat$symptoms, heat$symp_sum, .desc = FALSE) } 
+        else { heat$symptoms <- factor(heat$symptoms, levels = rev(sort(unique(heat$symptoms))))
+        }
     
     heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Malaria\n(n={malaria})"),
                                                                 glue("Infections\n(n={infections})"),
@@ -501,11 +500,6 @@ hm <- function(ns_table, hm_title, pdf_title) {
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(type_of_cause, symptoms)) +
         geom_tile(aes(fill = total_count)) +
-        geom_text(aes(label = ifelse(total_perc < 1, 
-                                     glue("{total_count}\n(<1%)"), 
-                                     glue("{total_count}\n({total_perc}%)")
-                                     )
-                      )) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
         scale_x_discrete(position = "top") +
         ggtitle(glue("{hm_title}\n(n = {death_total})")) +
@@ -520,6 +514,12 @@ hm <- function(ns_table, hm_title, pdf_title) {
               legend.position = "right",
               plot.title = element_text(hjust = 0.5, face = "bold", size = 14)) 
     
+    if (labels) { heat_map_plot <- heat_map_plot + geom_text(aes(label = ifelse(total_perc < 1, 
+                                               glue("{total_count}\n(<1%)"), 
+                                               glue("{total_count}\n({total_perc}%)"))
+    ))  } else { heat_map_plot <- heat_map_plot + geom_text(aes(label = glue("{total_count}"))
+    )} 
+    
     # Exporting heat map as pdf
     out <- pdf_print(heat_map_plot, pdf_title, width = 6, height = 24)
     
@@ -527,13 +527,13 @@ hm <- function(ns_table, hm_title, pdf_title) {
     
 }
 
-hm_adult <- hm(non_spatial_adult, glue("Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022"), "fig-adult-heatmap")
-hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap")
-hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap")
-hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap")
-hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap")
-hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap")
-hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap")
+hm_adult <- hm(non_spatial_adult, glue("Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022"), "fig-adult-heatmap", labels = FALSE)
+hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap", labels = FALSE)
+hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap", labels = FALSE)
+hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap", labels = FALSE)
+hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap", labels = FALSE)
+hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap", labels = FALSE)
+hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap", labels = FALSE)
 
 cod_rate <- function(
         age_sex_agg,
@@ -686,7 +686,6 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
             geom_sf(aes(fill=(rates))) +
             guides(fill = guide_legend()) +
             ggtitle(paste(symptom)) +
-            geom_sf_label(aes(label = label), size = 1.8) +
             theme_minimal() + 
             theme(panel.grid.major = element_blank(), 
                   panel.grid.minor = element_blank(),
@@ -716,7 +715,7 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
 }
 
 # Creating grouped plots parameters
-create_plots <- function(group_symptoms, plot_title, pdf_title) {
+create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
     
     malaria_spatial <- group_symptoms %>% filter(denom_group == "Malaria")
     infections_spatial <- group_symptoms %>% filter(denom_group == "Infections")
@@ -726,9 +725,9 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
     
     fm <- symptoms[[1]]
     
-    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)", labels = TRUE, gplot_title = TRUE, first_map = fm)
-    infection_plots <- lapply(symptoms, create_map, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)", labels = TRUE, gplot_title = FALSE, first_map = fm)
-    non_infection_plots <- lapply(symptoms, create_map, data = non_infections_spatial, y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)", labels = TRUE, gplot_title = FALSE, first_map = fm)
+    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)", labels = label, gplot_title = TRUE, first_map = fm)
+    infection_plots <- lapply(symptoms, create_map, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)", labels = label, gplot_title = FALSE, first_map = fm)
+    non_infection_plots <- lapply(symptoms, create_map, data = non_infections_spatial, y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)", labels = label, gplot_title = FALSE, first_map = fm)
     
     all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
     
@@ -744,10 +743,10 @@ create_plots <- function(group_symptoms, plot_title, pdf_title) {
 }
 
 # Creating plot series for each age group
-yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Malaria Symptoms", "fig-yam-malaria-maps")
-yaf_plot <- create_plots(yaf_symptom, "Young Adult Female (15-39 Years) Malaria Symptoms", "fig-yaf-malaria-maps")
-oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Malaria Symptoms", "fig-oam-malaria-maps")
-oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Malaria Symptoms", "fig-oaf-malaria-maps")
-young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Malaria Symptoms", "fig-ya-malaria-maps")
-older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Malaria Symptoms", "fig-oa-malaria-maps")
+yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Malaria Symptoms", "fig-yam-malaria-maps", label = FALSE)
+yaf_plot <- create_plots(yaf_symptom, "Young Adult Female (15-39 Years) Malaria Symptoms", "fig-yaf-malaria-maps", label = FALSE)
+oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Malaria Symptoms", "fig-oam-malaria-maps", label = FALSE)
+oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Malaria Symptoms", "fig-oaf-malaria-maps", label = FALSE)
+young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Malaria Symptoms", "fig-ya-malaria-maps", label = FALSE)
+older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Malaria Symptoms", "fig-oa-malaria-maps", label = FALSE)
 
