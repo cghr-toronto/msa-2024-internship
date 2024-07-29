@@ -1,5 +1,5 @@
 source("../src/spatial_agg.R")
-source("../experiments/adult_malaria.R")
+source("../experiments/functions.R")
 
 # Loading packages for being able to manipulate and plot spatial data
 library(sf)
