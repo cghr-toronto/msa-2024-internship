@@ -9,11 +9,11 @@ library(dplyr)
 library(magrittr)
 library(stringr)
 library(lubridate)
-library(ggspatial)
-library(tmap)
 library(prettymapr)
 library(patchwork)
 library(readxl)
+library(glue)
+library(forcats)
 library(spdep)
 
 ## Read data
@@ -145,45 +145,41 @@ child <- left_join(child, icd, by = "final_icd")
 child$gid_dist <- as.integer(child$gid_dist)
 
 # List of causes of death
-infections <- c("Acute respiratory infections", 
-                "Digestive diseases", 
-                "Fever of unknown origin", 
+infections <- c("Fever of unknown origin", 
                 "Meningitis/encephalitis", 
-                "Other chronic respiratory infections",
-                "Other infectious diseases", 
-                "HIV/AIDS", 
-                "Hepatitis", 
-                "Severe Localized Infection", 
-                "Selected vaccine preventable diseases", 
-                "Other sexually transmitted infections (excl. HIV/AIDS)",
+                "Selected vaccine-preventable", 
                 "Tuberculosis", 
                 "Diarrhoea",
-                "Severe Systemic Infection",
-                "Covid",
-                "Measles",
-                "Hepatitis",
-                "Helminthiases",
-                "Arthropod-borne viral fevers",
-                "Rabies",
-                "Syphilis",
-                "Tetanus",
-                "History of Covid-19")
+                "Hepatitis", 
+                "Sexually-transmitted infections",
+                "Respiratory infections",
+                "Post COVID-19 condition",
+                "Multisystem inflammatory syndrme associated with COVID-19",
+                "Need for immunization against COVID-19",
+                "Other infectious and parasitic")
+
+infections_2 <- c("Other chronic respiratory infections",
+                  "Covid")
+
+# Trim whitespaces in adult columns
+child$COD <- str_trim(child$COD)
+child$`ICD-Chapter`<- str_trim(child$`ICD-Chapter`)
 
 # Creating filters for young childs by sex, age, and malaria
 male_child <- child %>% filter(sex_death == "Male")
 female_child <- child %>% filter(sex_death == "Female")
 
-child_malaria <- child %>% filter(`COD Group (Cathy)` == "Malaria")
-male_child_malaria <- child %>% filter(sex_death == "Male" & `COD Group (Cathy)` == "Malaria")
-female_child_malaria <- child %>% filter(sex_death == "Female" & `COD Group (Cathy)` == "Malaria")
+child_malaria <- child %>% filter(`WBD category` == "Malaria")
+male_child_malaria <- child %>% filter(sex_death == "Male" & `WBD category` == "Malaria")
+female_child_malaria <- child %>% filter(sex_death == "Female" & `WBD category` == "Malaria")
 
-child_infections <- child %>% filter(`COD Group (Cathy)` %in% infections | (`COD` == "Chronic viral hepatitis"))
-male_child_infections <- child %>% filter(sex_death == "Male" & `COD Group (Cathy)` %in% infections | (`COD` == "Chronic viral hepatitis"))
-female_child_infections <- child %>% filter(sex_death == "Female" & `COD Group (Cathy)` %in% infections | (`COD` == "Chronic viral hepatitis"))
+child_infections <- child %>% filter((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis"))
+male_child_infections <- child %>% filter(sex_death == "Male" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
+female_child_infections <- child %>% filter(sex_death == "Female" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
 
-child_non_infections <- child %>% filter((!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
-male_child_non_infections <- child %>% filter(sex_death == "Male" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
-female_child_non_infections <- child %>% filter(sex_death == "Female" & (!`COD Group (Cathy)` %in% infections) & `COD Group (Cathy)` != "Malaria" & `COD` != "Chronic viral hepatitis")
+child_non_infections <- child %>% filter((!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
+male_child_non_infections <- child %>% filter(sex_death == "Male" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
+female_child_non_infections <- child %>% filter(sex_death == "Female" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -272,9 +268,9 @@ non_spatial_cm <- non_spatial(male_child)
 non_spatial_cf <- non_spatial(female_child)
 
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap")
-hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap")
-hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap")
+hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = FALSE)
+hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = FALSE)
+hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = FALSE)
 
 # Defining symptoms to be plotted
 child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough")
@@ -299,7 +295,7 @@ child_symptom <- symptom_rate(age_sex_malaria_agg = child_malaria_agg,
                            symptoms = child_symptoms)
  
 # Creating maps for each age group
-cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Malaria Symptoms", "fig-cm-malaria-maps")
-cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Malaria Symptoms", "fig-cf-malaria-maps")
-child_plot <- create_plots(child_symptom, "Child (1m-11y) Malaria Symptoms", "fig-child-malaria-maps")
+cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Malaria Symptoms", "fig-cm-malaria-maps", label = FALSE)
+cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Malaria Symptoms", "fig-cf-malaria-maps", label = FALSE)
+child_plot <- create_plots(child_symptom, "Child (1m-11y) Malaria Symptoms", "fig-child-malaria-maps", label = FALSE)
 
