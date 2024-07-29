@@ -186,7 +186,7 @@ cod_rate <- function(
         pivot_longer(cols = ends_with("rate"),
                      names_to = "symptoms", 
                      values_to = "rates") %>%
-        select(gid, rates, deaths, all_of(symptoms))
+        select(gid, symptoms, rates, deaths, all_of(symptoms))
     
     return(out)
 }
