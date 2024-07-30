@@ -29,7 +29,7 @@ non_spatial <- function(age_group, death_type){
             values_from = count,  # The values in the 'count' column will fill the new columns
             values_fill = list(count = 0)  # Fill missing values with 0
         )
-    browser()
+
     # Creating count for deaths per cause in non-spatial
     death_count <- age_group %>% count(!!sym(death_type), sort = TRUE, name = "deaths")
     ns <- ns %>% left_join(death_count, by = death_type)
@@ -43,23 +43,13 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE) {
     
     death_total <- as.numeric(sum(ns_table$deaths)) 
     
-    malaria <- sum(ns_table$deaths[ns_table$type_of_cause == "Malaria"], na.rm = TRUE)
-    infections <- sum(ns_table$deaths[ns_table$type_of_cause == "Infections"], na.rm = TRUE)
-    non_infections <- sum(ns_table$deaths[ns_table$type_of_cause == "Non-infections"], na.rm = TRUE)
-    
-    heat <- pivot_longer(ns_table, cols = -c(cause_of_death, type_of_cause),
+    heat <- pivot_longer(ns_table, cols = -c(cause_of_death, deaths),
                          names_to = "symptoms",
-                         values_to = "counts") %>%
-        filter(cause_of_death != "NA" & symptoms != "NA" & symptoms != "deaths") %>% 
-        group_by(type_of_cause, symptoms) %>%
-        summarise(total_count = sum(counts))
-    
-    # Calculating sum of each cause of death
-    toc_sums <- heat %>%
-        group_by(type_of_cause) %>%
-        summarize(toc_sum = sum(total_count, na.rm = TRUE))
-    
-    all_deaths <- sum(toc_sums$toc_sum)
+                         values_to = "counts") %>% 
+        filter(cause_of_death != "NA" & symptoms != "NA") %>% 
+        group_by(cause_of_death, symptoms) %>%
+        summarise(total_count = sum(counts))%>%
+        left_join(ns_table %>% select(cause_of_death, deaths) %>% distinct(), by = "cause_of_death")
     
     # Calculating sum of each symptom death
     symp_sums <- heat %>%
@@ -71,37 +61,28 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE) {
     
     # Merge the sums back into the original data frame
     heat <- heat %>%
-        left_join(toc_sums, by = "type_of_cause") %>%
         left_join(symp_sums, by = "symptoms")
     
     heat <- heat %>% 
-        mutate(total_perc = case_when(
-            type_of_cause == "Malaria" ~ round((total_count / malaria) * 100),
-            type_of_cause == "Infections" ~ round((total_count / infections) * 100),
-            type_of_cause == "Non-infections" ~ round((total_count / non_infections) * 100)
-        )) %>%
-        mutate(type_of_cause = case_when(
-            type_of_cause == "Malaria" ~ glue("Malaria\n(n={malaria})"),
-            type_of_cause == "Infections" ~ glue("Infections\n(n={infections})"),
-            type_of_cause == "Non-infections" ~ glue("Non-infections\n(n={non_infections})")
-        )) 
-    
+        mutate(total_perc = round((total_count / deaths) * 100)) 
+
+    heat <- heat %>%
+        mutate(cause_of_death = glue("{cause_of_death}\n(n={deaths})")) 
     
     if (labels) { heat <- heat %>% mutate(symptoms = ifelse(symp_perc < 1,
                                                             glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, <1%)"),
                                                             glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, {symp_sums$symp_perc}%)")
-    )
-    ) %>% heat$symptoms <- fct_reorder(heat$symptoms, heat$symp_sum, .desc = FALSE) } 
+                                                            )) %>% heat$symptoms <- fct_reorder(heat$symptoms, heat$symp_sum, .desc = FALSE) } 
     else { heat$symptoms <- factor(heat$symptoms, levels = rev(sort(unique(heat$symptoms))))
     }
     
+    browser()
     heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Malaria\n(n={malaria})"),
                                                                 glue("Infections\n(n={infections})"),
                                                                 glue("Non-infections\n(n={non_infections})")))
     
-    
     # Create the heatmap with modified axis labels
-    heat_map_plot <- ggplot(heat, aes(type_of_cause, symptoms)) +
+    heat_map_plot <- ggplot(heat, aes(cause_of_death, symptoms)) +
         geom_tile(aes(fill = total_count)) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
         scale_x_discrete(position = "top") +
@@ -158,7 +139,7 @@ cod_rate <- function(
     spatial <- result %>%
         left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
     
-    # Create rate columns for malaria symptoms
+    # Create rate columns for symptoms
     for (symptom in symptoms) {
         rate_column <- paste0(symptom, "_", cod, "_rate")
         spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[deaths]]) * 100
