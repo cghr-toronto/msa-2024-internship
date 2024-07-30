@@ -35,16 +35,6 @@ non_spatial <- function(age_group){
     ns <- ns %>% left_join(death_count, by = "WBD category")
     colnames(ns)[colnames(ns) == "WBD category"] <- "cause_of_death"
     
-    ns <- ns %>%
-        mutate(is_malaria = ifelse(cause_of_death == "Malaria", 1, 0)) %>%
-        arrange(is_malaria) %>%
-        select(-is_malaria) %>%
-        mutate(type_of_cause = case_when(
-            cause_of_death == "Malaria" ~ "Malaria",
-            cause_of_death %in% infections ~ "Infections",
-            TRUE ~ "Non-infections"
-        ))
-    
     return(ns)
 }
 

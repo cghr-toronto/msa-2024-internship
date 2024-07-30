@@ -201,31 +201,31 @@ older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% 
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
 # Creating filters for adults for malaria
-adult_malaria <- adult %>% filter(`WBD category` == "Malaria")
-young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & `WBD category` == "Malaria")
-young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & `WBD category` == "Malaria")
-young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & `WBD category` == "Malaria")
-older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & `WBD category` == "Malaria")
-older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & `WBD category` == "Malaria")
-older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & `WBD category` == "Malaria")
+adult_malaria <- adult %>% filter(type_of_death == "Malaria")
+young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & type_of_death == "Malaria")
+young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & type_of_death == "Malaria")
+young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & type_of_death == "Malaria")
+older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & type_of_death == "Malaria")
+older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & type_of_death == "Malaria")
+older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & type_of_death == "Malaria")
 
 # Creating filters for adults for infections
-adult_infections <- adult %>% filter((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis"))
-yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
-yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
-oam_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
-oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
-young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
-older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & ((`WBD category` %in% infections) | (`COD Group (Cathy)` %in% infections_2) | (`COD` == "Chronic viral hepatitis")))
+adult_infections <- adult %>% filter(type_of_death == "Infections")
+yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & type_of_death == "Infections")
+yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & type_of_death == "Infections")
+oam_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & type_of_death == "Infections")
+oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & type_of_death == "Infections")
+young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & type_of_death == "Infections")
+older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & type_of_death == "Infections")
 
 # Creating filters for adults for non-infections
-adult_non_infections <- adult %>% filter((!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
-yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
-yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
-oam_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
-oaf_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
-young_adult_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
-older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & (!`WBD category` %in% infections) & (`WBD category` != "Malaria") & (`COD` != "Chronic viral hepatitis") & (!`COD Group (Cathy)` %in% infections_2))
+adult_non_infections <- adult %>% filter(type_of_death == "Non-infections")
+yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & type_of_death == "Non-infections")
+yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & type_of_death == "Non-infections")
+oam_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & type_of_death == "Non-infections")
+oaf_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & type_of_death == "Non-infections")
+young_adult_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & type_of_death == "Non-infections")
+older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & type_of_death == "Non-infections")
 
 # Set mapping dataframe
 mapping <- data.frame(
