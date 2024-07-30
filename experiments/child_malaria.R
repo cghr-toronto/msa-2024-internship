@@ -131,8 +131,8 @@ child <- child %>%
 
 # Created new column for child displaying final ICD-10 code cause of death
 child <- child %>% mutate_all(na_if,"") %>% 
-    filter(is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) & is.na(adj_icd_cod)) %>%
-    mutate(final_icd_cod = p1_icd_cod)
+    filter(is.na(p1_recon_icd) & is.na(p2_recon_icd) & is.na(adj_icd)) %>%
+    mutate(final_icd = p1_icd)
 
 # Assign wbd-10 title for corresponding record codes
 child <- left_join(child, icd, by = "final_icd")
@@ -272,9 +272,9 @@ non_spatial_cm <- non_spatial(age_group = male_child, death_type = "type_of_caus
 non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_cause")
 
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = FALSE)
-hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = FALSE)
-hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = FALSE)
+hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = FALSE, desc_order = TRUE)
+hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = FALSE, desc_order = TRUE)
+hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = FALSE, desc_order = TRUE)
 
 # Defining symptoms to be plotted
 child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough")

@@ -39,7 +39,7 @@ non_spatial <- function(age_group, death_type){
 }
 
 # Creating heat map with non-spatial table
-hm <- function(ns_table, hm_title, pdf_title, labels = TRUE) {
+hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) {
     
     death_total <- as.numeric(sum(ns_table$deaths)) 
     
@@ -74,7 +74,11 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE) {
     else { heat$symptoms <- factor(heat$symptoms, levels = rev(sort(unique(heat$symptoms))))
     }
     
-    heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = FALSE)
+    if (desc_order) {
+        heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = TRUE)
+    } else {
+        heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = FALSE)
+    }
     
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(cause_of_death, symptoms)) +
