@@ -15,6 +15,7 @@ library(readxl)
 library(glue)
 library(forcats)
 library(spdep)
+library(rlang)
 
 ## Read data
 # Reading in Adult Round 1 and Round 2 data
@@ -184,13 +185,13 @@ infections_2 <- c("Other chronic respiratory infections",
 adult$COD <- str_trim(adult$COD)
 adult$`ICD-Chapter`<- str_trim(adult$`ICD-Chapter`)
 
-adult <- adult %>% mutate(type_of_death = case_when(
+adult <- adult %>% mutate(type_of_cause = case_when(
     `WBD category` == "Malaria" ~ "Malaria",
     (`WBD category` %in% infections) | 
         (`COD Group (Cathy)` %in% infections_2) | 
         (`COD` == "Chronic viral hepatitis") ~ "Infections",
     TRUE ~ "Non-infections")) %>%
-    mutate(type_of_death = if_else(is.na(`WBD category`), NA_character_, type_of_death))
+    mutate(type_of_cause = if_else(is.na(`WBD category`), NA_character_, type_of_cause))
 
 # Creating filters for different adult age/sex groups
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
@@ -201,31 +202,31 @@ older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% 
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
 
 # Creating filters for adults for malaria
-adult_malaria <- adult %>% filter(type_of_death == "Malaria")
-young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & type_of_death == "Malaria")
-young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & type_of_death == "Malaria")
-young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & type_of_death == "Malaria")
-older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & type_of_death == "Malaria")
-older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & type_of_death == "Malaria")
-older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & type_of_death == "Malaria")
+adult_malaria <- adult %>% filter(type_of_cause == "Malaria")
+young_adult_malaria <- adult %>% filter(death_age_group %in% young_adult_age & type_of_cause == "Malaria")
+young_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% young_adult_age & type_of_cause == "Malaria")
+young_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% young_adult_age & type_of_cause == "Malaria")
+older_adult_malaria <- adult %>% filter(death_age_group %in% older_adult_age & type_of_cause == "Malaria")
+older_male_adult_malaria <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age & type_of_cause == "Malaria")
+older_female_adult_malaria <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age & type_of_cause == "Malaria")
 
 # Creating filters for adults for infections
-adult_infections <- adult %>% filter(type_of_death == "Infections")
-yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & type_of_death == "Infections")
-yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & type_of_death == "Infections")
-oam_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & type_of_death == "Infections")
-oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & type_of_death == "Infections")
-young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & type_of_death == "Infections")
-older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & type_of_death == "Infections")
+adult_infections <- adult %>% filter(type_of_cause == "Infections")
+yam_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & type_of_cause == "Infections")
+yaf_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & type_of_cause == "Infections")
+oam_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & type_of_cause == "Infections")
+oaf_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & type_of_cause == "Infections")
+young_adult_infections <- adult %>% filter(death_age_group %in% young_adult_age & type_of_cause == "Infections")
+older_adult_infections <- adult %>% filter(death_age_group %in% older_adult_age & type_of_cause == "Infections")
 
 # Creating filters for adults for non-infections
-adult_non_infections <- adult %>% filter(type_of_death == "Non-infections")
-yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & type_of_death == "Non-infections")
-yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & type_of_death == "Non-infections")
-oam_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & type_of_death == "Non-infections")
-oaf_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & type_of_death == "Non-infections")
-young_adult_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & type_of_death == "Non-infections")
-older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & type_of_death == "Non-infections")
+adult_non_infections <- adult %>% filter(type_of_cause == "Non-infections")
+yam_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Male" & type_of_cause == "Non-infections")
+yaf_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & sex_death == "Female" & type_of_cause == "Non-infections")
+oam_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Male" & type_of_cause == "Non-infections")
+oaf_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & sex_death == "Female" & type_of_cause == "Non-infections")
+young_adult_non_infections <- adult %>% filter(death_age_group %in% young_adult_age & type_of_cause == "Non-infections")
+older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_age & type_of_cause == "Non-infections")
 
 # Set mapping dataframe
 mapping <- data.frame(
@@ -381,13 +382,13 @@ older_adult_non_infections_agg <- spatial_agg(gdf = dist,
                                        count_col = "deaths")
 
 # Making non-spatial tables----
-non_spatial_adult <- non_spatial(adult)
-non_spatial_young_adult <- non_spatial(young_adult)
-non_spatial_yam <- non_spatial(young_male_adult)
-non_spatial_yaf <- non_spatial(young_female_adult)
-non_spatial_older_adult <- non_spatial(older_adult)
-non_spatial_oam <- non_spatial(older_male_adult)
-non_spatial_oaf <- non_spatial(older_female_adult)
+non_spatial_adult <- non_spatial(age_group = adult, death_type = "type_of_cause")
+non_spatial_young_adult <- non_spatial(age_group = young_adult, death_type = "type_of_cause")
+non_spatial_yam <- non_spatial(age_group = young_male_adult, death_type = "type_of_cause")
+non_spatial_yaf <- non_spatial(age_group = young_female_adult, death_type = "type_of_cause")
+non_spatial_older_adult <- non_spatial(age_group = older_adult, death_type = "type_of_cause")
+non_spatial_oam <- non_spatial(age_group = older_male_adult, death_type = "type_of_cause")
+non_spatial_oaf <- non_spatial(age_group = older_female_adult, death_type = "type_of_cause")
 
 # Plotting heatmaps----
 hm_adult <- hm(non_spatial_adult, glue("Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022"), "fig-adult-heatmap", labels = FALSE)
@@ -439,10 +440,10 @@ older_adult_symptom <- symptom_rate(age_sex_malaria_agg = older_adult_malaria_ag
                                     symptoms = adult_symptoms)
 
 # Creating plot series for each age group----
-yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Malaria Symptoms", "fig-yam-malaria-maps", label = FALSE)
-yaf_plot <- create_plots(yaf_symptom, "Young Adult Female (15-39 Years) Malaria Symptoms", "fig-yaf-malaria-maps", label = FALSE)
-oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Malaria Symptoms", "fig-oam-malaria-maps", label = FALSE)
-oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Malaria Symptoms", "fig-oaf-malaria-maps", label = FALSE)
-young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Malaria Symptoms", "fig-ya-malaria-maps", label = FALSE)
-older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Malaria Symptoms", "fig-oa-malaria-maps", label = FALSE)
+yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-malaria-maps", label = FALSE)
+yaf_plot <- create_plots(yaf_symptom, "Young Adult Female (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-malaria-maps", label = FALSE)
+oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-malaria-maps", label = FALSE)
+oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-malaria-maps", label = FALSE)
+young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-ya-malaria-maps", label = FALSE)
+older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oa-malaria-maps", label = FALSE)
 

@@ -16,24 +16,24 @@ pdf_print <- function(series, title, width, height){
 }
 
 # Creating non-spatial table of symptom and causes of death
-non_spatial <- function(age_group){
+non_spatial <- function(age_group, death_type){
     
     ns <- pivot_longer(age_group, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
                        names_to = "symptom", # New column to store the symptom names
                        values_to = "value" # New column to store the counts
-    ) %>% group_by(`WBD category`, value) %>%
+    ) %>% group_by(!!sym(death_type), value) %>%
         summarise(count = n(), .groups = 'drop') %>%
-        arrange(`WBD category`, value) %>%
+        arrange(!!sym(death_type), value) %>%
         pivot_wider(
             names_from = value,   # The values in the 'value' column will become column names
             values_from = count,  # The values in the 'count' column will fill the new columns
             values_fill = list(count = 0)  # Fill missing values with 0
         )
-    
+    browser()
     # Creating count for deaths per cause in non-spatial
-    death_count <- age_group %>% count(`WBD category`, sort = TRUE, name = "deaths")
-    ns <- ns %>% left_join(death_count, by = "WBD category")
-    colnames(ns)[colnames(ns) == "WBD category"] <- "cause_of_death"
+    death_count <- age_group %>% count(!!sym(death_type), sort = TRUE, name = "deaths")
+    ns <- ns %>% left_join(death_count, by = death_type)
+    colnames(ns)[colnames(ns) == death_type] <- "cause_of_death"
     
     return(ns)
 }
