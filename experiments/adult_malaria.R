@@ -152,14 +152,11 @@ adult <- adult %>%
 
 # Created new column for adult displaying final ICD-10 code cause of death
 adult <- adult %>% mutate_all(na_if,"") %>% 
-    mutate(final_icd_cod = case_when(!is.na(adj_icd_cod) ~ adj_icd_cod,  # Use adj_icd if it is not NA
-                                     is.na(adj_icd_cod) & !is.na(p1_recon_icd_cod) & !is.na(p2_recon_icd_cod) ~ p1_recon_icd_cod,  # Use p1_recon_icd if adj_icd is NA and both p1_recon_icd and p2_recon_icd are not NA
-                                     is.na(adj_icd_cod) & is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) ~ p1_icd_cod,  # Use p1_icd if both adj_icd and recon_icd are NA
-                                     TRUE ~ NA_character_  # Default case, if none of the above conditions are met
-    )
-    ) 
+    filter(is.na(p1_recon_icd_cod) & is.na(p2_recon_icd_cod) & is.na(adj_icd_cod)) %>%
+    mutate(final_icd_cod = p1_icd_cod)
 
-# Assign CGHR-10 title for corresponding record codes
+
+# Assign WBD-10 title for corresponding record codes
 adult <- left_join(adult, icd, by = setNames("final_icd", "final_icd_cod"))
 
 # Creating age ranges for adults
@@ -186,6 +183,14 @@ infections_2 <- c("Other chronic respiratory infections",
 # Trim whitespaces in adult columns
 adult$COD <- str_trim(adult$COD)
 adult$`ICD-Chapter`<- str_trim(adult$`ICD-Chapter`)
+
+adult <- adult %>% mutate(type_of_death = case_when(
+    `WBD category` == "Malaria" ~ "Malaria",
+    (`WBD category` %in% infections) | 
+        (`COD Group (Cathy)` %in% infections_2) | 
+        (`COD` == "Chronic viral hepatitis") ~ "Infections",
+    TRUE ~ "Non-infections")) %>%
+    mutate(type_of_death = if_else(is.na(`WBD category`), NA_character_, type_of_death))
 
 # Creating filters for different adult age/sex groups
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)
@@ -374,6 +379,15 @@ older_adult_non_infections_agg <- spatial_agg(gdf = dist,
                                        agg_id = "district_cod",
                                        is_spatial_join = FALSE,
                                        count_col = "deaths")
+
+# Making non-spatial tables----
+non_spatial_adult <- non_spatial(adult)
+non_spatial_young_adult <- non_spatial(young_adult)
+non_spatial_yam <- non_spatial(young_male_adult)
+non_spatial_yaf <- non_spatial(young_female_adult)
+non_spatial_older_adult <- non_spatial(older_adult)
+non_spatial_oam <- non_spatial(older_male_adult)
+non_spatial_oaf <- non_spatial(older_female_adult)
 
 # Plotting heatmaps----
 hm_adult <- hm(non_spatial_adult, glue("Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022"), "fig-adult-heatmap", labels = FALSE)
