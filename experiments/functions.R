@@ -3,7 +3,7 @@ pdf_print <- function(series, title, width, height){
     
     pdf_output_dir <- "../figures/"
     
-    jpeg_output_dir <- "../figures/figures.jpgs/"
+    jpeg_output_dir <- "../figures/jpeg/"
     
     pdf_title <- paste0(pdf_output_dir, title, ".pdf")
     
@@ -64,9 +64,7 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE) {
         left_join(symp_sums, by = "symptoms")
     
     heat <- heat %>% 
-        mutate(total_perc = round((total_count / deaths) * 100)) 
-
-    heat <- heat %>%
+        mutate(total_perc = round((total_count / deaths) * 100)) %>%
         mutate(cause_of_death = glue("{cause_of_death}\n(n={deaths})")) 
     
     if (labels) { heat <- heat %>% mutate(symptoms = ifelse(symp_perc < 1,
@@ -76,10 +74,7 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE) {
     else { heat$symptoms <- factor(heat$symptoms, levels = rev(sort(unique(heat$symptoms))))
     }
     
-    browser()
-    heat$type_of_cause <- factor(heat$type_of_cause, levels = c(glue("Malaria\n(n={malaria})"),
-                                                                glue("Infections\n(n={infections})"),
-                                                                glue("Non-infections\n(n={non_infections})")))
+    heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = FALSE)
     
     # Create the heatmap with modified axis labels
     heat_map_plot <- ggplot(heat, aes(cause_of_death, symptoms)) +
@@ -100,15 +95,17 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE) {
     
     if (labels) { heat_map_plot <- heat_map_plot + geom_text(aes(label = ifelse(total_perc < 1, 
                                                                                 glue("{total_count}\n(<1%)"), 
-                                                                                glue("{total_count}\n({total_perc}%)"))
-    ))  } else { heat_map_plot <- heat_map_plot + geom_text(aes(label = glue("{total_count}"))
-    )} 
+                                                                                glue("{total_count}\n({total_perc}%)")
+                                                                                )
+                                                                 )
+                                                             )  
+    } else { heat_map_plot <- heat_map_plot + geom_text(aes(label = glue("{total_count}")
+                                                            ))} 
     
     # Exporting heat map as pdf
     out <- pdf_print(heat_map_plot, pdf_title, width = 6, height = 24)
     
     return(out)
-    
 }
 
 cod_rate <- function(
