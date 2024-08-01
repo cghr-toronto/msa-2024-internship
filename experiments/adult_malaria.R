@@ -381,6 +381,62 @@ older_adult_non_infections_agg <- spatial_agg(gdf = dist,
                                        is_spatial_join = FALSE,
                                        count_col = "deaths")
 
+malaria_tables <- list(
+    yam_malaria_agg = yam_malaria_agg,
+    yaf_malaria_agg = yaf_malaria_agg,
+    oam_malaria_agg = oam_malaria_agg,
+    oaf_malaria_agg = oaf_malaria_agg,
+    young_adult_malaria_agg = young_adult_malaria_agg,
+    older_adult_malaria_agg = older_adult_malaria_agg)
+
+infections_tables <- list(
+    yam_infections_agg = yam_infections_agg,
+    yaf_infections_agg = yaf_infections_agg,
+    oam_infections_agg = oam_infections_agg,
+    oaf_infections_agg = oaf_infections_agg,
+    young_adult_infections_agg = young_adult_infections_agg,
+    older_adult_infections_agg = older_adult_infections_agg)
+
+non_infections_tables <- list(
+    yam_non_infections_agg = yam_non_infections_agg,
+    yaf_non_infections_agg = yaf_non_infections_agg,
+    oam_non_infections_agg = oam_non_infections_agg,
+    oaf_non_infections_agg = oaf_non_infections_agg,
+    young_adult_non_infections_agg = young_adult_non_infections_agg,
+    older_adult_non_infections_agg = older_adult_non_infections_agg)
+
+mutate_symp_columns <- function(df, suffix) {
+    df %>% rename_with(~ ifelse(startsWith(., "symp"), paste0(., "_", suffix), .))
+}
+
+# Apply the function to each table in the list
+malaria_tables <- lapply(malaria_tables, mutate_symp_columns, suffix = "malaria")
+infections_tables <- lapply(infections_tables, mutate_symp_columns, suffix = "infections")
+non_infections_tables <- lapply(non_infections_tables, mutate_symp_columns, suffix = "non_infections")
+
+# Assign the modified tables back to individual variables
+yam_malaria_agg <- malaria_tables$yam_malaria_agg
+yaf_malaria_agg <- malaria_tables$yaf_malaria_agg
+oam_malaria_agg <- malaria_tables$oam_malaria_agg
+oaf_malaria_agg <- malaria_tables$oaf_malaria_agg
+young_adult_malaria_agg <- malaria_tables$young_adult_malaria_agg
+older_adult_malaria_agg <- malaria_tables$older_adult_malaria_agg
+
+yam_infections_agg <- infections_tables$yam_infections_agg
+yaf_infections_agg <- infections_tables$yaf_infections_agg
+oam_infections_agg <- infections_tables$oam_infections_agg
+oaf_infections_agg <- infections_tables$oaf_infections_agg
+young_adult_infections_agg <- infections_tables$young_adult_infections_agg
+older_adult_infections_agg <- infections_tables$older_adult_infections_agg
+
+yam_non_infections_agg <- non_infections_tables$yam_non_infections_agg
+yaf_non_infections_agg <- non_infections_tables$yaf_non_infections_agg
+oam_non_infections_agg <- non_infections_tables$oam_non_infections_agg
+oaf_non_infections_agg <- non_infections_tables$oaf_non_infections_agg
+young_adult_non_infections_agg <- non_infections_tables$young_adult_non_infections_agg
+older_adult_non_infections_agg <- non_infections_tables$older_adult_non_infections_agg
+
+
 # Making non-spatial tables----
 non_spatial_adult <- non_spatial(age_group = adult, death_type = "type_of_cause")
 non_spatial_young_adult <- non_spatial(age_group = young_adult, death_type = "type_of_cause")
