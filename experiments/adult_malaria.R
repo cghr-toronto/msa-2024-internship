@@ -460,6 +460,11 @@ hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult (40-69 Years) D
 # Defining symptoms to be plotted----
 adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss")
 
+yam_rates <- cod_rate(age_sex_agg = yam_agg,
+                        symptoms = adult_symptoms)
+
+comb_rows <- bind_rows(malaria_rates, infection_rates, non_infection_rates)
+
 # Running symptom_rate for each age group----
 yam_symptom <- symptom_rate(age_sex_malaria_agg = yam_malaria_agg,
                             age_sex_infections_agg = yam_infections_agg,

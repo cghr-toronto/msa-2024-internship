@@ -118,14 +118,14 @@ mutate_symp_columns <- function(df, suffix) {
 
 cod_rate <- function(
         age_sex_agg,
-        cod,
-        symptoms,
-        deaths){
+        symptoms){
     
     # Remove geometry from aggregated dataframe
     age_sex_without_geometry <- age_sex_agg  %>%
         as_tibble() %>%
-        select(-geometry, -deaths, -distname)
+        select(-geometry, -contains("deaths"), -distname)
+    
+    browser()
     
     # Creating spatial symptom count
     result <- age_sex_without_geometry %>%
@@ -142,11 +142,11 @@ cod_rate <- function(
     
     # Join geometry to new spatial table
     spatial <- result %>%
-        left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
+        left_join(age_sex_agg %>% select(gid, geometry, contains("deaths"), distname), by = "gid")
     
     # Create rate columns for symptoms
     for (symptom in symptoms) {
-        rate_column <- paste0(symptom, "_", cod, "_rate")
+        rate_column <- paste0(symptom, "_", "_rate")
         spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[deaths]]) * 100
         spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
     }
@@ -162,10 +162,11 @@ cod_rate <- function(
         pivot_longer(cols = ends_with("rate"),
                      names_to = "symptoms", 
                      values_to = "rates") %>%
-        select(gid, symptoms, rates, deaths, all_of(symptoms))
+        select(gid, symptoms, rates, -contains("deaths"), all_of(symptoms))
     
     return(out)
 }
+
 
 # Function for creating rates for aggregated results
 symptom_rate <- function(
@@ -174,23 +175,6 @@ symptom_rate <- function(
         age_sex_non_infections_agg,
         deaths,
         symptoms){
-    
-    malaria_rates <- cod_rate(age_sex_agg = age_sex_malaria_agg,
-                              cod = "malaria",
-                              symptoms = symptoms,
-                              deaths = deaths)
-    
-    infection_rates <- cod_rate(age_sex_agg = age_sex_infections_agg,
-                                cod = "infections",
-                                symptoms = symptoms,
-                                deaths = deaths)
-    
-    non_infection_rates <- cod_rate(age_sex_agg = age_sex_non_infections_agg,
-                                    cod = "non_infections",
-                                    symptoms = symptoms,
-                                    deaths = deaths)
-    
-    comb_rows <- bind_rows(malaria_rates, infection_rates, non_infection_rates)
     
     # Pivoted spatial table to show rates for each symptom
     out <- comb_rows %>%  mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
