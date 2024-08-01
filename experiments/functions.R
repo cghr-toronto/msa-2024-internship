@@ -112,6 +112,10 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
     return(out)
 }
 
+mutate_symp_columns <- function(df, suffix) {
+    df %>% rename_with(~ ifelse(startsWith(., "symp"), paste0(., "_", suffix), .))
+}
+
 cod_rate <- function(
         age_sex_agg,
         cod,

@@ -243,7 +243,7 @@ yam_malaria_agg <- spatial_agg(gdf = dist,
                                  gdf_id = "distname", 
                                  agg_id = "district_cod",
                                  is_spatial_join = FALSE,
-                                 count_col = "deaths")
+                                 count_col = "malaria_deaths")
 
 yaf_malaria_agg <- spatial_agg(gdf = dist,
                                         agg = young_female_adult_malaria,
@@ -251,7 +251,7 @@ yaf_malaria_agg <- spatial_agg(gdf = dist,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
-                                        count_col = "deaths")
+                                        count_col = "malaria_deaths")
 
 oam_malaria_agg <- spatial_agg(gdf = dist,
                                         agg = older_male_adult_malaria,
@@ -259,7 +259,7 @@ oam_malaria_agg <- spatial_agg(gdf = dist,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
-                                        count_col = "deaths")
+                                        count_col = "malaria_deaths")
 
 oaf_malaria_agg <- spatial_agg(gdf = dist,
                                         agg = older_female_adult_malaria,
@@ -267,7 +267,7 @@ oaf_malaria_agg <- spatial_agg(gdf = dist,
                                         gdf_id = "distname", 
                                         agg_id = "district_cod",
                                         is_spatial_join = FALSE,
-                                        count_col = "deaths")
+                                        count_col = "malaria_deaths")
 
 young_adult_malaria_agg <- spatial_agg(gdf = dist,
                                       agg = young_adult_malaria,
@@ -275,7 +275,7 @@ young_adult_malaria_agg <- spatial_agg(gdf = dist,
                                       gdf_id = "distname", 
                                       agg_id = "district_cod",
                                       is_spatial_join = FALSE,
-                                      count_col = "deaths")
+                                      count_col = "malaria_deaths")
 
 older_adult_malaria_agg <- spatial_agg(gdf = dist,
                                       agg = older_adult_malaria,
@@ -283,7 +283,7 @@ older_adult_malaria_agg <- spatial_agg(gdf = dist,
                                       gdf_id = "distname", 
                                       agg_id = "district_cod",
                                       is_spatial_join = FALSE,
-                                      count_col = "deaths")
+                                      count_col = "malaria_deaths")
 
 yam_infections_agg <- spatial_agg(gdf = dist,
                                agg = yam_infections,
@@ -291,7 +291,7 @@ yam_infections_agg <- spatial_agg(gdf = dist,
                                gdf_id = "distname", 
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
-                               count_col = "deaths")
+                               count_col = "infection_deaths")
 
 yaf_infections_agg <- spatial_agg(gdf = dist,
                                agg = yaf_infections,
@@ -299,7 +299,7 @@ yaf_infections_agg <- spatial_agg(gdf = dist,
                                gdf_id = "distname", 
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
-                               count_col = "deaths")
+                               count_col = "infection_deaths")
 
 oam_infections_agg <- spatial_agg(gdf = dist,
                                agg = oam_infections,
@@ -307,7 +307,7 @@ oam_infections_agg <- spatial_agg(gdf = dist,
                                gdf_id = "distname", 
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
-                               count_col = "deaths")
+                               count_col = "infection_deaths")
 
 oaf_infections_agg <- spatial_agg(gdf = dist,
                                agg = oaf_infections,
@@ -315,7 +315,7 @@ oaf_infections_agg <- spatial_agg(gdf = dist,
                                gdf_id = "distname", 
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
-                               count_col = "deaths")
+                               count_col = "infection_deaths")
 
 young_adult_infections_agg <- spatial_agg(gdf = dist,
                                        agg = young_adult_infections,
@@ -323,7 +323,7 @@ young_adult_infections_agg <- spatial_agg(gdf = dist,
                                        gdf_id = "distname", 
                                        agg_id = "district_cod",
                                        is_spatial_join = FALSE,
-                                       count_col = "deaths")
+                                       count_col = "infection_deaths")
 
 older_adult_infections_agg <- spatial_agg(gdf = dist,
                                        agg = older_adult_infections,
@@ -331,7 +331,7 @@ older_adult_infections_agg <- spatial_agg(gdf = dist,
                                        gdf_id = "distname", 
                                        agg_id = "district_cod",
                                        is_spatial_join = FALSE,
-                                       count_col = "deaths")
+                                       count_col = "infection_deaths")
 
 yam_non_infections_agg <- spatial_agg(gdf = dist,
                                agg = yam_non_infections,
@@ -339,7 +339,7 @@ yam_non_infections_agg <- spatial_agg(gdf = dist,
                                gdf_id = "distname", 
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
-                               count_col = "deaths")
+                               count_col = "non_infection_deaths")
 
 yaf_non_infections_agg <- spatial_agg(gdf = dist,
                                agg = yaf_non_infections,
@@ -347,7 +347,7 @@ yaf_non_infections_agg <- spatial_agg(gdf = dist,
                                gdf_id = "distname", 
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
-                               count_col = "deaths")
+                               count_col = "non_infection_deaths")
 
 oam_non_infections_agg <- spatial_agg(gdf = dist,
                                agg = oam_non_infections,
@@ -355,7 +355,7 @@ oam_non_infections_agg <- spatial_agg(gdf = dist,
                                gdf_id = "distname", 
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
-                               count_col = "deaths")
+                               count_col = "non_infection_deaths")
 
 oaf_non_infections_agg <- spatial_agg(gdf = dist,
                                agg = oaf_non_infections,
@@ -363,7 +363,7 @@ oaf_non_infections_agg <- spatial_agg(gdf = dist,
                                gdf_id = "distname", 
                                agg_id = "district_cod",
                                is_spatial_join = FALSE,
-                               count_col = "deaths")
+                               count_col = "non_infection_deaths")
 
 young_adult_non_infections_agg <- spatial_agg(gdf = dist,
                                        agg = young_adult_non_infections,
@@ -371,7 +371,7 @@ young_adult_non_infections_agg <- spatial_agg(gdf = dist,
                                        gdf_id = "distname", 
                                        agg_id = "district_cod",
                                        is_spatial_join = FALSE,
-                                       count_col = "deaths")
+                                       count_col = "non_infection_deaths")
 
 older_adult_non_infections_agg <- spatial_agg(gdf = dist,
                                        agg = older_adult_non_infections,
@@ -379,7 +379,7 @@ older_adult_non_infections_agg <- spatial_agg(gdf = dist,
                                        gdf_id = "distname", 
                                        agg_id = "district_cod",
                                        is_spatial_join = FALSE,
-                                       count_col = "deaths")
+                                       count_col = "non_infection_deaths")
 
 malaria_tables <- list(
     yam_malaria_agg = yam_malaria_agg,
@@ -405,10 +405,6 @@ non_infections_tables <- list(
     young_adult_non_infections_agg = young_adult_non_infections_agg,
     older_adult_non_infections_agg = older_adult_non_infections_agg)
 
-mutate_symp_columns <- function(df, suffix) {
-    df %>% rename_with(~ ifelse(startsWith(., "symp"), paste0(., "_", suffix), .))
-}
-
 # Apply the function to each table in the list
 malaria_tables <- lapply(malaria_tables, mutate_symp_columns, suffix = "malaria")
 infections_tables <- lapply(infections_tables, mutate_symp_columns, suffix = "infections")
@@ -422,20 +418,26 @@ oaf_malaria_agg <- malaria_tables$oaf_malaria_agg
 young_adult_malaria_agg <- malaria_tables$young_adult_malaria_agg
 older_adult_malaria_agg <- malaria_tables$older_adult_malaria_agg
 
-yam_infections_agg <- infections_tables$yam_infections_agg
-yaf_infections_agg <- infections_tables$yaf_infections_agg
-oam_infections_agg <- infections_tables$oam_infections_agg
-oaf_infections_agg <- infections_tables$oaf_infections_agg
-young_adult_infections_agg <- infections_tables$young_adult_infections_agg
-older_adult_infections_agg <- infections_tables$older_adult_infections_agg
+yam_infections_agg <- infections_tables$yam_infections_agg %>% st_drop_geometry()
+yaf_infections_agg <- infections_tables$yaf_infections_agg %>% st_drop_geometry()
+oam_infections_agg <- infections_tables$oam_infections_agg %>% st_drop_geometry()
+oaf_infections_agg <- infections_tables$oaf_infections_agg %>% st_drop_geometry()
+young_adult_infections_agg <- infections_tables$young_adult_infections_agg %>% st_drop_geometry()
+older_adult_infections_agg <- infections_tables$older_adult_infections_agg %>% st_drop_geometry()
 
-yam_non_infections_agg <- non_infections_tables$yam_non_infections_agg
-yaf_non_infections_agg <- non_infections_tables$yaf_non_infections_agg
-oam_non_infections_agg <- non_infections_tables$oam_non_infections_agg
-oaf_non_infections_agg <- non_infections_tables$oaf_non_infections_agg
-young_adult_non_infections_agg <- non_infections_tables$young_adult_non_infections_agg
-older_adult_non_infections_agg <- non_infections_tables$older_adult_non_infections_agg
+yam_non_infections_agg <- non_infections_tables$yam_non_infections_agg %>% st_drop_geometry()
+yaf_non_infections_agg <- non_infections_tables$yaf_non_infections_agg %>% st_drop_geometry()
+oam_non_infections_agg <- non_infections_tables$oam_non_infections_agg %>% st_drop_geometry()
+oaf_non_infections_agg <- non_infections_tables$oaf_non_infections_agg %>% st_drop_geometry()
+young_adult_non_infections_agg <- non_infections_tables$young_adult_non_infections_agg %>% st_drop_geometry()
+older_adult_non_infections_agg <- non_infections_tables$older_adult_non_infections_agg %>% st_drop_geometry()
 
+yam_agg <- yam_malaria_agg %>% left_join(select(yam_infections_agg, gid, starts_with("symp"), contains("death")), by = "gid") %>% left_join(select(yam_non_infections_agg, gid, starts_with("symp"), contains("death")), by = "gid")
+yaf_agg <- yaf_malaria_agg %>% left_join(select(yaf_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(yaf_non_infections_agg, gid, starts_with("symp")), by = "gid")
+oam_agg <- oam_malaria_agg %>% left_join(select(oam_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(oam_non_infections_agg, gid, starts_with("symp")), by = "gid")
+oaf_agg <- oaf_malaria_agg %>% left_join(select(oaf_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(oaf_non_infections_agg, gid, starts_with("symp")), by = "gid")
+young_adult_agg <- young_adult_malaria_agg %>% left_join(select(young_adult_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(young_adult_non_infections_agg, gid, starts_with("symp")), by = "gid")
+older_adult_agg <- older_adult_malaria_agg %>% left_join(select(older_adult_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(older_adult_non_infections_agg, gid, starts_with("symp")), by = "gid")
 
 # Making non-spatial tables----
 non_spatial_adult <- non_spatial(age_group = adult, death_type = "type_of_cause")
