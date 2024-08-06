@@ -158,8 +158,10 @@ symptom_rate <- function(
 
 
 # Creating mappping parameters
-create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE, first_map) {
+create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE, first_map, break_type) {
     filtered_data <- data %>% filter(symptoms == symptom)
+    
+    if (break_type == "manual") {
     
     min_val <- min(filtered_data$rates, na.rm = TRUE)
     max_val <- max(filtered_data$rates, na.rm = TRUE)
@@ -171,6 +173,16 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
     
     # Generate the sequence of break points
     break_points <- seq(min_val, max_val, len = 6)
+    
+    label <- scales::number_format(accuracy = 1)
+    
+    } else if (break_type == "quantile") {
+        
+        break_points <- c(0, 25, 50, 75, 100)
+        
+        label <- c("0", "25", "50", "75", "100")
+        
+    }
     
     filtered_data <- filtered_data %>% mutate(label = glue("{get(symptom)}/{deaths}"))
     
@@ -191,7 +203,8 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
         scale_fill_continuous(low="lightblue", 
                               high="darkblue", 
                               breaks = break_points, 
-                              labels = scales::number_format(accuracy = 1))
+                              labels = label,
+                              if (break_type == "quantile") limits = c(0,100))
     
     # Conditionally add labels
     if (labels) {
@@ -217,9 +230,9 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
     
     fm <- symptoms[[1]]
     
-    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)", labels = label, gplot_title = TRUE, first_map = fm)
-    infection_plots <- lapply(symptoms, create_map, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)", labels = label, gplot_title = FALSE, first_map = fm)
-    non_infection_plots <- lapply(symptoms, create_map, data = non_infections_spatial, y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)", labels = label, gplot_title = FALSE, first_map = fm)
+    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)", labels = label, gplot_title = TRUE, first_map = fm, break_type = "manual")
+    infection_plots <- lapply(symptoms, create_map, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)", labels = label, gplot_title = FALSE, first_map = fm, break_type = "manual")
+    non_infection_plots <- lapply(symptoms, create_map, data = non_infections_spatial, y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)", labels = label, gplot_title = FALSE, first_map = fm, break_type = "manual")
     
     all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
     
