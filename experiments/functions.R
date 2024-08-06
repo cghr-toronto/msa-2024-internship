@@ -56,9 +56,6 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
         group_by(symptoms) %>%
         summarize(symp_sum = sum(total_count, na.rm = TRUE))
     
-    # Calculating percentage for symptoms
-    symp_sums$symp_perc <- round((symp_sums$symp_sum / death_total) * 100)
-    
     # Merge the sums back into the original data frame
     heat <- heat %>%
         left_join(symp_sums, by = "symptoms")
@@ -67,12 +64,8 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
         mutate(total_perc = round((total_count / deaths) * 100)) %>%
         mutate(cause_of_death = glue("{cause_of_death}\n(n={deaths})")) 
     
-    if (labels) { heat <- heat %>% mutate(symptoms = ifelse(symp_perc < 1,
-                                                            glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, <1%)"),
-                                                            glue("{symp_sums$symptoms}\n({symp_sums$symp_sum}, {symp_sums$symp_perc}%)")
-                                                            )) %>% heat$symptoms <- fct_reorder(heat$symptoms, heat$symp_sum, .desc = FALSE) } 
-    else { heat$symptoms <- factor(heat$symptoms, levels = rev(sort(unique(heat$symptoms))))
-    }
+    heat$symptoms <- factor(heat$symptoms, levels = rev(sort(unique(heat$symptoms))))
+    
     
     if (desc_order) {
         heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = TRUE)
@@ -112,20 +105,16 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
     return(out)
 }
 
-mutate_symp_columns <- function(df, suffix) {
-    df %>% rename_with(~ ifelse(startsWith(., "symp"), paste0(., "_", suffix), .))
-}
-
-cod_rate <- function(
+symptom_rate <- function(
         age_sex_agg,
-        symptoms){
+        cod,
+        symptoms,
+        deaths){
     
     # Remove geometry from aggregated dataframe
     age_sex_without_geometry <- age_sex_agg  %>%
         as_tibble() %>%
-        select(-geometry, -contains("deaths"), -distname)
-    
-    browser()
+        select(-geometry, -deaths, -distname)
     
     # Creating spatial symptom count
     result <- age_sex_without_geometry %>%
@@ -138,15 +127,15 @@ cod_rate <- function(
         ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
                            values_from = total_count, # Values to be filled in the wide format
                            values_fill = 0 # Fill any missing values with 0
-        ) %>% select(all_of(symptoms)) 
+        )
     
     # Join geometry to new spatial table
     spatial <- result %>%
-        left_join(age_sex_agg %>% select(gid, geometry, contains("deaths"), distname), by = "gid")
+        left_join(age_sex_agg %>% select(gid, geometry, deaths, distname), by = "gid")
     
-    # Create rate columns for symptoms
+    # Create rate columns for malaria symptoms
     for (symptom in symptoms) {
-        rate_column <- paste0(symptom, "_", "_rate")
+        rate_column <- paste0(symptom, "_", cod, "_rate")
         spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[deaths]]) * 100
         spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
     }
@@ -162,33 +151,11 @@ cod_rate <- function(
         pivot_longer(cols = ends_with("rate"),
                      names_to = "symptoms", 
                      values_to = "rates") %>%
-        select(gid, symptoms, rates, -contains("deaths"), all_of(symptoms))
+        select(gid, symptoms, rates)
     
     return(out)
 }
 
-
-# Function for creating rates for aggregated results
-symptom_rate <- function(
-        age_sex_malaria_agg,
-        age_sex_infections_agg,
-        age_sex_non_infections_agg,
-        deaths,
-        symptoms){
-    
-    # Pivoted spatial table to show rates for each symptom
-    out <- comb_rows %>%  mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
-        mutate(denom_group = case_when( 
-            str_ends(symptoms, "_malaria") ~ "Malaria", 
-            str_ends(symptoms, "_non_infections") ~ "Non-Infections",
-            str_ends(symptoms, "_infections") ~ "Infections"
-        )) %>%
-        mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$")) 
-    
-    out$rates[is.nan(out$rates)] <- 0
-    
-    return(out)
-}
 
 # Creating mappping parameters
 create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE, first_map) {

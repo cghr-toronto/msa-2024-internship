@@ -381,64 +381,6 @@ older_adult_non_infections_agg <- spatial_agg(gdf = dist,
                                        is_spatial_join = FALSE,
                                        count_col = "non_infection_deaths")
 
-malaria_tables <- list(
-    yam_malaria_agg = yam_malaria_agg,
-    yaf_malaria_agg = yaf_malaria_agg,
-    oam_malaria_agg = oam_malaria_agg,
-    oaf_malaria_agg = oaf_malaria_agg,
-    young_adult_malaria_agg = young_adult_malaria_agg,
-    older_adult_malaria_agg = older_adult_malaria_agg)
-
-infections_tables <- list(
-    yam_infections_agg = yam_infections_agg,
-    yaf_infections_agg = yaf_infections_agg,
-    oam_infections_agg = oam_infections_agg,
-    oaf_infections_agg = oaf_infections_agg,
-    young_adult_infections_agg = young_adult_infections_agg,
-    older_adult_infections_agg = older_adult_infections_agg)
-
-non_infections_tables <- list(
-    yam_non_infections_agg = yam_non_infections_agg,
-    yaf_non_infections_agg = yaf_non_infections_agg,
-    oam_non_infections_agg = oam_non_infections_agg,
-    oaf_non_infections_agg = oaf_non_infections_agg,
-    young_adult_non_infections_agg = young_adult_non_infections_agg,
-    older_adult_non_infections_agg = older_adult_non_infections_agg)
-
-# Apply the function to each table in the list
-malaria_tables <- lapply(malaria_tables, mutate_symp_columns, suffix = "malaria")
-infections_tables <- lapply(infections_tables, mutate_symp_columns, suffix = "infections")
-non_infections_tables <- lapply(non_infections_tables, mutate_symp_columns, suffix = "non_infections")
-
-# Assign the modified tables back to individual variables
-yam_malaria_agg <- malaria_tables$yam_malaria_agg
-yaf_malaria_agg <- malaria_tables$yaf_malaria_agg
-oam_malaria_agg <- malaria_tables$oam_malaria_agg
-oaf_malaria_agg <- malaria_tables$oaf_malaria_agg
-young_adult_malaria_agg <- malaria_tables$young_adult_malaria_agg
-older_adult_malaria_agg <- malaria_tables$older_adult_malaria_agg
-
-yam_infections_agg <- infections_tables$yam_infections_agg %>% st_drop_geometry()
-yaf_infections_agg <- infections_tables$yaf_infections_agg %>% st_drop_geometry()
-oam_infections_agg <- infections_tables$oam_infections_agg %>% st_drop_geometry()
-oaf_infections_agg <- infections_tables$oaf_infections_agg %>% st_drop_geometry()
-young_adult_infections_agg <- infections_tables$young_adult_infections_agg %>% st_drop_geometry()
-older_adult_infections_agg <- infections_tables$older_adult_infections_agg %>% st_drop_geometry()
-
-yam_non_infections_agg <- non_infections_tables$yam_non_infections_agg %>% st_drop_geometry()
-yaf_non_infections_agg <- non_infections_tables$yaf_non_infections_agg %>% st_drop_geometry()
-oam_non_infections_agg <- non_infections_tables$oam_non_infections_agg %>% st_drop_geometry()
-oaf_non_infections_agg <- non_infections_tables$oaf_non_infections_agg %>% st_drop_geometry()
-young_adult_non_infections_agg <- non_infections_tables$young_adult_non_infections_agg %>% st_drop_geometry()
-older_adult_non_infections_agg <- non_infections_tables$older_adult_non_infections_agg %>% st_drop_geometry()
-
-yam_agg <- yam_malaria_agg %>% left_join(select(yam_infections_agg, gid, starts_with("symp"), contains("death")), by = "gid") %>% left_join(select(yam_non_infections_agg, gid, starts_with("symp"), contains("death")), by = "gid")
-yaf_agg <- yaf_malaria_agg %>% left_join(select(yaf_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(yaf_non_infections_agg, gid, starts_with("symp")), by = "gid")
-oam_agg <- oam_malaria_agg %>% left_join(select(oam_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(oam_non_infections_agg, gid, starts_with("symp")), by = "gid")
-oaf_agg <- oaf_malaria_agg %>% left_join(select(oaf_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(oaf_non_infections_agg, gid, starts_with("symp")), by = "gid")
-young_adult_agg <- young_adult_malaria_agg %>% left_join(select(young_adult_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(young_adult_non_infections_agg, gid, starts_with("symp")), by = "gid")
-older_adult_agg <- older_adult_malaria_agg %>% left_join(select(older_adult_infections_agg, gid, starts_with("symp")), by = "gid") %>% left_join(select(older_adult_non_infections_agg, gid, starts_with("symp")), by = "gid")
-
 # Making non-spatial tables----
 non_spatial_adult <- non_spatial(age_group = adult, death_type = "type_of_cause")
 non_spatial_young_adult <- non_spatial(age_group = young_adult, death_type = "type_of_cause")
@@ -449,21 +391,16 @@ non_spatial_oam <- non_spatial(age_group = older_male_adult, death_type = "type_
 non_spatial_oaf <- non_spatial(age_group = older_female_adult, death_type = "type_of_cause")
 
 # Plotting heatmaps----
-hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = FALSE, desc_order = FALSE)
-hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap", labels = FALSE, desc_order = FALSE)
-hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap", labels = FALSE, desc_order = FALSE)
-hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap", labels = FALSE, desc_order = FALSE)
-hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap", labels = FALSE, desc_order = FALSE)
-hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap", labels = FALSE, desc_order = FALSE)
-hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap", labels = FALSE, desc_order = FALSE)
+hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = TRUE, desc_order = FALSE)
+hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap", labels = TRUE, desc_order = FALSE)
+hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap", labels = TRUE, desc_order = FALSE)
+hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap", labels = TRUE, desc_order = FALSE)
+hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap", labels = TRUE, desc_order = FALSE)
+hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap", labels = TRUE, desc_order = FALSE)
+hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap", labels = TRUE, desc_order = FALSE)
 
 # Defining symptoms to be plotted----
 adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss")
-
-yam_rates <- cod_rate(age_sex_agg = yam_agg,
-                        symptoms = adult_symptoms)
-
-comb_rows <- bind_rows(malaria_rates, infection_rates, non_infection_rates)
 
 # Running symptom_rate for each age group----
 yam_symptom <- symptom_rate(age_sex_malaria_agg = yam_malaria_agg,
@@ -501,6 +438,17 @@ older_adult_symptom <- symptom_rate(age_sex_malaria_agg = older_adult_malaria_ag
                                     age_sex_non_infections_agg = older_adult_non_infections_agg,
                                     deaths = "deaths",
                                     symptoms = adult_symptoms)
+
+# Pivoted spatial table to show rates for each symptom
+out <- comb_rows %>%  mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
+    mutate(denom_group = case_when( 
+        str_ends(symptoms, "_malaria") ~ "Malaria", 
+        str_ends(symptoms, "_non_infections") ~ "Non-Infections",
+        str_ends(symptoms, "_infections") ~ "Infections"
+    )) %>%
+    mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$")) 
+
+out$rates[is.nan(out$rates)] <- 0
 
 # Creating plot series for each age group----
 yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-malaria-maps", label = FALSE)
