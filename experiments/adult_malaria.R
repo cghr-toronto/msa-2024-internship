@@ -512,11 +512,36 @@ for (srt in symptom_rate_tables) {
     assign(srt, df)
 }
 
+for (srt in symptom_rate_tables) {
+    
+    df <- get(srt)
+    
+    malaria_spatial <- df %>% filter(denom_group == "Malaria")
+    infections_spatial <- df %>% filter(denom_group == "Infections")
+    non_infections_spatial <- df %>% filter(denom_group == "Non-Infections")
+    
+    symptoms <- unique(df$symptoms)
+    
+    fm <- symptoms[[1]]
+    
+    malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)", labels = TRUE, gplot_title = TRUE, first_map = fm, deaths = "malaria_deaths")
+    infection_plots <- lapply(symptoms, create_map, data = infections_spatial, y_axis = "Infections\n(per 100\nInfection deaths)", labels = TRUE, gplot_title = FALSE, first_map = fm, deaths = "infection_deaths")
+    non_infection_plots <- lapply(symptoms, create_map, data = non_infections_spatial, y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)", labels = TRUE, gplot_title = FALSE, first_map = fm, deaths = "non_infection_deaths")
+    
+    all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
+    
+    # Create a unique name for each set of plots
+    plot_name <- paste0(df, "_plots")
+    
+    # Assign the all_plots to a unique object
+    assign(plot_name, all_plots, envir = .GlobalEnv)
+}
+
 # Creating plot series for each age group----
-yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-malaria-maps", label = TRUE)
-yaf_plot <- create_plots(yaf_symptom, "Young Adult Female (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-malaria-maps", label = TRUE)
-oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-malaria-maps", label = TRUE)
-oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-malaria-maps", label = TRUE)
-young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-ya-malaria-maps", label = TRUE)
-older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oa-malaria-maps", label = TRUE)
+yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-malaria-maps")
+yaf_plot <- create_plots(yaf_symptom, "Young Adult Female (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-malaria-maps")
+oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-malaria-maps")
+oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-malaria-maps")
+young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-ya-malaria-maps")
+older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oa-malaria-maps")
 

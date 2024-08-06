@@ -215,8 +215,6 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
     
     symptoms <- unique(group_symptoms$symptoms)
     
-    browser()
-    
     fm <- symptoms[[1]]
     
     malaria_plots <- lapply(symptoms, create_map, data = malaria_spatial, y_axis = "Malaria\n(per 100\nMalaria deaths)", labels = label, gplot_title = TRUE, first_map = fm)
