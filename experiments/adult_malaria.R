@@ -510,14 +510,13 @@ for (srt in symptom_rate_tables) {
     df$rates[is.nan(df$rates)] <- 0
     
     assign(srt, df)
-    
 }
 
 # Creating plot series for each age group----
-yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-malaria-maps", label = FALSE)
-yaf_plot <- create_plots(yaf_symptom, "Young Adult Female (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-malaria-maps", label = FALSE)
-oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-malaria-maps", label = FALSE)
-oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-malaria-maps", label = FALSE)
-young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-ya-malaria-maps", label = FALSE)
-older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oa-malaria-maps", label = FALSE)
+yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-malaria-maps", label = TRUE)
+yaf_plot <- create_plots(yaf_symptom, "Young Adult Female (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-malaria-maps", label = TRUE)
+oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-malaria-maps", label = TRUE)
+oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-malaria-maps", label = TRUE)
+young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-ya-malaria-maps", label = TRUE)
+older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oa-malaria-maps", label = TRUE)
 
