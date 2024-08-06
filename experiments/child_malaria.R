@@ -218,7 +218,7 @@ child_malaria_agg <- spatial_agg(gdf = dist,
                                  is_spatial_join = FALSE,
                                  count_col = "deaths")
 
-cm_infection_agg <- spatial_agg(gdf = dist,
+cm_infections_agg <- spatial_agg(gdf = dist,
                                 agg = male_child_infections,
                                 mapping = mapping,
                                 gdf_id = "distname",
@@ -226,7 +226,7 @@ cm_infection_agg <- spatial_agg(gdf = dist,
                                 is_spatial_join = FALSE,
                                 count_col = "deaths")
 
-cf_infection_agg <- spatial_agg(gdf = dist,
+cf_infections_agg <- spatial_agg(gdf = dist,
                                 agg = female_child_infections,
                                 mapping = mapping,
                                 gdf_id = "distname",
@@ -234,7 +234,7 @@ cf_infection_agg <- spatial_agg(gdf = dist,
                                 is_spatial_join = FALSE,
                                 count_col = "deaths")
 
-child_infection_agg <- spatial_agg(gdf = dist,
+child_infections_agg <- spatial_agg(gdf = dist,
                                    agg = child_infections,
                                    mapping = mapping,
                                    gdf_id = "distname", 
@@ -242,7 +242,7 @@ child_infection_agg <- spatial_agg(gdf = dist,
                                    is_spatial_join = FALSE,
                                    count_col = "deaths")
 
-cm_non_infection_agg <- spatial_agg(gdf = dist,
+cm_non_infections_agg <- spatial_agg(gdf = dist,
                                     agg = male_child_non_infections,
                                     mapping = mapping,
                                     gdf_id = "distname",
@@ -250,7 +250,7 @@ cm_non_infection_agg <- spatial_agg(gdf = dist,
                                     is_spatial_join = FALSE,
                                     count_col = "deaths")
 
-cf_non_infection_agg <- spatial_agg(gdf = dist,
+cf_non_infections_agg <- spatial_agg(gdf = dist,
                                     agg = female_child_non_infections,
                                     mapping = mapping,
                                     gdf_id = "distname",
@@ -258,7 +258,7 @@ cf_non_infection_agg <- spatial_agg(gdf = dist,
                                     is_spatial_join = FALSE,
                                     count_col = "deaths")
 
-child_non_infection_agg <- spatial_agg(gdf = dist,
+child_non_infections_agg <- spatial_agg(gdf = dist,
                                        agg = child_non_infections,
                                        mapping = mapping,
                                        gdf_id = "distname", 
@@ -272,34 +272,81 @@ non_spatial_cm <- non_spatial(age_group = male_child, death_type = "type_of_caus
 non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_cause")
 
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = FALSE, desc_order = TRUE)
-hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = FALSE, desc_order = TRUE)
-hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = FALSE, desc_order = TRUE)
+hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, desc_order = TRUE)
+hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, desc_order = TRUE)
+hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, desc_order = TRUE)
 
 # Defining symptoms to be plotted
 child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough")
 
 # Running symptom_rate for each sex group
-cm_symptom <- symptom_rate(age_sex_malaria_agg = cm_malaria_agg,
-                           age_sex_infections_agg = cm_infection_agg,
-                           age_sex_non_infections_agg = cm_non_infection_agg,
-                           deaths = "deaths",
-                           symptoms = child_symptoms)
+# Children
+child_malaria_symptom <- symptom_rate(age_sex_agg = child_malaria_agg,
+                                    cod = "malaria",
+                                    deaths = "deaths",
+                                    symptoms = child_symptoms)
+child_infections_symptom <- symptom_rate(age_sex_agg = child_infections_agg,
+                                       cod = "infections",
+                                       deaths = "deaths",
+                                       symptoms = child_symptoms)
+child_non_infections_symptom <- symptom_rate(age_sex_agg = child_non_infections_agg,
+                                           cod = "non_infections",
+                                           deaths = "deaths",
+                                           symptoms = child_symptoms)
+child_symptom <- bind_rows(child_malaria_symptom, child_infections_symptom, child_non_infections_symptom)
 
-cf_symptom <- symptom_rate(age_sex_malaria_agg = cf_malaria_agg,
-                           age_sex_infections_agg = cf_infection_agg,
-                           age_sex_non_infections_agg = cf_non_infection_agg,
-                           deaths = "deaths",
-                           symptoms = child_symptoms)
+# Male Children
+cm_malaria_symptom <- symptom_rate(age_sex_agg = cm_malaria_agg,
+                                    cod = "malaria",
+                                    deaths = "deaths",
+                                    symptoms = child_symptoms)
+cm_infections_symptom <- symptom_rate(age_sex_agg = cm_infections_agg,
+                                       cod = "infections",
+                                       deaths = "deaths",
+                                       symptoms = child_symptoms)
+cm_non_infections_symptom <- symptom_rate(age_sex_agg = cm_non_infections_agg,
+                                           cod = "non_infections",
+                                           deaths = "deaths",
+                                           symptoms = child_symptoms)
+cm_symptom <- bind_rows(cm_malaria_symptom, cm_infections_symptom, cm_non_infections_symptom)
 
-child_symptom <- symptom_rate(age_sex_malaria_agg = child_malaria_agg,
-                           age_sex_infections_agg = child_infection_agg,
-                           age_sex_non_infections_agg = child_non_infection_agg,
-                           deaths = "deaths",
-                           symptoms = child_symptoms)
+# Female Children
+cf_malaria_symptom <- symptom_rate(age_sex_agg = cf_malaria_agg,
+                                    cod = "malaria",
+                                    deaths = "deaths",
+                                    symptoms = child_symptoms)
+cf_infections_symptom <- symptom_rate(age_sex_agg = cf_infections_agg,
+                                       cod = "infections",
+                                       deaths = "deaths",
+                                       symptoms = child_symptoms)
+cf_non_infections_symptom <- symptom_rate(age_sex_agg = cf_non_infections_agg,
+                                           cod = "non_infections",
+                                           deaths = "deaths",
+                                           symptoms = child_symptoms)
+cf_symptom <- bind_rows(cf_malaria_symptom, cf_infections_symptom, cf_non_infections_symptom)
+
+
+symptom_rate_tables <- c("child_symptom", "cm_symptom", "cf_symptom")
+
+for (srt in symptom_rate_tables) {
+    
+    df <- get(srt)
+    
+    df <- df %>%  mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
+        mutate(denom_group = case_when( 
+            str_ends(symptoms, "_malaria") ~ "Malaria", 
+            str_ends(symptoms, "_non_infections") ~ "Non-Infections",
+            str_ends(symptoms, "_infections") ~ "Infections"
+        )) %>%
+        mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$")) 
+    
+    df$rates[is.nan(df$rates)] <- 0
+    
+    assign(srt, df)
+}
  
 # Creating maps for each age group
-cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-malaria-maps", label = FALSE)
-cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-malaria-maps", label = FALSE)
-child_plot <- create_plots(child_symptom, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-malaria-maps", label = FALSE)
+cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-malaria-maps", label = TRUE)
+cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-malaria-maps", label = TRUE)
+child_plot <- create_plots(child_symptom, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-malaria-maps", label = TRUE)
 
