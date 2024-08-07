@@ -37,10 +37,8 @@ non_spatial <- function(age_group, death_type){
     
     exclude_columns <- c("cause_of_death", "NA", "deaths")
     
-    ns <- ns %>% mutate(across(-all_of(exclude_columns), ~ as.character(glue("{.}({. / deaths}%)")
-                                                                        )
-                               )
-                        ) 
+    ns <- ns %>% mutate(across(-all_of(exclude_columns), ~ sprintf("%d (%.2f%%)", .x, (.x / deaths) * 100))) 
+    
     return(ns)
 }
 
@@ -56,10 +54,6 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
         group_by(cause_of_death, symptoms) %>%
         summarise(total_count = sum(counts))%>%
         left_join(ns_table %>% select(cause_of_death, deaths) %>% distinct(), by = "cause_of_death")
-    
-    # Merge the sums back into the original data frame
-    heat <- heat %>%
-        left_join(symp_sums, by = "symptoms")
     
     heat <- heat %>% 
         mutate(total_perc = round((total_count / deaths) * 100)) %>%
