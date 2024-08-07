@@ -35,6 +35,13 @@ non_spatial <- function(age_group, death_type){
     ns <- ns %>% left_join(death_count, by = death_type)
     colnames(ns)[colnames(ns) == death_type] <- "cause_of_death"
     
+    exclude_columns <- c("cause_of_death", "NA", "deaths")
+    
+    ns <- ns %>% mutate(across(-all_of(exclude_columns), ~ as.character(glue("{.}({. / deaths}%)")
+                                                                        )
+                               )
+                        ) 
+    
     return(ns)
 }
 
@@ -65,7 +72,6 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
         mutate(cause_of_death = glue("{cause_of_death}\n(n={deaths})")) 
     
     heat$symptoms <- factor(heat$symptoms, levels = rev(sort(unique(heat$symptoms))))
-    
     
     if (desc_order) {
         heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = TRUE)
@@ -201,7 +207,7 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
               axis.title.y = if (symptom == first_map) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
               plot.title = if (gplot_title) element_text(hjust = 0.5, size = 20) else element_blank()) +
         ylab(if (symptom == first_map) y_axis else NULL) +
-        scale_fill_continuous(low="lightblue", 
+        scale_fill_continuous(low="white", 
                               high="darkblue", 
                               breaks = break_points,
                               labels = label,
@@ -240,6 +246,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
             break_type = "equal_breaks",
             cod = "Malaria"
         )
+    
     infection_plots <-
         lapply(
             symptoms,
@@ -252,6 +259,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
             break_type = "equal_breaks",
             cod = "Infections"
         )
+    
     non_infection_plots <-
         lapply(
             symptoms,
@@ -267,11 +275,13 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
     
     all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
     
-    combined_plot <- wrap_plots(all_plots, ncol = length(malaria_plots)) + 
+    combined_plot <-
+        wrap_plots(all_plots, ncol = length(malaria_plots)) +
         plot_annotation(title = plot_title,
-                        theme = theme(
-                            plot.title = element_text(size = 20, face = "bold", hjust = 0.5)
-                        ))
+                        theme = theme(plot.title = element_text(
+                            size = 20, face = "bold", hjust = 0.5))
+                        ) + 
+        plot_layout(guides = "collect")
     
     out <- pdf_print(combined_plot, pdf_title, width = 26, height = 13)
     
