@@ -164,34 +164,15 @@ young_adult_age <- c("15-19", "20-24", "25-29", "30-34", "35-39")
 older_adult_age <- c("40-44", "45-49", "50-54", "55-59", "60-64", "65-69")
 adult <- adult %>% filter(death_age_group != "10-14")
 
-# List of causes of death
-infections <- c("Fever of unknown origin", 
-                "Meningitis/encephalitis", 
-                "Selected vaccine-preventable", 
-                "Tuberculosis", 
-                "Diarrhoea",
-                "Hepatitis", 
-                "Sexually-transmitted infections",
-                "Respiratory infections",
-                "Post COVID-19 condition",
-                "Multisystem inflammatory syndrme associated with COVID-19",
-                "Need for immunization against COVID-19",
-                "Other infectious and parasitic")
-    
-infections_2 <- c("Other chronic respiratory infections",
-                  "Covid")
-
-# Trim whitespaces in adult columns
-adult$COD <- str_trim(adult$COD)
-adult$`ICD-Chapter`<- str_trim(adult$`ICD-Chapter`)
-
-adult <- adult %>% mutate(type_of_cause = case_when(
-    `WBD category` == "Malaria" ~ "Malaria",
-    (`WBD category` %in% infections) | 
-        (`COD Group (Cathy)` %in% infections_2) | 
-        (`COD` == "Chronic viral hepatitis") ~ "Infections",
-    TRUE ~ "Non-infections")) %>%
-    mutate(type_of_cause = if_else(is.na(`WBD category`), NA_character_, type_of_cause))
+adult <- adult %>%
+    mutate(
+        `WBD code` = str_trim(`WBD code`),
+        type_of_cause = case_when(
+            `WBD code` == "1H01" ~ "Malaria",
+            str_starts(`WBD code`, "1") ~ "Infections",
+            str_starts(`WBD code`, "2") | str_starts(`WBD code`, "3") ~ "Non-infections",
+            TRUE ~ NA_character_)
+        ) 
 
 # Creating filters for different adult age/sex groups
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)

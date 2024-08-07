@@ -159,32 +159,33 @@ symptom_rate <- function(
 
 # Creating mappping parameters
 create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE, first_map, break_type) {
+    
     filtered_data <- data %>% filter(symptoms == symptom)
     
-    if (break_type == "manual") {
-    
-    min_val <- min(filtered_data$rates, na.rm = TRUE)
-    max_val <- max(filtered_data$rates, na.rm = TRUE)
-    
-    breaks <- 6
-    
-    # Calculate the interval width
-    interval_width <- max_val / breaks
-    
-    # Generate the sequence of break points
-    break_points <- seq(min_val, max_val, len = 6)
-    
-    label <- scales::number_format(accuracy = 1)
-    
-    } else if (break_type == "quantile") {
-        
-        break_points <- c(0, 25, 50, 75, 100)
-        
-        label <- c("0", "25", "50", "75", "100")
-        
-    }
-    
     filtered_data <- filtered_data %>% mutate(label = glue("{get(symptom)}/{deaths}"))
+    
+    if (break_type == "equal_breaks") {
+        
+        min_val <- min(filtered_data$rates, na.rm = TRUE)
+        max_val <- max(filtered_data$rates, na.rm = TRUE)
+        
+        breaks <- 6
+        
+        # Calculate the interval width
+        interval_width <- max_val / breaks
+        
+        # Generate the sequence of break points
+        break_points <- seq(min_val, max_val, len = 6)
+        
+        label <- scales::number_format(accuracy = 1)
+        
+    } else if (break_type == "manual") {
+        
+        label <- names(break_points)
+        
+    } 
+    
+    browser()
     
     map <- ggplot(data = filtered_data) +
         geom_sf(aes(fill=(rates))) +
@@ -202,9 +203,8 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
         ylab(if (symptom == first_map) y_axis else NULL) +
         scale_fill_continuous(low="lightblue", 
                               high="darkblue", 
-                              breaks = break_points, 
-                              labels = label,
-                              if (break_type == "quantile") limits = c(0,100))
+                              breaks = breaks)
+    
     
     # Conditionally add labels
     if (labels) {
