@@ -398,24 +398,6 @@ older_adult_non_infections_agg <- spatial_agg(
     count_col = "deaths"
 )
 
-# Making non-spatial tables----
-non_spatial_adult <- non_spatial(age_group = adult, death_type = "type_of_cause")
-non_spatial_young_adult <- non_spatial(age_group = young_adult, death_type = "type_of_cause")
-non_spatial_yam <- non_spatial(age_group = young_male_adult, death_type = "type_of_cause")
-non_spatial_yaf <- non_spatial(age_group = young_female_adult, death_type = "type_of_cause")
-non_spatial_older_adult <- non_spatial(age_group = older_adult, death_type = "type_of_cause")
-non_spatial_oam <- non_spatial(age_group = older_male_adult, death_type = "type_of_cause")
-non_spatial_oaf <- non_spatial(age_group = older_female_adult, death_type = "type_of_cause")
-
-# Plotting heatmaps----
-hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = TRUE, desc_order = FALSE)
-hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap", labels = TRUE, desc_order = FALSE)
-hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap", labels = TRUE, desc_order = FALSE)
-hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap", labels = TRUE, desc_order = FALSE)
-hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap", labels = TRUE, desc_order = FALSE)
-hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap", labels = TRUE, desc_order = FALSE)
-hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap", labels = TRUE, desc_order = FALSE)
-
 # Defining symptoms to be plotted----
 adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss")
 
@@ -434,6 +416,21 @@ yam_non_infections_symptom <- symptom_rate(age_sex_agg = yam_non_infections_agg,
                                            deaths = "deaths",
                                            symptoms = adult_symptoms)
 yam_symptom <- bind_rows(yam_malaria_symptom, yam_infections_symptom, yam_non_infections_symptom)
+
+# Young Female Adults
+yaf_malaria_symptom <- symptom_rate(age_sex_agg = yaf_malaria_agg,
+                                    cod = "malaria",
+                                    deaths = "deaths",
+                                    symptoms = adult_symptoms)
+yaf_infections_symptom <- symptom_rate(age_sex_agg = yaf_infections_agg,
+                                       cod = "infections",
+                                       deaths = "deaths",
+                                       symptoms = adult_symptoms)
+yaf_non_infections_symptom <- symptom_rate(age_sex_agg = yaf_non_infections_agg,
+                                           cod = "non_infections",
+                                           deaths = "deaths",
+                                           symptoms = adult_symptoms)
+yaf_symptom <- bind_rows(yaf_malaria_symptom, yaf_infections_symptom, yaf_non_infections_symptom)
 
 
 symptom_rate_tables <- c("yam_symptom", "yaf_symptom", "oam_symptom", "oaf_symptom", "young_adult_symptom", "older_adult_symptom")
@@ -528,3 +525,7 @@ test_map
 test_map_2 <- create_map(data = yam_symptom, symptom = "cough", y_axis = "Incidence of symptoms\n(per 100\nInfections deaths)", labels = TRUE, gplot_title = TRUE, first_map = fm, break_type = "equal_breaks", cod = "Infections")
 
 test_map_2
+
+test_map_3 <- create_map(data = yaf_symptom, symptom = "fever", y_axis = "Incidence of symptoms\n(per 100\nInfections deaths)", labels = TRUE, gplot_title = TRUE, first_map = fm, break_type = "equal_breaks", cod = "Malaria")
+
+test_map_3
