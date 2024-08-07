@@ -435,80 +435,6 @@ yam_non_infections_symptom <- symptom_rate(age_sex_agg = yam_non_infections_agg,
                                            symptoms = adult_symptoms)
 yam_symptom <- bind_rows(yam_malaria_symptom, yam_infections_symptom, yam_non_infections_symptom)
 
-# Young Female Adults
-yaf_malaria_symptom <- symptom_rate(age_sex_agg = yaf_malaria_agg,
-                                    cod = "malaria",
-                                    deaths = "deaths",
-                                    symptoms = adult_symptoms)
-yaf_infections_symptom <- symptom_rate(age_sex_agg = yaf_infections_agg,
-                                       cod = "infections",
-                                       deaths = "deaths",
-                                       symptoms = adult_symptoms)
-yaf_non_infections_symptom <- symptom_rate(age_sex_agg = yaf_non_infections_agg,
-                                           cod = "non_infections",
-                                           deaths = "deaths",
-                                           symptoms = adult_symptoms)
-yaf_symptom <- bind_rows(yaf_malaria_symptom, yaf_infections_symptom, yaf_non_infections_symptom)
-
-# Older Male Adults
-oam_malaria_symptom <- symptom_rate(age_sex_agg = oam_malaria_agg,
-                                    cod = "malaria",
-                                    deaths = "deaths",
-                                    symptoms = adult_symptoms)
-oam_infections_symptom <- symptom_rate(age_sex_agg = oam_infections_agg,
-                                       cod = "infections",
-                                       deaths = "deaths",
-                                       symptoms = adult_symptoms)
-oam_non_infections_symptom <- symptom_rate(age_sex_agg = oam_non_infections_agg,
-                                           cod = "non_infections",
-                                           deaths = "deaths",
-                                           symptoms = adult_symptoms)
-oam_symptom <- bind_rows(oam_malaria_symptom, oam_infections_symptom, oam_non_infections_symptom)
-
-# Older Female Adults
-oaf_malaria_symptom <- symptom_rate(age_sex_agg = oaf_malaria_agg,
-                                    cod = "malaria",
-                                    deaths = "deaths",
-                                    symptoms = adult_symptoms)
-oaf_infections_symptom <- symptom_rate(age_sex_agg = oaf_infections_agg,
-                                       cod = "infections",
-                                       deaths = "deaths",
-                                       symptoms = adult_symptoms)
-oaf_non_infections_symptom <- symptom_rate(age_sex_agg = oaf_non_infections_agg,
-                                           cod = "non_infections",
-                                           deaths = "deaths",
-                                           symptoms = adult_symptoms)
-oaf_symptom <- bind_rows(oaf_malaria_symptom, oaf_infections_symptom, oaf_non_infections_symptom)
-
-# Young Adults
-young_adult_malaria_symptom <- symptom_rate(age_sex_agg = young_adult_malaria_agg,
-                                            cod = "malaria",
-                                            deaths = "deaths",
-                                            symptoms = adult_symptoms)
-young_adult_infections_symptom <- symptom_rate(age_sex_agg = young_adult_infections_agg,
-                                               cod = "infections",
-                                               deaths = "deaths",
-                                               symptoms = adult_symptoms)
-young_adult_non_infections_symptom <- symptom_rate(age_sex_agg = young_adult_non_infections_agg,
-                                                   cod = "non_infections",
-                                                   deaths = "deaths",
-                                                   symptoms = adult_symptoms)
-young_adult_symptom <- bind_rows(young_adult_malaria_symptom, young_adult_infections_symptom, young_adult_non_infections_symptom)
-
-# Older Adults
-older_adult_malaria_symptom <- symptom_rate(age_sex_agg = older_adult_malaria_agg,
-                                            cod = "malaria",
-                                            deaths = "deaths",
-                                            symptoms = adult_symptoms)
-older_adult_infections_symptom <- symptom_rate(age_sex_agg = older_adult_infections_agg,
-                                               cod = "infections",
-                                               deaths = "deaths",
-                                               symptoms = adult_symptoms)
-older_adult_non_infections_symptom <- symptom_rate(age_sex_agg = older_adult_non_infections_agg,
-                                                   cod = "non_infections",
-                                                   deaths = "deaths",
-                                                   symptoms = adult_symptoms)
-older_adult_symptom <- bind_rows(older_adult_malaria_symptom, older_adult_infections_symptom, older_adult_non_infections_symptom)
 
 symptom_rate_tables <- c("yam_symptom", "yaf_symptom", "oam_symptom", "oaf_symptom", "young_adult_symptom", "older_adult_symptom")
 
@@ -530,12 +456,12 @@ for (srt in symptom_rate_tables) {
 }
 
 # Creating mappping parameters
-create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE, first_map, break_type) {
+create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE, first_map, break_type, cod) {
     
     if (break_type == "equal_breaks") {
         
-        min_val <- min(filtered_data$rates, na.rm = TRUE)
-        max_val <- max(filtered_data$rates, na.rm = TRUE)
+        min_val <- min(data$rates, na.rm = TRUE)
+        max_val <- max(data$rates, na.rm = TRUE)
         
         breaks <- 6
         
@@ -547,20 +473,24 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
         
         label <- scales::number_format(accuracy = 1)
         
+        limits <- c(min_val, max_val)
+        
     } else if (break_type == "manual") {
         
         label <- names(break_points)
         
     } 
     
-    filtered_data <- data %>% filter(symptoms == symptom)
+    browser()
     
-    filtered_data <- filtered_data %>% mutate(label = glue("{get(symptom)}/{deaths}"))
+    filtered_data <- data %>% filter(symptoms == symptom & denom_group == cod)
+    
+    filtered_data <- filtered_data %>% mutate(fraction = glue("{get(symptom)}/{deaths}"))
     
     map <- ggplot(data = filtered_data) +
         geom_sf(aes(fill=(rates))) +
-        guides(fill = guide_legend()) +
         ggtitle(paste(symptom)) +
+        guides(fill = guide_legend()) +
         theme_minimal() + 
         theme(panel.grid.major = element_blank(), 
               panel.grid.minor = element_blank(),
@@ -573,12 +503,14 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
         ylab(if (symptom == first_map) y_axis else NULL) +
         scale_fill_continuous(low="lightblue", 
                               high="darkblue", 
-                              breaks = breaks)
+                              breaks = break_points,
+                              labels = label,
+                              limits = limits)
     
     
     # Conditionally add labels
     if (labels) {
-        map <- map + geom_sf_label(aes(label = label), size = 1.8)
+        map <- map + geom_sf_label(aes(label = fraction), size = 1.8)
     }
     
     # Conditionally add the title
@@ -589,4 +521,8 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
     return(map)
 }
 
-test_map <- create_map(yam_symptom, "fever", "Malaria\n(per 100\nMalaria deaths)", labels = label, gplot_title = TRUE, first_map = fm, break_type = "equal_breaks")
+fm <- adult_symptoms[[1]]
+
+test_map <- create_map(yam_symptom, "cough", "Malaria\n(per 100\nMalaria deaths)", labels = TRUE, gplot_title = TRUE, first_map = fm, break_type = "equal_breaks", cod = "Malaria")
+
+test_map
