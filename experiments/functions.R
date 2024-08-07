@@ -41,7 +41,6 @@ non_spatial <- function(age_group, death_type){
                                                                         )
                                )
                         ) 
-    
     return(ns)
 }
 
@@ -232,7 +231,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
             symptoms,
             create_map,
             data = group_symptoms,
-            y_axis = "Malaria\n(per 100\nMalaria deaths)",
+            y_axis = "Cases\n(per 100\nMalaria deaths)",
             labels = label,
             gplot_title = TRUE,
             first_map = fm,
@@ -245,7 +244,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
             symptoms,
             create_map,
             data = group_symptoms,
-            y_axis = "Infections\n(per 100\nInfection deaths)",
+            y_axis = "Cases\n(per 100\nInfection deaths)",
             labels = label,
             gplot_title = FALSE,
             first_map = fm,
@@ -258,7 +257,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
             symptoms,
             create_map,
             data = group_symptoms,
-            y_axis = "Non-Infections\n(per 100\nNon-Infection deaths)",
+            y_axis = "Cases\n(per 100\nNon-Infection deaths)",
             labels = label,
             gplot_title = FALSE,
             first_map = fm,
