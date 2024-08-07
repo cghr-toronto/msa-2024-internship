@@ -58,11 +58,6 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
         summarise(total_count = sum(counts))%>%
         left_join(ns_table %>% select(cause_of_death, deaths) %>% distinct(), by = "cause_of_death")
     
-    # Calculating sum of each symptom death
-    symp_sums <- heat %>%
-        group_by(symptoms) %>%
-        summarize(symp_sum = sum(total_count, na.rm = TRUE))
-    
     # Merge the sums back into the original data frame
     heat <- heat %>%
         left_join(symp_sums, by = "symptoms")
@@ -162,7 +157,6 @@ symptom_rate <- function(
     return(out)
 }
 
-
 # Creating mappping parameters
 create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE, first_map, break_type, cod) {
     
@@ -212,7 +206,6 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
                               breaks = break_points,
                               labels = label,
                               limits = limits)
-    
     
     # Conditionally add labels
     if (labels) {
