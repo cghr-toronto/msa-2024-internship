@@ -140,34 +140,17 @@ child <- left_join(child, icd, by = "final_icd")
 # Convert data type of District ID column
 child$gid_dist <- as.integer(child$gid_dist)
 
-# List of causes of death
-infections <- c("Fever of unknown origin", 
-                "Meningitis/encephalitis", 
-                "Selected vaccine-preventable", 
-                "Tuberculosis", 
-                "Diarrhoea",
-                "Hepatitis", 
-                "Sexually-transmitted infections",
-                "Respiratory infections",
-                "Post COVID-19 condition",
-                "Multisystem inflammatory syndrme associated with COVID-19",
-                "Need for immunization against COVID-19",
-                "Other infectious and parasitic")
-
-infections_2 <- c("Other chronic respiratory infections",
-                  "Covid")
-
-# Trim whitespaces in adult columns
-child$COD <- str_trim(child$COD)
-child$`ICD-Chapter`<- str_trim(child$`ICD-Chapter`)
-
-child <- child %>% mutate(type_of_cause = case_when(
-    `WBD category` == "Malaria" ~ "Malaria",
-    (`WBD category` %in% infections) | 
-        (`COD Group (Cathy)` %in% infections_2) | 
-        (`COD` == "Chronic viral hepatitis") ~ "Infections",
-    TRUE ~ "Non-infections")) %>%
-    mutate(type_of_cause = if_else(is.na(`WBD category`), NA_character_, type_of_cause))
+child <- child %>%
+    mutate(
+        `WBD code` = str_trim(`WBD code`),
+        type_of_cause = case_when(
+            `WBD code` == "1H01" ~ "Malaria",
+            str_starts(`WBD code`, "1") ~ "Infections",
+            str_starts(`WBD code`, "2") |
+                str_starts(`WBD code`, "3") ~ "Non-infections",
+            TRUE ~ NA_character_
+        )
+    ) 
 
 # Creating filters for young childs by sex, age, and malaria
 male_child <- child %>% filter(sex_death == "Male")
