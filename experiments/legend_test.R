@@ -481,8 +481,6 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
         
     } 
     
-    browser()
-    
     filtered_data <- data %>% filter(symptoms == symptom & denom_group == cod)
     
     filtered_data <- filtered_data %>% mutate(fraction = glue("{get(symptom)}/{deaths}"))
@@ -523,6 +521,10 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
 
 fm <- adult_symptoms[[1]]
 
-test_map <- create_map(yam_symptom, "cough", "Malaria\n(per 100\nMalaria deaths)", labels = TRUE, gplot_title = TRUE, first_map = fm, break_type = "equal_breaks", cod = "Malaria")
+test_map <- create_map(data = yam_symptom, symptom = "cough", y_axis = "Incidence of symptoms\n(per 100\nMalaria deaths)", labels = TRUE, gplot_title = TRUE, first_map = fm, break_type = "equal_breaks", cod = "Malaria")
 
 test_map
+
+test_map_2 <- create_map(data = yam_symptom, symptom = "cough", y_axis = "Incidence of symptoms\n(per 100\nInfections deaths)", labels = TRUE, gplot_title = TRUE, first_map = fm, break_type = "equal_breaks", cod = "Infections")
+
+test_map_2
