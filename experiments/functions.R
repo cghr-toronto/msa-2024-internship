@@ -206,7 +206,8 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
                               high="darkblue", 
                               breaks = break_points,
                               labels = label,
-                              limits = limits)
+                              limits = limits)+
+        guides(fill = guide_legend(nrow = 1))
     
     # Conditionally add labels
     if (labels) {
@@ -275,10 +276,10 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
                         theme = theme(plot.title = element_text(
                             size = 20, face = "bold", hjust = 0.5))
                         ) +
-        plot_layout(guides = "collect", heights = unit(c(1, 1), c("cm", "null"))) & 
+        plot_layout(guides = "collect", heights = unit(c(1, 1.8), c("cm", "null"))) & 
         theme(legend.position = 'top',
-              legend.justification = 'center',  # Centers the legend horizontally
-              legend.box.margin = margin(t = 10))
+              legend.justification = c(0.5, 0),  # Centers the legend horizontally
+              legend.box.margin = margin(t = 0, r = 190, b = 0, l = 0)) 
     
     out <- pdf_print(combined_plot, pdf_title, width = 26, height = 13)
     
