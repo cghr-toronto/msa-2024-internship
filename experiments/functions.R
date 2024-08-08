@@ -60,6 +60,7 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
                          names_to = "symptoms",
                          values_to = "counts") %>% 
         group_by(cause_of_death, symptoms) %>%
+        summarise(total_count = sum(counts)) %>%
         left_join(ns_table %>% select(cause_of_death, deaths) %>% distinct(), by = "cause_of_death")
     
     heat <- heat %>% 
@@ -269,12 +270,15 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
     all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
     
     combined_plot <-
-        wrap_plots(all_plots, ncol = length(malaria_plots)) +
+        guide_area() / wrap_plots(all_plots, ncol = length(malaria_plots)) +
         plot_annotation(title = plot_title,
                         theme = theme(plot.title = element_text(
                             size = 20, face = "bold", hjust = 0.5))
-                        ) + 
-        plot_layout(guides = "collect") & theme(legend.position = 'top')
+                        ) +
+        plot_layout(guides = "collect", heights = unit(c(1, 1), c("cm", "null"))) & 
+        theme(legend.position = 'top',
+              legend.justification = 'center',  # Centers the legend horizontally
+              legend.box.margin = margin(t = 10))
     
     out <- pdf_print(combined_plot, pdf_title, width = 26, height = 13)
     

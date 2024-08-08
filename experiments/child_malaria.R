@@ -177,82 +177,100 @@ mapping <- data.frame(
 )
 
 # Testing out function with child malaria
-cm_malaria_agg <- spatial_agg(gdf = dist,
-                              agg = male_child_malaria,
-                              mapping = mapping,
-                              gdf_id = "distname",
-                              agg_id = "district_cod",
-                              is_spatial_join = FALSE,
-                              count_col = "deaths")
+cm_malaria_agg <- spatial_agg(
+    gdf = dist,
+    agg = male_child_malaria,
+    mapping = mapping,
+    gdf_id = "distname",
+    agg_id = "district_cod",
+    is_spatial_join = FALSE,
+    count_col = "deaths"
+)
 
-cf_malaria_agg <- spatial_agg(gdf = dist,
-                              agg = female_child_malaria,
-                              mapping = mapping,
-                              gdf_id = "distname",
-                              agg_id = "district_cod",
-                              is_spatial_join = FALSE,
-                              count_col = "deaths")
+cf_malaria_agg <- spatial_agg(
+    gdf = dist,
+    agg = female_child_malaria,
+    mapping = mapping,
+    gdf_id = "distname",
+    agg_id = "district_cod",
+    is_spatial_join = FALSE,
+    count_col = "deaths"
+)
 
-child_malaria_agg <- spatial_agg(gdf = dist,
-                                 agg = child_malaria,
-                                 mapping = mapping,
-                                 gdf_id = "distname", 
-                                 agg_id = "district_cod",
-                                 is_spatial_join = FALSE,
-                                 count_col = "deaths")
+child_malaria_agg <- spatial_agg(
+    gdf = dist,
+    agg = child_malaria,
+    mapping = mapping,
+    gdf_id = "distname",
+    agg_id = "district_cod",
+    is_spatial_join = FALSE,
+    count_col = "deaths"
+)
 
-cm_infections_agg <- spatial_agg(gdf = dist,
-                                agg = male_child_infections,
-                                mapping = mapping,
-                                gdf_id = "distname",
-                                agg_id = "district_cod",
-                                is_spatial_join = FALSE,
-                                count_col = "deaths")
+cm_infections_agg <- spatial_agg(
+    gdf = dist,
+    agg = male_child_infections,
+    mapping = mapping,
+    gdf_id = "distname",
+    agg_id = "district_cod",
+    is_spatial_join = FALSE,
+    count_col = "deaths"
+)
 
-cf_infections_agg <- spatial_agg(gdf = dist,
-                                agg = female_child_infections,
-                                mapping = mapping,
-                                gdf_id = "distname",
-                                agg_id = "district_cod",
-                                is_spatial_join = FALSE,
-                                count_col = "deaths")
+cf_infections_agg <- spatial_agg(
+    gdf = dist,
+    agg = female_child_infections,
+    mapping = mapping,
+    gdf_id = "distname",
+    agg_id = "district_cod",
+    is_spatial_join = FALSE,
+    count_col = "deaths"
+)
 
-child_infections_agg <- spatial_agg(gdf = dist,
-                                   agg = child_infections,
-                                   mapping = mapping,
-                                   gdf_id = "distname", 
-                                   agg_id = "district_cod",
-                                   is_spatial_join = FALSE,
-                                   count_col = "deaths")
+child_infections_agg <- spatial_agg(
+    gdf = dist,
+    agg = child_infections,
+    mapping = mapping,
+    gdf_id = "distname",
+    agg_id = "district_cod",
+    is_spatial_join = FALSE,
+    count_col = "deaths"
+)
 
-cm_non_infections_agg <- spatial_agg(gdf = dist,
-                                    agg = male_child_non_infections,
-                                    mapping = mapping,
-                                    gdf_id = "distname",
-                                    agg_id = "district_cod",
-                                    is_spatial_join = FALSE,
-                                    count_col = "deaths")
+cm_non_infections_agg <- spatial_agg(
+    gdf = dist,
+    agg = male_child_non_infections,
+    mapping = mapping,
+    gdf_id = "distname",
+    agg_id = "district_cod",
+    is_spatial_join = FALSE,
+    count_col = "deaths"
+)
 
-cf_non_infections_agg <- spatial_agg(gdf = dist,
-                                    agg = female_child_non_infections,
-                                    mapping = mapping,
-                                    gdf_id = "distname",
-                                    agg_id = "district_cod",
-                                    is_spatial_join = FALSE,
-                                    count_col = "deaths")
+cf_non_infections_agg <- spatial_agg(
+    gdf = dist,
+    agg = female_child_non_infections,
+    mapping = mapping,
+    gdf_id = "distname",
+    agg_id = "district_cod",
+    is_spatial_join = FALSE,
+    count_col = "deaths"
+)
 
-child_non_infections_agg <- spatial_agg(gdf = dist,
-                                       agg = child_non_infections,
-                                       mapping = mapping,
-                                       gdf_id = "distname", 
-                                       agg_id = "district_cod",
-                                       is_spatial_join = FALSE,
-                                       count_col = "deaths")
+child_non_infections_agg <- spatial_agg(
+    gdf = dist,
+    agg = child_non_infections,
+    mapping = mapping,
+    gdf_id = "distname",
+    agg_id = "district_cod",
+    is_spatial_join = FALSE,
+    count_col = "deaths"
+)
 
 # Creating non-spatial table of symptom and causes of death
-non_spatial_children <- non_spatial(age_group = child, death_type = "type_of_cause")
-non_spatial_cm <- non_spatial(age_group = male_child, death_type = "type_of_cause")
-non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_cause")
+non_spatial_children <- non_spatial(age_group = child, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_cm <- non_spatial(age_group = male_child, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_cause", percentages = FALSE)
 
 # Creating heat map with non-spatial table
 hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, desc_order = TRUE)
