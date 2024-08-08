@@ -16,7 +16,7 @@ pdf_print <- function(series, title, width, height){
 }
 
 # Creating non-spatial table of symptom and causes of death
-non_spatial <- function(age_group, death_type){
+non_spatial <- function(age_group, death_type, percentages = TRUE){
     
     ns <- pivot_longer(age_group, cols = starts_with("symp"), # Matches columns starting with "symp" followed by dig
                        names_to = "symptom", # New column to store the symptom names
@@ -32,12 +32,21 @@ non_spatial <- function(age_group, death_type){
 
     # Creating count for deaths per cause in non-spatial
     death_count <- age_group %>% count(!!sym(death_type), sort = TRUE, name = "deaths")
-    ns <- ns %>% left_join(death_count, by = death_type)
+    ns <- ns %>% left_join(death_count, by = death_type) %>% filter(death_type != "NA")
     colnames(ns)[colnames(ns) == death_type] <- "cause_of_death"
     
-    exclude_columns <- c("cause_of_death", "NA", "deaths")
+    if ("pregnant" %in% names(ns)) {
+        ns <- ns %>% select(-all_of(c("pregnant", "injury", "NA"))) %>% filter(cause_of_death != "NA")
+    } else {
+        ns <- ns %>% select(-all_of(c("injury", "NA"))) %>% filter(cause_of_death != "NA")
+    }
+    
+    if (percentages) {
+    
+    exclude_columns <- c("cause_of_death", "deaths")
     
     ns <- ns %>% mutate(across(-all_of(exclude_columns), ~ sprintf("%d (%.2f%%)", .x, (.x / deaths) * 100))) 
+    }
     
     return(ns)
 }
@@ -50,9 +59,7 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
     heat <- pivot_longer(ns_table, cols = -c(cause_of_death, deaths),
                          names_to = "symptoms",
                          values_to = "counts") %>% 
-        filter(cause_of_death != "NA" & symptoms != "NA") %>% 
         group_by(cause_of_death, symptoms) %>%
-        summarise(total_count = sum(counts))%>%
         left_join(ns_table %>% select(cause_of_death, deaths) %>% distinct(), by = "cause_of_death")
     
     heat <- heat %>% 
@@ -267,7 +274,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
                         theme = theme(plot.title = element_text(
                             size = 20, face = "bold", hjust = 0.5))
                         ) + 
-        plot_layout(guides = "collect")
+        plot_layout(guides = "collect") & theme(legend.position = 'top')
     
     out <- pdf_print(combined_plot, pdf_title, width = 26, height = 13)
     

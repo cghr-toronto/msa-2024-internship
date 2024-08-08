@@ -399,13 +399,13 @@ older_adult_non_infections_agg <- spatial_agg(
 )
 
 # Making non-spatial tables----
-non_spatial_adult <- non_spatial(age_group = adult, death_type = "type_of_cause")
-non_spatial_young_adult <- non_spatial(age_group = young_adult, death_type = "type_of_cause")
-non_spatial_yam <- non_spatial(age_group = young_male_adult, death_type = "type_of_cause")
-non_spatial_yaf <- non_spatial(age_group = young_female_adult, death_type = "type_of_cause")
-non_spatial_older_adult <- non_spatial(age_group = older_adult, death_type = "type_of_cause")
-non_spatial_oam <- non_spatial(age_group = older_male_adult, death_type = "type_of_cause")
-non_spatial_oaf <- non_spatial(age_group = older_female_adult, death_type = "type_of_cause")
+non_spatial_adult <- non_spatial(age_group = adult, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_young_adult <- non_spatial(age_group = young_adult, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_yam <- non_spatial(age_group = young_male_adult, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_yaf <- non_spatial(age_group = young_female_adult, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_older_adult <- non_spatial(age_group = older_adult, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_oam <- non_spatial(age_group = older_male_adult, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_oaf <- non_spatial(age_group = older_female_adult, death_type = "type_of_cause", percentages = FALSE)
 
 # Plotting heatmaps----
 hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = TRUE, desc_order = FALSE)
