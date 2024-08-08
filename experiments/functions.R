@@ -48,6 +48,12 @@ non_spatial <- function(age_group, death_type, percentages = TRUE){
     ns <- ns %>% mutate(across(-all_of(exclude_columns), ~ sprintf("%d (%.2f%%)", .x, (.x / deaths) * 100))) 
     }
     
+    all_cause <- ns %>%
+        summarise(cause_of_death = "all_causes",
+                  across(-cause_of_death, sum, na.rm = TRUE))
+    
+    ns <- bind_rows(ns, all_cause)
+    
     return(ns)
 }
 
