@@ -176,7 +176,7 @@ mapping <- data.frame(
                       "count", "count", "count", "count", "count") 
 )
 
-# Testing out function with child malaria
+# childing out function with child malaria
 cm_malaria_agg <- spatial_agg(
     gdf = dist,
     agg = male_child_malaria,
@@ -273,7 +273,7 @@ non_spatial_cm <- non_spatial(age_group = male_child, death_type = "type_of_caus
 non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_cause", percentages = FALSE)
 
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, desc_order = TRUE)
+hm_children <- hm(non_spatial_childrenren, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, desc_order = TRUE)
 hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, desc_order = TRUE)
 hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, desc_order = TRUE)
 
@@ -351,3 +351,24 @@ cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Deaths by Symptom\nSier
 cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-malaria-maps", label = TRUE)
 child_plot <- create_plots(child_symptom, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-malaria-maps", label = TRUE)
 
+all_cause <- non_spatial_children %>%
+    summarise(cause_of_death = "all_causes",
+              across(-cause_of_death, sum, na.rm = TRUE))
+
+non_spatial_children <- bind_rows(non_spatial_children, all_cause)
+
+non_spatial_children <- non_spatial_children %>%  pivot_longer(
+    cols = -c(cause_of_death, deaths),          # Exclude 'id' and 'cod' columns from pivoting
+    names_to = "symptom",   # Column to store names of the original columns
+    values_to = "symptom_count"  # Column to store the values from these columna
+)
+
+non_spatial_children <- non_spatial_children %>%  select(-deaths)
+
+non_spatial_children <- non_spatial_children %>%  pivot_wider(
+    names_from = cause_of_death,            # Values in 'cod' become new column names
+    values_from = symptom_count  # Values to fill the new columns
+)
+
+non_spatial_children <- non_spatial_children %>%
+    arrange((all_causes))

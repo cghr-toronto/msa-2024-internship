@@ -1,0 +1,17 @@
+"symptom","Infections","Malaria","Non-infections","all_causes"
+"lumps",6,5,19,30
+"convulsions",13,17,36,66
+"yellowEyes",12,27,40,79
+"skinProblems",47,21,60,128
+"oedema",29,6,110,145
+"urinaryProblem",23,23,108,154
+"looseStools",143,33,38,214
+"paralysis",12,23,292,327
+"unconscious",75,91,278,444
+"chestPain",147,74,244,465
+"vomit",205,201,204,610
+"abdominalProblem",176,91,384,651
+"cough",363,156,183,702
+"breathingProblem",227,144,388,759
+"weightLoss",361,252,349,962
+"fever",722,725,472,1919
