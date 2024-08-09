@@ -168,6 +168,16 @@ child_non_infections <- child %>% filter(type_of_cause == "Non-infections")
 male_child_non_infections <- child %>% filter(sex_death == "Male" & type_of_cause == "Non-infections")
 female_child_non_infections <- child %>% filter(sex_death == "Female" & type_of_cause == "Non-infections")
 
+# Creating non-spatial table of symptom and causes of death
+non_spatial_children <- non_spatial(age_group = child, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_cm <- non_spatial(age_group = male_child, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_cause", percentages = FALSE)
+
+# Creating heat map with non-spatial table
+hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, desc_order = TRUE)
+hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, desc_order = TRUE)
+hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, desc_order = TRUE)
+
 # Set mapping dataframe
 mapping <- data.frame(
     column = c("symp1", "symp2", "symp3", "symp4", "symp5", "symp6", "symp7", "symp8", "symp9", "symp10",
@@ -266,16 +276,6 @@ child_non_infections_agg <- spatial_agg(
     is_spatial_join = FALSE,
     count_col = "deaths"
 )
-
-# Creating non-spatial table of symptom and causes of death
-non_spatial_children <- non_spatial(age_group = child, death_type = "type_of_cause", percentages = FALSE)
-non_spatial_cm <- non_spatial(age_group = male_child, death_type = "type_of_cause", percentages = FALSE)
-non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_cause", percentages = FALSE)
-
-# Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, desc_order = TRUE)
-hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, desc_order = TRUE)
-hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, desc_order = TRUE)
 
 # Defining symptoms to be plotted
 child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough")
