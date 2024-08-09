@@ -129,7 +129,7 @@ symptom_rate <- function(
         ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
                            values_from = total_count, # Values to be filled in the wide format
                            values_fill = 0 # Fill any missing values with 0
-        ) %>% select(all_of(symptoms)) 
+        ) %>% select(all_of(symptoms))
     
     # Join geometry to new spatial table
     spatial <- result %>%
@@ -137,7 +137,7 @@ symptom_rate <- function(
     
     # Create rate columns for malaria symptoms
     for (symptom in symptoms) {
-        rate_column <- paste0(symptom, "_", cod, "_rate")
+        rate_column <- paste0(symptom, "_", "rates")
         spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[deaths]]) * 100
         spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
     }
@@ -149,12 +149,14 @@ symptom_rate <- function(
     # Convert spatial to an sf and reproject crs
     spatial <- spatial %>% st_as_sf(sf_column_name = "geometry") %>% st_transform(32628)
     
-    out <- spatial %>% 
-        pivot_longer(cols = ends_with("rate"),
-                     names_to = "symptoms", 
-                     values_to = "rates") %>%
-        select(gid, symptoms, rates, deaths, all_of(symptoms))
-    
+    out <-
+        spatial %>% rename_with( ~ paste0(., "_count"), .cols = all_of(symptoms)) %>%
+        pivot_longer(
+            cols = -c(gid, deaths, distname, geometry),
+            names_to = c("symptoms", ".value"),
+            names_pattern = "(.*)_(.*)"
+        ) %>% select(gid, symptoms, rates, deaths, count, distname)
+
     return(out)
 }
 

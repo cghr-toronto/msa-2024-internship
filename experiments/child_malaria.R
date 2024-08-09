@@ -351,24 +351,3 @@ cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Deaths by Symptom\nSier
 cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-malaria-maps", label = TRUE)
 child_plot <- create_plots(child_symptom, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-malaria-maps", label = TRUE)
 
-all_cause <- non_spatial_children %>%
-    summarise(cause_of_death = "all_causes",
-              across(-cause_of_death, sum, na.rm = TRUE))
-
-non_spatial_children <- bind_rows(non_spatial_children, all_cause)
-
-non_spatial_children <- non_spatial_children %>%  pivot_longer(
-    cols = -c(cause_of_death, deaths),          # Exclude 'id' and 'cod' columns from pivoting
-    names_to = "symptom",   # Column to store names of the original columns
-    values_to = "symptom_count"  # Column to store the values from these columna
-)
-
-non_spatial_children <- non_spatial_children %>%  select(-deaths)
-
-non_spatial_children <- non_spatial_children %>%  pivot_wider(
-    names_from = cause_of_death,            # Values in 'cod' become new column names
-    values_from = symptom_count  # Values to fill the new columns
-)
-
-non_spatial_children <- non_spatial_children %>%
-    arrange((all_causes))
