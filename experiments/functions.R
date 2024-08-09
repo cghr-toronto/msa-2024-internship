@@ -155,7 +155,9 @@ symptom_rate <- function(
             cols = -c(gid, deaths, distname, geometry),
             names_to = c("symptoms", ".value"),
             names_pattern = "(.*)_(.*)"
-        ) %>% select(gid, symptoms, rates, deaths, count, distname)
+        ) %>% select(gid, symptoms, rates, deaths, count, distname) %>%
+        mutate(symptoms = paste0(symptoms, "_", cod))
+    
 
     return(out)
 }
@@ -188,7 +190,7 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
     
     filtered_data <- data %>% filter(symptoms == symptom & denom_group == cod)
     
-    filtered_data <- filtered_data %>% mutate(fraction = glue("{get(symptom)}/{deaths}"))
+    filtered_data <- filtered_data %>% mutate(fraction = glue("{count}/{deaths}"))
     
     map <- ggplot(data = filtered_data) +
         geom_sf(aes(fill=(rates))) +
