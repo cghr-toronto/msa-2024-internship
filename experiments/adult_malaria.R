@@ -25,7 +25,7 @@ adult_r2 <- st_read("../tmp/data/healsl_rd2_adult_v1.csv")
 # Reading District Boundary file
 dist <- st_read("../tmp/data/sl_dist_17_v2.geojson")
 
-# Reading in GID r1 and r2 boundary file
+# Reading in GID r1 and r2 files 
 gid_r1 <- st_read("../tmp/data/sl_rd1_gid_v1.csv")
 gid_r2 <- st_read("../tmp/data/sl_rd2_gid_v1.csv")
 
@@ -417,7 +417,9 @@ older_adult_non_infections_agg <- spatial_agg(
 )
 
 # Defining symptoms to be plotted----
-adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss")
+adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss",
+                    "chestPain", "unconscious", "paralysis", "looseStools", "urinaryProblem", "oedeam",
+                    "skinProblems", "yellowEyes", "convulsions", "lumps")
 
 # Running symptom_rate for each age group----
 # Young Male Adults
