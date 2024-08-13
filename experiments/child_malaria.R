@@ -278,10 +278,7 @@ child_non_infections_agg <- spatial_agg(
 )
 
 # Defining symptoms to be plotted
-child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough",
-                    "convulsion", "yellowEyes", "looseStools", "unconscious", "abdominalProblem",
-                    "neckStiffness", "oedema", "skinRash", "ulcers", "chestPain", "difficultySwallowing",
-                    "urinaryProblem", "bleeding", "lumps", "paralysis")
+child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough")
 
 
 # Running symptom_rate for each sex group
@@ -300,7 +297,7 @@ child_non_infections_symptom <- symptom_rate(age_sex_agg = child_non_infections_
                                            symptoms = child_symptoms)
 child_symptom <- bind_rows(child_malaria_symptom, child_infections_symptom, child_non_infections_symptom)
 child_symptom <- child_symptom %>% mutate(
-    age = "<1-11",
+    age_range = "<1-11",
     age_group = "Child",
     sex = "Both")
 
@@ -319,7 +316,7 @@ cm_non_infections_symptom <- symptom_rate(age_sex_agg = cm_non_infections_agg,
                                            symptoms = child_symptoms)
 cm_symptom <- bind_rows(cm_malaria_symptom, cm_infections_symptom, cm_non_infections_symptom)
 cm_symptom <- cm_symptom %>% mutate(
-    age = "<1-11",
+    age_range = "<1-11",
     age_group = "Child",
     sex = "Male")
 
@@ -338,7 +335,7 @@ cf_non_infections_symptom <- symptom_rate(age_sex_agg = cf_non_infections_agg,
                                            symptoms = child_symptoms)
 cf_symptom <- bind_rows(cf_malaria_symptom, cf_infections_symptom, cf_non_infections_symptom)
 cf_symptom <- cf_symptom %>% mutate(
-    age = "<1-11",
+    age_range = "<1-11",
     age_group = "Child",
     sex = "Female")
 
@@ -370,9 +367,9 @@ cm_plot <-
         "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-cm-malaria-maps",
         label = TRUE,
-        width = 49,
+        width = 47,
         height = 8,
-        age = "<1-11",
+        age_range = "<1-11",
         age_group = "Child",
         sex = "Male"
     )
@@ -383,9 +380,9 @@ cf_plot <-
         "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-cf-malaria-maps",
         label = TRUE,
-        width = 49,
+        width = 47,
         height = 8,
-        age = "<1-11",
+        age_range = "<1-11",
         age_group = "Child",
         sex = "Female"
     )
@@ -396,9 +393,9 @@ child_plot <-
         "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-child-malaria-maps",
         label = TRUE,
-        width = 49,
+        width = 47,
         height = 8,
-        age = "<1-11",
+        age_range = "<1-11",
         age_group = "Child",
         sex = "Both"
     )

@@ -447,9 +447,9 @@ adult_non_infections_agg <- spatial_agg(
 )
 
 # Defining symptoms to be plotted----
-adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss", 
-                    "chestPain", "unconscious", "paralysis", "looseStools", "urinaryProblem", "oedema", 
-                    "skinProblems", "yellowEyes", "convulsions", "lumps")
+adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss"
+                    , "chestPain", "unconscious", "paralysis", "looseStools", "urinaryProblem", 
+                    "oedema", "skinProblems", "yellowEyes", "convulsions")
 
 
 # Running symptom_rate for each age group----
@@ -468,7 +468,7 @@ yam_non_infections_symptom <- symptom_rate(age_sex_agg = yam_non_infections_agg,
                                            symptoms = adult_symptoms)
 yam_symptom <- bind_rows(yam_malaria_symptom, yam_infections_symptom, yam_non_infections_symptom)
 yam_symptom <- yam_symptom %>% mutate(
-    age = "15-39",
+    age_range = "15-39",
     age_group = "Adult",
     sex = "Male")
 
@@ -487,7 +487,7 @@ yaf_non_infections_symptom <- symptom_rate(age_sex_agg = yaf_non_infections_agg,
                                            symptoms = adult_symptoms)
 yaf_symptom <- bind_rows(yaf_malaria_symptom, yaf_infections_symptom, yaf_non_infections_symptom)
 yaf_symptom <- yaf_symptom %>% mutate(
-    age = "15-39",
+    age_range = "15-39",
     age_group = "Adult",
     sex = "Female")
 
@@ -506,7 +506,7 @@ oam_non_infections_symptom <- symptom_rate(age_sex_agg = oam_non_infections_agg,
                                            symptoms = adult_symptoms)
 oam_symptom <- bind_rows(oam_malaria_symptom, oam_infections_symptom, oam_non_infections_symptom)
 oam_symptom <- oam_symptom %>% mutate(
-    age = "40-69",
+    age_range = "40-69",
     age_group = "Adult",
     sex = "Male")
 
@@ -525,7 +525,7 @@ oaf_non_infections_symptom <- symptom_rate(age_sex_agg = oaf_non_infections_agg,
                                            symptoms = adult_symptoms)
 oaf_symptom <- bind_rows(oaf_malaria_symptom, oaf_infections_symptom, oaf_non_infections_symptom)
 oaf_symptom <- oaf_symptom %>% mutate(
-    age = "40-69",
+    age_range = "40-69",
     age_group = "Adult",
     sex = "Female")
 
@@ -544,7 +544,7 @@ young_adult_non_infections_symptom <- symptom_rate(age_sex_agg = young_adult_non
                                                    symptoms = adult_symptoms)
 young_adult_symptom <- bind_rows(young_adult_malaria_symptom, young_adult_infections_symptom, young_adult_non_infections_symptom)
 young_adult_symptom <- young_adult_symptom %>% mutate(
-    age = "15-39",
+    age_range = "15-39",
     age_group = "Adult",
     sex = "Both")
 
@@ -563,7 +563,7 @@ older_adult_non_infections_symptom <- symptom_rate(age_sex_agg = older_adult_non
                                                    symptoms = adult_symptoms)
 older_adult_symptom <- bind_rows(older_adult_malaria_symptom, older_adult_infections_symptom, older_adult_non_infections_symptom)
 older_adult_symptom <- older_adult_symptom %>% mutate(
-    age = "40-69",
+    age_range = "40-69",
     age_group = "Adult",
     sex = "Both")
 
@@ -582,7 +582,7 @@ adult_non_infections_symptom <- symptom_rate(age_sex_agg = adult_non_infections_
                                                    symptoms = adult_symptoms)
 adult_symptom <- bind_rows(adult_malaria_symptom, adult_infections_symptom, adult_non_infections_symptom)
 adult_symptom <- adult_symptom %>% mutate(
-    age = "15-69",
+    age_range = "15-69",
     age_group = "Adult",
     sex = "Both")
 
@@ -616,7 +616,7 @@ yam_plot <-
         label = TRUE,
         width = 42,
         height = 9,
-        age = "15-39",
+        age_range = "15-39",
         age_group = "Adult",
         sex = "Male"
     )
@@ -629,7 +629,7 @@ yaf_plot <-
         label = TRUE,
         width = 42,
         height = 9,
-        age = "15-39",
+        age_range = "15-39",
         age_group = "Adult",
         sex = "Female"
     )
@@ -642,7 +642,7 @@ oam_plot <-
         label = TRUE,
         width = 42,
         height = 9,
-        age = "40-69",
+        age_range = "40-69",
         age_group = "Adult",
         sex = "Male"
     )
@@ -655,7 +655,7 @@ oaf_plot <-
         label = TRUE,
         width = 42,
         height = 9,
-        age = "40-69",
+        age_range = "40-69",
         age_group = "Adult",
         sex = "Female"
     )
@@ -668,7 +668,7 @@ young_adult_plot <-
         label = TRUE,
         width = 42,
         height = 9,
-        age = "15-39",
+        age_range = "15-39",
         age_group = "Adult",
         sex = "Both"
     )
@@ -681,7 +681,7 @@ older_adult_plot <-
         label = TRUE,
         width = 42,
         height = 9,
-        age = "40-69",
+        age_range = "40-69",
         age_group = "Adult",
         sex = "Both"
     )
@@ -694,7 +694,7 @@ adult_plot <-
         label = TRUE,
         width = 42,
         height = 9,
-        age = "15-69",
+        age_range = "15-69",
         age_group = "Adult",
         sex = "Both"
     )
