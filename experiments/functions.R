@@ -9,9 +9,9 @@ pdf_print <- function(series, title, width, height){
     
     jpeg_title <- paste0(jpeg_output_dir, title, ".jpeg")
     
-    ggsave(pdf_title, plot = series, device = "pdf", width = width, height = height)
+    ggsave(pdf_title, plot = series, device = "pdf", width = width, height = height, limitsize = FALSE)
     
-    ggsave(jpeg_title, plot = series, device = "jpeg", width = width, height = height)
+    ggsave(jpeg_title, plot = series, device = "jpeg", width = width, height = height, limitsize = FALSE)
     
 }
 
@@ -215,7 +215,7 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
               axis.ticks = element_blank(),
               axis.title.x = element_blank(),
               axis.title.y = if (symptom == first_map) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
-              plot.title = if (gplot_title) element_text(hjust = 0.5, size = 20) else element_blank()) +
+              plot.title = if (gplot_title) element_text(hjust = 0.5, size = 17) else element_blank()) +
         ylab(if (symptom == first_map) y_axis else NULL) +
         scale_fill_continuous(low="white", 
                               high="darkblue", 
