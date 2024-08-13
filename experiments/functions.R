@@ -227,7 +227,7 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
 }
 
 # Creating grouped plots parameters
-create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
+create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE, width, height) {
     
     symptoms <- unique(group_symptoms$symptoms)
     
@@ -285,7 +285,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE) {
               legend.justification = c(0.5, 0),  # Centers the legend horizontally
               legend.box.margin = margin(t = 0, r = 190, b = 0, l = 0)) 
     
-    out <- pdf_print(combined_plot, pdf_title, width = 26, height = 13)
+    out <- pdf_print(combined_plot, pdf_title, width = width, height = height)
     
     return(out)
 }
