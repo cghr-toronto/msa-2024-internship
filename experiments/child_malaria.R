@@ -351,7 +351,7 @@ for (srt in symptom_rate_tables) {
 }
  
 # Creating maps for each age group
-cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-malaria-maps", label = TRUE, width = 50, height = 8)
-cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-malaria-maps", label = TRUE, width = 48, height = 8)
-child_plot <- create_plots(child_symptom, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-malaria-maps", label = TRUE, width = 48, height = 8)
+cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-malaria-maps", label = TRUE, width = 49, height = 8)
+cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-malaria-maps", label = TRUE, width = 49, height = 8)
+child_plot <- create_plots(child_symptom, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-malaria-maps", label = TRUE, width = 49, height = 8)
 
