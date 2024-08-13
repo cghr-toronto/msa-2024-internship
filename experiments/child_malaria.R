@@ -299,6 +299,10 @@ child_non_infections_symptom <- symptom_rate(age_sex_agg = child_non_infections_
                                            deaths = "deaths",
                                            symptoms = child_symptoms)
 child_symptom <- bind_rows(child_malaria_symptom, child_infections_symptom, child_non_infections_symptom)
+child_symptom <- child_symptom %>% mutate(
+    age = "<1-11",
+    age_group = "Child",
+    sex = "Both")
 
 # Male Children
 cm_malaria_symptom <- symptom_rate(age_sex_agg = cm_malaria_agg,
@@ -314,6 +318,10 @@ cm_non_infections_symptom <- symptom_rate(age_sex_agg = cm_non_infections_agg,
                                            deaths = "deaths",
                                            symptoms = child_symptoms)
 cm_symptom <- bind_rows(cm_malaria_symptom, cm_infections_symptom, cm_non_infections_symptom)
+cm_symptom <- cm_symptom %>% mutate(
+    age = "<1-11",
+    age_group = "Child",
+    sex = "Male")
 
 # Female Children
 cf_malaria_symptom <- symptom_rate(age_sex_agg = cf_malaria_agg,
@@ -329,6 +337,10 @@ cf_non_infections_symptom <- symptom_rate(age_sex_agg = cf_non_infections_agg,
                                            deaths = "deaths",
                                            symptoms = child_symptoms)
 cf_symptom <- bind_rows(cf_malaria_symptom, cf_infections_symptom, cf_non_infections_symptom)
+cf_symptom <- cf_symptom %>% mutate(
+    age = "<1-11",
+    age_group = "Child",
+    sex = "Female")
 
 
 symptom_rate_tables <- c("child_symptom", "cm_symptom", "cf_symptom")
@@ -351,7 +363,42 @@ for (srt in symptom_rate_tables) {
 }
  
 # Creating maps for each age group
-cm_plot <- create_plots(cm_symptom, "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-malaria-maps", label = TRUE, width = 49, height = 8)
-cf_plot <- create_plots(cf_symptom, "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-malaria-maps", label = TRUE, width = 49, height = 8)
-child_plot <- create_plots(child_symptom, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-malaria-maps", label = TRUE, width = 49, height = 8)
+cm_plot <-
+    create_plots(
+        cm_symptom,
+        "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-cm-malaria-maps",
+        label = TRUE,
+        width = 49,
+        height = 8,
+        age = "<1-11",
+        age_group = "Child",
+        sex = "Male"
+    )
+
+cf_plot <-
+    create_plots(
+        cf_symptom,
+        "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-cf-malaria-maps",
+        label = TRUE,
+        width = 49,
+        height = 8,
+        age = "<1-11",
+        age_group = "Child",
+        sex = "Female"
+    )
+
+child_plot <-
+    create_plots(
+        child_symptom,
+        "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-child-malaria-maps",
+        label = TRUE,
+        width = 49,
+        height = 8,
+        age = "<1-11",
+        age_group = "Child",
+        sex = "Both"
+    )
 

@@ -210,7 +210,6 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
         theme_minimal() + 
         theme(panel.grid.major = element_blank(), 
               panel.grid.minor = element_blank(),
-              legend.title = element_blank(),
               axis.text = element_blank(), 
               axis.ticks = element_blank(),
               axis.title.x = element_blank(),
@@ -221,8 +220,8 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
                               high="darkblue", 
                               breaks = break_points,
                               labels = label,
-                              limits = limits)+
-        guides(fill = guide_legend(nrow = 1))
+                              limits = limits) +
+        guides(fill = guide_legend(nrow = 1, title = "Rates"))
     
     # Conditionally add labels
     if (labels) {
@@ -238,7 +237,9 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
 }
 
 # Creating grouped plots parameters
-create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE, width, height) {
+create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE, width, height, age, age_group, sex) {
+    
+    group_symptoms <- group_symptoms %>% filter(age == age & age_group == age_group & sex == sex)
     
     symptoms <- unique(group_symptoms$symptoms)
     

@@ -608,10 +608,93 @@ for (srt in symptom_rate_tables) {
 all_adult_symptom <- bind_rows(yam_symptom, yaf_symptom, oam_symptom, oaf_symptom, young_adult_symptom, older_adult_symptom, adult_symptom)
 
 # Creating plot series for each age group----
-yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-malaria-maps", label = TRUE, width = 42, height = 9)
-yaf_plot <- create_plots(yaf_symptom, "Young Adult Female (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-malaria-maps", label = TRUE, width = 42, height = 9)
-oam_plot <- create_plots(oam_symptom, "Older Adult Male (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-malaria-maps", label = TRUE, width = 42, height = 9)
-oaf_plot <- create_plots(oaf_symptom, "Older Adult Female (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-malaria-maps", label = TRUE, width = 42, height = 9)
-young_adult_plot <- create_plots(young_adult_symptom, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-ya-malaria-maps", label = TRUE, width = 42, height = 9)
-older_adult_plot <- create_plots(older_adult_symptom, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oa-malaria-maps", label = TRUE, width = 42, height = 9)
-adult_plot <- create_plots(adult_symptom, "Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-malaria-maps", label = TRUE, width = 42, height = 9)
+yam_plot <-
+    create_plots(
+        yam_symptom,
+        "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-yam-malaria-maps",
+        label = TRUE,
+        width = 42,
+        height = 9,
+        age = "15-39",
+        age_group = "Adult",
+        sex = "Male"
+    )
+
+yaf_plot <-
+    create_plots(
+        yaf_symptom,
+        "Young Adult Female (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-yaf-malaria-maps",
+        label = TRUE,
+        width = 42,
+        height = 9,
+        age = "15-39",
+        age_group = "Adult",
+        sex = "Female"
+    )
+
+oam_plot <-
+    create_plots(
+        oam_symptom,
+        "Older Adult Male (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-oam-malaria-maps",
+        label = TRUE,
+        width = 42,
+        height = 9,
+        age = "40-69",
+        age_group = "Adult",
+        sex = "Male"
+    )
+
+oaf_plot <-
+    create_plots(
+        oaf_symptom,
+        "Older Adult Female (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-oaf-malaria-maps",
+        label = TRUE,
+        width = 42,
+        height = 9,
+        age = "40-69",
+        age_group = "Adult",
+        sex = "Female"
+    )
+
+young_adult_plot <-
+    create_plots(
+        young_adult_symptom,
+        "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-ya-malaria-maps",
+        label = TRUE,
+        width = 42,
+        height = 9,
+        age = "15-39",
+        age_group = "Adult",
+        sex = "Both"
+    )
+
+older_adult_plot <-
+    create_plots(
+        older_adult_symptom,
+        "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-oa-malaria-maps",
+        label = TRUE,
+        width = 42,
+        height = 9,
+        age = "40-69",
+        age_group = "Adult",
+        sex = "Both"
+    )
+
+adult_plot <-
+    create_plots(
+        adult_symptom,
+        "Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-adult-malaria-maps",
+        label = TRUE,
+        width = 42,
+        height = 9,
+        age = "15-69",
+        age_group = "Adult",
+        sex = "Both"
+    )
