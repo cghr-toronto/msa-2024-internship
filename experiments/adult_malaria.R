@@ -467,6 +467,10 @@ yam_non_infections_symptom <- symptom_rate(age_sex_agg = yam_non_infections_agg,
                                            deaths = "deaths",
                                            symptoms = adult_symptoms)
 yam_symptom <- bind_rows(yam_malaria_symptom, yam_infections_symptom, yam_non_infections_symptom)
+yam_symptom <- yam_symptom %>% mutate(
+    age = "15-39",
+    age_group = "Adult",
+    sex = "Male")
 
 # Young Female Adults
 yaf_malaria_symptom <- symptom_rate(age_sex_agg = yaf_malaria_agg,
@@ -482,6 +486,10 @@ yaf_non_infections_symptom <- symptom_rate(age_sex_agg = yaf_non_infections_agg,
                                            deaths = "deaths",
                                            symptoms = adult_symptoms)
 yaf_symptom <- bind_rows(yaf_malaria_symptom, yaf_infections_symptom, yaf_non_infections_symptom)
+yaf_symptom <- yaf_symptom %>% mutate(
+    age = "15-39",
+    age_group = "Adult",
+    sex = "Female")
 
 # Older Male Adults
 oam_malaria_symptom <- symptom_rate(age_sex_agg = oam_malaria_agg,
@@ -497,6 +505,10 @@ oam_non_infections_symptom <- symptom_rate(age_sex_agg = oam_non_infections_agg,
                                            deaths = "deaths",
                                            symptoms = adult_symptoms)
 oam_symptom <- bind_rows(oam_malaria_symptom, oam_infections_symptom, oam_non_infections_symptom)
+oam_symptom <- oam_symptom %>% mutate(
+    age = "40-69",
+    age_group = "Adult",
+    sex = "Male")
 
 # Older Female Adults
 oaf_malaria_symptom <- symptom_rate(age_sex_agg = oaf_malaria_agg,
@@ -512,6 +524,10 @@ oaf_non_infections_symptom <- symptom_rate(age_sex_agg = oaf_non_infections_agg,
                                            deaths = "deaths",
                                            symptoms = adult_symptoms)
 oaf_symptom <- bind_rows(oaf_malaria_symptom, oaf_infections_symptom, oaf_non_infections_symptom)
+oaf_symptom <- oaf_symptom %>% mutate(
+    age = "40-69",
+    age_group = "Adult",
+    sex = "Female")
 
 # Young Adults
 young_adult_malaria_symptom <- symptom_rate(age_sex_agg = young_adult_malaria_agg,
@@ -527,6 +543,10 @@ young_adult_non_infections_symptom <- symptom_rate(age_sex_agg = young_adult_non
                                                    deaths = "deaths",
                                                    symptoms = adult_symptoms)
 young_adult_symptom <- bind_rows(young_adult_malaria_symptom, young_adult_infections_symptom, young_adult_non_infections_symptom)
+young_adult_symptom <- young_adult_symptom %>% mutate(
+    age = "15-39",
+    age_group = "Adult",
+    sex = "Both")
 
 # Older Adults
 older_adult_malaria_symptom <- symptom_rate(age_sex_agg = older_adult_malaria_agg,
@@ -542,6 +562,10 @@ older_adult_non_infections_symptom <- symptom_rate(age_sex_agg = older_adult_non
                                                    deaths = "deaths",
                                                    symptoms = adult_symptoms)
 older_adult_symptom <- bind_rows(older_adult_malaria_symptom, older_adult_infections_symptom, older_adult_non_infections_symptom)
+older_adult_symptom <- older_adult_symptom %>% mutate(
+    age = "40-69",
+    age_group = "Adult",
+    sex = "Both")
 
 # Adults
 adult_malaria_symptom <- symptom_rate(age_sex_agg = adult_malaria_agg,
@@ -557,6 +581,10 @@ adult_non_infections_symptom <- symptom_rate(age_sex_agg = adult_non_infections_
                                                    deaths = "deaths",
                                                    symptoms = adult_symptoms)
 adult_symptom <- bind_rows(adult_malaria_symptom, adult_infections_symptom, adult_non_infections_symptom)
+adult_symptom <- adult_symptom %>% mutate(
+    age = "15-69",
+    age_group = "Adult",
+    sex = "Both")
 
 symptom_rate_tables <- c("yam_symptom", "yaf_symptom", "oam_symptom", "oaf_symptom", "young_adult_symptom", "older_adult_symptom", "adult_symptom")
 
@@ -576,6 +604,8 @@ for (srt in symptom_rate_tables) {
     
     assign(srt, df)
 }
+
+all_adult_symptom <- bind_rows(yam_symptom, yaf_symptom, oam_symptom, oaf_symptom, young_adult_symptom, older_adult_symptom, adult_symptom)
 
 # Creating plot series for each age group----
 yam_plot <- create_plots(yam_symptom, "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-malaria-maps", label = TRUE, width = 42, height = 9)
