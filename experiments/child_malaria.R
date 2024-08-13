@@ -342,7 +342,6 @@ cf_symptom <- cf_symptom %>% mutate(
     age_group = "Child",
     sex = "Female")
 
-
 symptom_rate_tables <- c("child_symptom", "cm_symptom", "cf_symptom")
 
 for (srt in symptom_rate_tables) {
@@ -361,11 +360,13 @@ for (srt in symptom_rate_tables) {
     
     assign(srt, df)
 }
+
+all_child_symptom <- bind_rows(child_symptom, cm_symptom, cf_symptom)
  
 # Creating maps for each age group
 cm_plot <-
     create_plots(
-        cm_symptom,
+        all_child_symptom,
         "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-cm-malaria-maps",
         label = TRUE,
@@ -378,7 +379,7 @@ cm_plot <-
 
 cf_plot <-
     create_plots(
-        cf_symptom,
+        all_child_symptom,
         "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-cf-malaria-maps",
         label = TRUE,
@@ -391,7 +392,7 @@ cf_plot <-
 
 child_plot <-
     create_plots(
-        child_symptom,
+        all_child_symptom,
         "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-child-malaria-maps",
         label = TRUE,

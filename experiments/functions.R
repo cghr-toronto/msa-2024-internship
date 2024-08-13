@@ -239,7 +239,9 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
 # Creating grouped plots parameters
 create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE, width, height, age, age_group, sex) {
     
-    group_symptoms <- group_symptoms %>% filter(age == age & age_group == age_group & sex == sex)
+    group_symptoms <- group_symptoms %>% filter(age == !!age & age_group == !!age_group & sex == !!sex)
+    
+    browser()
     
     symptoms <- unique(group_symptoms$symptoms)
     
