@@ -281,7 +281,7 @@ child_non_infections_agg <- spatial_agg(
 child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough",
                     "convulsion", "yellowEyes", "looseStools", "unconscious", "abdominalProblem",
                     "neckStiffness", "oedema", "skinRash", "ulcers", "chestPain", "difficultySwallowing",
-                    "urinaryProblem", "bleeding")
+                    "urinaryProblem", "bleeding", "lumps")
 
 
 # Running symptom_rate for each sex group

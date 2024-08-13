@@ -129,7 +129,18 @@ symptom_rate <- function(
         ) %>% pivot_wider( names_from = symptom, # Pivot symptom column to wide format
                            values_from = total_count, # Values to be filled in the wide format
                            values_fill = 0 # Fill any missing values with 0
-        ) %>% select(all_of(symptoms))
+        )
+    
+    if (!all(symptoms %in% names(result))){
+        
+        missing_columns <- setdiff(symptoms, names(result))
+        
+        for (missing in missing_columns) {
+            result <- result %>% mutate(!!missing := 0) 
+        }
+    }
+    
+    result <- result %>% select(all_of(symptoms))
     
     # Join geometry to new spatial table
     spatial <- result %>%
