@@ -16,6 +16,7 @@ library(glue)
 library(forcats)
 library(spdep)
 library(rlang)
+library(scales)
 
 ## Read data
 # Reading in Adult Round 1 and Round 2 data
@@ -173,9 +174,6 @@ adult <- adult %>%
             str_starts(`WBD code`, "2") | str_starts(`WBD code`, "3") ~ "Non-infections",
             TRUE ~ NA_character_)
         ) 
-
-# Filtering out empty district values
-adult <- adult %>% filter(district_cod != "NA")
 
 # Creating filters for different adult age/sex groups
 young_adult <- adult %>% filter(death_age_group %in% young_adult_age)

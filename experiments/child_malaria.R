@@ -15,6 +15,7 @@ library(readxl)
 library(glue)
 library(forcats)
 library(spdep)
+library(scales)
 
 ## Read data
 # Reading in Child Round 1 and Round 2 data
@@ -151,9 +152,6 @@ child <- child %>%
             TRUE ~ NA_character_
         )
     ) 
-
-# Filtering out empty district values
-child <- child %>% filter(district_cod != "NA")
 
 # Creating filters for young childs by sex, age, and malaria
 male_child <- child %>% filter(sex_death == "Male")

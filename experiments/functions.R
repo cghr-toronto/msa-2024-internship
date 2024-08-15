@@ -273,6 +273,8 @@ create_map_portrait <-
         
         limits <- c(min_val, max_val)
         
+        values = scales::rescale(c(10, 10.1, max(data$rates)))
+        
     } else if (break_type == "manual") {
         
         label <- names(break_points)
@@ -296,11 +298,13 @@ create_map_portrait <-
               axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
               plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
         ylab(paste(symptom)) +
-        scale_fill_continuous(low="white", 
-                              high="darkblue", 
-                              breaks = break_points,
-                              labels = label,
-                              limits = limits) +
+        scale_fill_gradientn(
+            colours = c("grey", "blue", "red"),
+            values = values,
+            breaks = break_points,
+            limits = limits,
+            labels = label
+        ) +
         guides(fill = guide_legend(nrow = 1, title = "Rates (%)"))
     
     # Conditionally add labels
