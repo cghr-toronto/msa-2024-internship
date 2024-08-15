@@ -279,8 +279,10 @@ child_non_infections_agg <- spatial_agg(
 )
 
 # Defining symptoms to be plotted
-child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough")
-
+child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough",
+                    "convulsion", "yellowEyes", "looseStools", "unconscious", "abdominalProblem",
+                    "neckStiffness", "oedema", "skinRash", "ulcers", "chestPain", "difficultySwallowing",
+                    "urinaryProblem", "bleeding", "lumps", "paralysis")
 
 
 # Running symptom_rate for each sex group
@@ -369,39 +371,39 @@ cm_plot <-
         "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 1095)",
         "fig-cm-malaria-maps",
         label = TRUE,
-        width = 20,
-        height = 10,
+        width = 10,
+        height = 47,
         age_range = "<1-11",
         age_group = "Child",
         sex = "Male",
-        orientation = "landscape"
+        orientation = "portrait"
     )
 
 cf_plot <-
     create_plots(
         all_child_symptom,
-        "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022(n = 1085)",
+        "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 1085)",
         "fig-cf-malaria-maps",
         label = TRUE,
-        width = 47,
-        height = 10,
+        width = 10,
+        height = 47,
         age_range = "<1-11",
         age_group = "Child",
         sex = "Female",
-        orientation = "landscape"
+        orientation = "portrait"
     )
 
 child_plot <-
     create_plots(
         all_child_symptom,
-        "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022(n = 2180)",
+        "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 2180)",
         "fig-child-malaria-maps",
         label = TRUE,
-        width = 47,
-        height = 10,
+        width = 10,
+        height = 47,
         age_range = "<1-11",
         age_group = "Child",
         sex = "Both",
-        orientation = "landscape"
+        orientation = "portrait"
     )
 
