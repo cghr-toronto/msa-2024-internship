@@ -267,9 +267,9 @@ create_map_portrait <-
         interval_width <- max_val / breaks
         
         # Generate the sequence of break points
-        break_points <- seq(min_val, max_val, len = 6)
+        break_points <- seq(10, max_val, len = 6)
         
-        label <- scales::number_format(accuracy = 1)
+        label <- c("insufficient data", "10-20", "20-40", "40-60", "60-80", "80-100")
         
         limits <- c(min_val, max_val)
         
