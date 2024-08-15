@@ -336,7 +336,7 @@ create_plots <-
     
     if (orientation == "portrait") {
         all_plots <- lapply(symptoms, function(symptom) {
-            malaria_plots <- create_map(
+            malaria_plots <- create_map_portrait(
                 data = group_symptoms,
                 symptom = symptom,
                 y_axis = TRUE,
@@ -347,7 +347,7 @@ create_plots <-
                 cod = "Malaria"
             )
             
-            infection_plots <- create_map(
+            infection_plots <- create_map_portrait(
                 data = group_symptoms,
                 symptom = symptom,
                 y_axis = FALSE,
@@ -358,7 +358,7 @@ create_plots <-
                 cod = "Infections"
             )
             
-            non_infection_plots <- create_map(
+            non_infection_plots <- create_map_portrait(
                 data = group_symptoms,
                 symptom = symptom,
                 y_axis = FALSE,
@@ -401,7 +401,7 @@ create_plots <-
         malaria_plots <-
             lapply(
                 symptoms,
-                create_map,
+                create_map_landscape,
                 data = group_symptoms,
                 y_axis = "Cases\n(per 100\nMalaria deaths)",
                 labels = label,
@@ -414,7 +414,7 @@ create_plots <-
         infection_plots <-
             lapply(
                 symptoms,
-                create_map,
+                create_map_landscape,
                 data = group_symptoms,
                 y_axis = "Cases\n(per 100\nInfection deaths)",
                 labels = label,
@@ -427,7 +427,7 @@ create_plots <-
         non_infection_plots <-
             lapply(
                 symptoms,
-                create_map,
+                create_map_landscape,
                 data = group_symptoms,
                 y_axis = "Cases\n(per 100\nNon-Infection deaths)",
                 labels = label,
