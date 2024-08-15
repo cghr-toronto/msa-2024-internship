@@ -375,7 +375,8 @@ cm_plot <-
         height = 47,
         age_range = "<1-11",
         age_group = "Child",
-        sex = "Male"
+        sex = "Male",
+        orientation = "portrait"
     )
 
 cf_plot <-
@@ -388,7 +389,8 @@ cf_plot <-
         height = 47,
         age_range = "<1-11",
         age_group = "Child",
-        sex = "Female"
+        sex = "Female",
+        orientation = "portrait"
     )
 
 child_plot <-
@@ -401,6 +403,7 @@ child_plot <-
         height = 47,
         age_range = "<1-11",
         age_group = "Child",
-        sex = "Both"
+        sex = "Both",
+        orientation = "portrait"
     )
 

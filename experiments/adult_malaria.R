@@ -618,7 +618,8 @@ yam_plot <-
         height = 42,
         age_range = "15-39",
         age_group = "Adult",
-        sex = "Male"
+        sex = "Male",
+        orientation = "portrait"
     )
 
 yaf_plot <-
@@ -631,7 +632,8 @@ yaf_plot <-
         height = 42,
         age_range = "15-39",
         age_group = "Adult",
-        sex = "Female"
+        sex = "Female",
+        orientation = "portrait"
     )
 
 oam_plot <-
@@ -644,7 +646,8 @@ oam_plot <-
         height = 42,
         age_range = "40-69",
         age_group = "Adult",
-        sex = "Male"
+        sex = "Male",
+        orientation = "portrait"
     )
 
 oaf_plot <-
@@ -657,7 +660,8 @@ oaf_plot <-
         height = 42,
         age_range = "40-69",
         age_group = "Adult",
-        sex = "Female"
+        sex = "Female",
+        orientation = "portrait"
     )
 
 young_adult_plot <-
@@ -670,7 +674,8 @@ young_adult_plot <-
         height = 42,
         age_range = "15-39",
         age_group = "Adult",
-        sex = "Both"
+        sex = "Both",
+        orientation = "portrait"
     )
 
 older_adult_plot <-
@@ -683,7 +688,8 @@ older_adult_plot <-
         height = 42,
         age_range = "40-69",
         age_group = "Adult",
-        sex = "Both"
+        sex = "Both",
+        orientation = "portrait"
     )
 
 adult_plot <-
@@ -696,5 +702,6 @@ adult_plot <-
         height = 42,
         age_range = "15-69",
         age_group = "Adult",
-        sex = "Both"
+        sex = "Both",
+        orientation = "portrait"
     )
