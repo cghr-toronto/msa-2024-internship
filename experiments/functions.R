@@ -174,7 +174,7 @@ symptom_rate <- function(
 }
 
 # Creating mappping parameters
-create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE, first_map, break_type, cod) {
+create_map <- function(data, symptom, y_axis = TRUE, labels = TRUE, first_map, gplot_title, break_type, cod) {
     
     if (break_type == "equal_breaks") {
         
@@ -206,16 +206,16 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
     map <- ggplot(data = filtered_data) +
         geom_sf(aes(fill=(rates))) +
         guides(fill = guide_legend()) +
-        ggtitle(paste(symptom)) +
+        ggtitle(gplot_title) +
         theme_minimal() + 
         theme(panel.grid.major = element_blank(), 
               panel.grid.minor = element_blank(),
               axis.text = element_blank(), 
               axis.ticks = element_blank(),
               axis.title.x = element_blank(),
-              axis.title.y = if (symptom == first_map) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
-              plot.title = if (gplot_title) element_text(hjust = 0.5, size = 17) else element_blank()) +
-        ylab(if (symptom == first_map) y_axis else NULL) +
+              axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
+              plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
+        ylab(paste(symptom)) +
         scale_fill_continuous(low="white", 
                               high="darkblue", 
                               breaks = break_points,
@@ -228,9 +228,8 @@ create_map <- function(data, symptom, y_axis, labels = TRUE, gplot_title = TRUE,
         map <- map + geom_sf_label(aes(label = fraction), size = 1.8)
     }
     
-    # Conditionally add the title
-    if (gplot_title) {
-        map <- map + ggtitle(paste(symptom))
+    if (y_axis) {
+        map <- map + ylab(paste(symptom))
     }
     
     return(map)
@@ -245,49 +244,49 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE, wi
     
     fm <- symptoms[[1]]
     
-    malaria_plots <-
-        lapply(
-            symptoms,
-            create_map,
-            data = group_symptoms,
-            y_axis = "Cases\n(per 100\nMalaria deaths)",
-            labels = label,
-            gplot_title = TRUE,
-            first_map = fm,
-            break_type = "equal_breaks",
-            cod = "Malaria"
-        )
+    all_plots <- lapply(symptoms, function(symptom) { 
     
-    infection_plots <-
-        lapply(
-            symptoms,
-            create_map,
+    malaria_plots <- create_map(
             data = group_symptoms,
-            y_axis = "Cases\n(per 100\nInfection deaths)",
+            symptom = symptom,
+            y_axis = TRUE,
             labels = label,
-            gplot_title = FALSE,
             first_map = fm,
+            gplot_title = "Cases\n(per 100\nMalaria deaths)",
+            break_type = "equal_breaks",
+            cod = "Malaria")
+    
+    infection_plots <- create_map(
+            data = group_symptoms,
+            symptom = symptom,
+            y_axis = FALSE,
+            labels = label,
+            first_map = fm,
+            gplot_title = "Cases\n(per 100\nInfection deaths)",
             break_type = "equal_breaks",
             cod = "Infections"
         )
     
-    non_infection_plots <-
-        lapply(
-            symptoms,
-            create_map,
+    non_infection_plots <- create_map(
             data = group_symptoms,
-            y_axis = "Cases\n(per 100\nNon-Infection deaths)",
+            symptom = symptom,
+            y_axis = FALSE,
             labels = label,
-            gplot_title = FALSE,
             first_map = fm,
+            gplot_title = "Cases\n(per 100\nNon-Infection deaths)",
             break_type = "equal_breaks",
             cod = "Non-Infections"
         )
     
-    all_plots <- c(malaria_plots, infection_plots, non_infection_plots)
+    list(malaria_plots, infection_plots, non_infection_plots)
+    
+    })
+    
+    # Flatten the list so that all plots are in a single list
+    all_plots <- unlist(all_plots, recursive = FALSE)
     
     combined_plot <-
-        guide_area() / wrap_plots(all_plots, ncol = length(malaria_plots)) +
+        guide_area() / wrap_plots(all_plots, ncol = 3) +
         plot_annotation(title = plot_title,
                         theme = theme(plot.title = element_text(
                             size = 20, face = "bold", hjust = 0.5))
@@ -295,7 +294,7 @@ create_plots <- function(group_symptoms, plot_title, pdf_title, label = TRUE, wi
         plot_layout(guides = "collect", heights = unit(c(1, 1.8), c("cm", "null"))) & 
         theme(legend.position = 'top',
               legend.justification = c(0.5, 0),  # Centers the legend horizontally
-              legend.box.margin = margin(t = 0, r = 190, b = 0, l = 0)) 
+              legend.box.margin = margin(t = 0, r = 0, b = 0, l = 0)) 
     
     out <- pdf_print(combined_plot, pdf_title, width = width, height = height)
     

@@ -614,8 +614,8 @@ yam_plot <-
         "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-yam-malaria-maps",
         label = TRUE,
-        width = 42,
-        height = 9,
+        width = 15,
+        height = 42,
         age_range = "15-39",
         age_group = "Adult",
         sex = "Male"
@@ -692,8 +692,8 @@ adult_plot <-
         "Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-adult-malaria-maps",
         label = TRUE,
-        width = 42,
-        height = 9,
+        width = 10,
+        height = 42,
         age_range = "15-69",
         age_group = "Adult",
         sex = "Both"
