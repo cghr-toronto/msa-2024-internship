@@ -334,6 +334,7 @@ create_plots <-
     
     fm <- symptoms[[1]]
     
+    # Portrait layout    
     if (orientation == "portrait") {
         all_plots <- lapply(symptoms, function(symptom) {
             malaria_plots <- create_map_portrait(
@@ -397,6 +398,7 @@ create_plots <-
                 )
             )
         
+    # Landscape layout
     } else if (orientation == "landscape") {
         malaria_plots <-
             lapply(
