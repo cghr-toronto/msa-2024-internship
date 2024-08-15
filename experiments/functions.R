@@ -267,13 +267,11 @@ create_map_portrait <-
         interval_width <- max_val / breaks
         
         # Generate the sequence of break points
-        break_points <- seq(10, max_val, len = 6)
+        break_points <- seq(min_val, max_val, len = 6)
         
-        label <- c("insufficient data", "10-20", "20-40", "40-60", "60-80", "80-100")
+        label <- scales::number_format(accuracy = 1)
         
         limits <- c(min_val, max_val)
-        
-        values = scales::rescale(c(10, 10.1, max(data$rates)))
         
     } else if (break_type == "manual") {
         
@@ -298,13 +296,11 @@ create_map_portrait <-
               axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
               plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
         ylab(paste(symptom)) +
-        scale_fill_gradientn(
-            colours = c("grey", "blue", "red"),
-            values = values,
-            breaks = break_points,
-            limits = limits,
-            labels = label
-        ) +
+        scale_fill_continuous(low="blue", 
+                              high="red", 
+                              breaks = break_points,
+                              labels = label,
+                              limits = limits) +
         guides(fill = guide_legend(nrow = 1, title = "Rates (%)"))
     
     # Conditionally add labels
@@ -409,7 +405,7 @@ create_plots <-
                 symptoms,
                 create_map_landscape,
                 data = group_symptoms,
-                y_axis = "Cases\n(per 100\nMalaria deaths)",
+                y_axis = "Cases\nper 100\nMalaria deaths",
                 labels = label,
                 gplot_title = TRUE,
                 first_map = fm,
@@ -422,7 +418,7 @@ create_plots <-
                 symptoms,
                 create_map_landscape,
                 data = group_symptoms,
-                y_axis = "Cases\n(per 100\nInfection deaths)",
+                y_axis = "Cases\nper 100\nInfection deaths",
                 labels = label,
                 gplot_title = FALSE,
                 first_map = fm,
@@ -435,7 +431,7 @@ create_plots <-
                 symptoms,
                 create_map_landscape,
                 data = group_symptoms,
-                y_axis = "Cases\n(per 100\nNon-Infection deaths)",
+                y_axis = "Cases\nper 100\nNon-Infection deaths",
                 labels = label,
                 gplot_title = FALSE,
                 first_map = fm,
