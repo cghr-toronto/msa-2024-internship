@@ -294,10 +294,10 @@ create_map_portrait <-
               axis.ticks = element_blank(),
               axis.title.x = element_blank(),
               axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
-              plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
+              plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 15) else element_blank()) +
         ylab(paste(symptom)) +
-        scale_fill_continuous(low="blue", 
-                              high="red", 
+        scale_fill_continuous(low="white", 
+                              high="darkblue", 
                               breaks = break_points,
                               labels = label,
                               limits = limits) +
