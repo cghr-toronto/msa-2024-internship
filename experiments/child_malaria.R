@@ -152,6 +152,9 @@ child <- child %>%
         )
     ) 
 
+# Filtering out empty district values
+child <- child %>% filter(district_cod != "NA")
+
 # Creating filters for young childs by sex, age, and malaria
 male_child <- child %>% filter(sex_death == "Male")
 female_child <- child %>% filter(sex_death == "Female")
@@ -368,7 +371,7 @@ all_child_symptom <- bind_rows(child_symptom, cm_symptom, cf_symptom)
 cm_plot <-
     create_plots(
         all_child_symptom,
-        "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
+        "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 1095)",
         "fig-cm-malaria-maps",
         label = TRUE,
         width = 10,
@@ -382,7 +385,7 @@ cm_plot <-
 cf_plot <-
     create_plots(
         all_child_symptom,
-        "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
+        "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022(n = 1085)",
         "fig-cf-malaria-maps",
         label = TRUE,
         width = 10,
@@ -396,7 +399,7 @@ cf_plot <-
 child_plot <-
     create_plots(
         all_child_symptom,
-        "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
+        "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022(n = 2180)",
         "fig-child-malaria-maps",
         label = TRUE,
         width = 10,
