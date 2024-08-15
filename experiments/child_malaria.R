@@ -371,8 +371,8 @@ cm_plot <-
         "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-cm-malaria-maps",
         label = TRUE,
-        width = 47,
-        height = 8,
+        width = 10,
+        height = 47,
         age_range = "<1-11",
         age_group = "Child",
         sex = "Male"
@@ -384,8 +384,8 @@ cf_plot <-
         "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-cf-malaria-maps",
         label = TRUE,
-        width = 47,
-        height = 8,
+        width = 10,
+        height = 47,
         age_range = "<1-11",
         age_group = "Child",
         sex = "Female"
@@ -397,8 +397,8 @@ child_plot <-
         "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022",
         "fig-child-malaria-maps",
         label = TRUE,
-        width = 47,
-        height = 8,
+        width = 10,
+        height = 47,
         age_range = "<1-11",
         age_group = "Child",
         sex = "Both"
