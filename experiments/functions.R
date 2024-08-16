@@ -270,7 +270,8 @@ create_map_portrait <-
             label <- c("Insufficient Data", "10-20", "20-40", "40-60", "60-80", "80-100")
             
             limits <- c(min_val, max(break_points))
-        } else if (break_type == "manual") {
+        
+            } else if (break_type == "manual") {
             label <- names(break_points)
         } 
         
@@ -279,9 +280,9 @@ create_map_portrait <-
             mutate(fraction = glue("{count}/{deaths}"))
         
         map <- ggplot(data = filtered_data) +
-            geom_sf(aes(fill = rates), color = NA) +
-            scale_fill_gradientn(colors = c("gray", "blue", "red"), 
-                                 na.value = "gray",  # Handle NA values
+            geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
+            scale_fill_gradientn(colors = c("white", "blue", "red"), 
+                                 na.value = "white",  # Handle NA values
                                  breaks = break_points,
                                  labels = label,
                                  limits = limits) +
