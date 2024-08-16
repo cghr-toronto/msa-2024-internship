@@ -253,55 +253,49 @@ create_map_portrait <-
              first_map,
              gplot_title,
              break_type,
-             cod) {
+             cod,
+             insufficient = TRUE) {
         
+        if (insufficient) {
+            data <- data %>%
+                mutate(data_quality = ifelse(deaths < 10 | count < 10, "Insufficient Data", "Sufficient Data"),
+                       rates = ifelse(data_quality == "Insufficient Data", NA, rates))
+        }
         
-    if (break_type == "equal_breaks") {
+        if (break_type == "equal_breaks") {
+            min_val <- min(data$rates, na.rm = TRUE)
+            max_val <- max(data$rates, na.rm = TRUE)
+            
+            break_points <- c(10, 20, 40, 60, 80, 100)
+            label <- c("Insufficient Data", "10-20", "20-40", "40-60", "60-80", "80-100")
+            
+            limits <- c(min_val, max(break_points))
+        } else if (break_type == "manual") {
+            label <- names(break_points)
+        } 
         
-        min_val <- min(data$rates, na.rm = TRUE)
-        max_val <- max(data$rates, na.rm = TRUE)
+        filtered_data <- data %>%
+            filter(symptoms == symptom & denom_group == cod) %>%
+            mutate(fraction = glue("{count}/{deaths}"))
         
-        breaks <- 6
-        
-        # Calculate the interval width
-        interval_width <- max_val / breaks
-        
-        # Generate the sequence of break points
-        break_points <- seq(min_val, max_val, len = 6)
-        
-        label <- scales::number_format(accuracy = 1)
-        
-        limits <- c(min_val, max_val)
-        
-    } else if (break_type == "manual") {
-        
-        label <- names(break_points)
-        
-    } 
-    
-    filtered_data <- data %>% filter(symptoms == symptom & denom_group == cod)
-    
-    filtered_data <- filtered_data %>% mutate(fraction = glue("{count}/{deaths}"))
-    
-    map <- ggplot(data = filtered_data) +
-        geom_sf(aes(fill=(rates))) +
-        guides(fill = guide_legend()) +
-        ggtitle(gplot_title) +
-        theme_minimal() + 
-        theme(panel.grid.major = element_blank(), 
-              panel.grid.minor = element_blank(),
-              axis.text = element_blank(), 
-              axis.ticks = element_blank(),
-              axis.title.x = element_blank(),
-              axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
-              plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 15) else element_blank()) +
-        ylab(paste(symptom)) +
-        scale_fill_continuous(low="white", 
-                              high="darkblue", 
-                              breaks = break_points,
-                              labels = label,
-                              limits = limits) +
-        guides(fill = guide_legend(nrow = 1, title = "Rates (%)"))
+        map <- ggplot(data = filtered_data) +
+            geom_sf(aes(fill = rates), color = NA) +
+            scale_fill_gradientn(colors = c("gray", "blue", "red"), 
+                                 na.value = "gray",  # Handle NA values
+                                 breaks = break_points,
+                                 labels = label,
+                                 limits = limits) +
+            guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
+            ggtitle(gplot_title) +
+            theme_minimal() + 
+            theme(panel.grid.major = element_blank(), 
+                  panel.grid.minor = element_blank(),
+                  axis.text = element_blank(), 
+                  axis.ticks = element_blank(),
+                  axis.title.x = element_blank(),
+                  axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
+                  plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
+            ylab(paste(symptom))
     
     # Conditionally add labels
     if (labels) {
@@ -345,7 +339,8 @@ create_plots <-
                 first_map = fm,
                 gplot_title = "Cases\nper 100\nMalaria deaths",
                 break_type = "equal_breaks",
-                cod = "Malaria"
+                cod = "Malaria",
+                insufficient = TRUE
             )
             
             infection_plots <- create_map_portrait(
@@ -356,7 +351,8 @@ create_plots <-
                 first_map = fm,
                 gplot_title = "Cases\nper 100\nInfection deaths",
                 break_type = "equal_breaks",
-                cod = "Infections"
+                cod = "Infections",
+                insufficient = TRUE
             )
             
             non_infection_plots <- create_map_portrait(
@@ -367,7 +363,8 @@ create_plots <-
                 first_map = fm,
                 gplot_title = "Cases\nper 100\nNon-Infection deaths",
                 break_type = "equal_breaks",
-                cod = "Non-Infections"
+                cod = "Non-Infections",
+                insufficient = TRUE
             )
             
             list(malaria_plots, infection_plots, non_infection_plots)
