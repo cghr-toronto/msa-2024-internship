@@ -258,21 +258,35 @@ create_map_portrait <-
         
         if (insufficient) {
             data <- data %>%
-                mutate(data_quality = ifelse(deaths < 10 | count < 10, "Insufficient Data", "Sufficient Data"),
+                mutate(data_quality = ifelse(deaths < 10, "Insufficient Data", "Sufficient Data"),
                        rates = ifelse(data_quality == "Insufficient Data", NA, rates))
         }
         
         if (break_type == "equal_breaks") {
+            
             min_val <- min(data$rates, na.rm = TRUE)
             max_val <- max(data$rates, na.rm = TRUE)
             
-            break_points <- c(10, 20, 40, 60, 80, 100)
-            label <- c("Insufficient Data", "10-20", "20-40", "40-60", "60-80", "80-100")
+            breaks <- 6
             
-            limits <- c(min_val, max(break_points))
+            # Calculate the interval width
+            interval_width <- max_val / breaks
+            
+            # Generate the sequence of break points
+            break_points <- seq(min_val, max_val, len = 6)
+            
+            label <- scales::number_format(accuracy = 1)
+            
+            limits <- c(min_val, max_val)
         
             } else if (break_type == "manual") {
-            label <- names(break_points)
+                min_val <- min(data$rates, na.rm = TRUE)
+                max_val <- max(data$rates, na.rm = TRUE)
+                
+                break_points <- c(10, 20, 40, 60, 80, 100)
+                label <- c("Insufficient Data", "0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80","80-90", "90-100")
+                
+                limits <- c(min_val, max_val)
         } 
         
         filtered_data <- data %>%
@@ -281,8 +295,8 @@ create_map_portrait <-
         
         map <- ggplot(data = filtered_data) +
             geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
-            scale_fill_gradientn(colors = c("white", "green", "yellow", "red"),
-                                 values = scales::rescale(c(0, 10.1, 55, 100)),
+            scale_fill_gradientn(colors = c("white","green","red"),
+                                 values = scales::rescale(c(0, 10, 100)),
                                  na.value = "white",  # Handle NA values
                                  breaks = break_points,
                                  labels = label,
@@ -340,7 +354,7 @@ create_plots <-
                 labels = label,
                 first_map = fm,
                 gplot_title = "Cases\nper 100\nMalaria deaths",
-                break_type = "equal_breaks",
+                break_type = "manual",
                 cod = "Malaria",
                 insufficient = TRUE
             )
@@ -352,7 +366,7 @@ create_plots <-
                 labels = label,
                 first_map = fm,
                 gplot_title = "Cases\nper 100\nInfection deaths",
-                break_type = "equal_breaks",
+                break_type = "manual",
                 cod = "Infections",
                 insufficient = TRUE
             )
@@ -364,7 +378,7 @@ create_plots <-
                 labels = label,
                 first_map = fm,
                 gplot_title = "Cases\nper 100\nNon-Infection deaths",
-                break_type = "equal_breaks",
+                break_type = "manual",
                 cod = "Non-Infections",
                 insufficient = TRUE
             )
