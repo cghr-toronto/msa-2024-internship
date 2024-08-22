@@ -199,6 +199,30 @@ create_map_landscape <-
             
             limits <- c(min_val, max_val)
             
+            filtered_data <- data %>% filter(symptoms == symptom & denom_group == cod)
+            
+            filtered_data <- filtered_data %>% mutate(fraction = glue("{count}/{deaths}"))
+            
+            map <- ggplot(data = filtered_data) +
+                geom_sf(aes(fill=(rates))) +
+                guides(fill = guide_legend()) +
+                ggtitle(paste(symptom)) +
+                theme_minimal() + 
+                theme(panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      axis.text = element_blank(), 
+                      axis.ticks = element_blank(),
+                      axis.title.x = element_blank(),
+                      axis.title.y = if (symptom == first_map) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
+                      plot.title = if (gplot_title) element_text(hjust = 0.5, size = 17) else element_blank()) +
+                ylab(if (symptom == first_map) y_axis else NULL) +
+                scale_fill_continuous(low="white", 
+                                      high="darkblue", 
+                                      breaks = break_points,
+                                      labels = label,
+                                      limits = limits) +
+                guides(fill = guide_legend(nrow = 1, title = "Rates (%)"))
+            
         } else if (break_type == "manual") {
             min_val <- min(data$rates, na.rm = TRUE)
             max_val <- max(data$rates, na.rm = TRUE)
@@ -219,32 +243,31 @@ create_map_landscape <-
                 )
             
             limits <- c(min_val, max_val)
+            filtered_data <- data %>%
+                filter(symptoms == symptom & denom_group == cod) %>%
+                mutate(fraction = glue("{count}/{deaths}"))
+            
+            map <- ggplot(data = filtered_data) +
+                geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
+                scale_fill_gradientn(colors = c("white","darkgreen", "yellow", "darkred"),
+                                     values = scales::rescale(c(0, 10, 55, 100)),
+                                     na.value = "white",  # Handle NA values
+                                     breaks = break_points,
+                                     labels = label,
+                                     limits = limits) +
+                guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
+                ggtitle(gplot_title) +
+                theme_minimal() + 
+                theme(panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      axis.text = element_blank(), 
+                      axis.ticks = element_blank(),
+                      axis.title.x = element_blank(),
+                      axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
+                      plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
+                ylab(paste(symptom))
         }
-    
-    filtered_data <- data %>% filter(symptoms == symptom & denom_group == cod)
-    
-    filtered_data <- filtered_data %>% mutate(fraction = glue("{count}/{deaths}"))
-    
-    map <- ggplot(data = filtered_data) +
-        geom_sf(aes(fill=(rates))) +
-        guides(fill = guide_legend()) +
-        ggtitle(paste(symptom)) +
-        theme_minimal() + 
-        theme(panel.grid.major = element_blank(), 
-              panel.grid.minor = element_blank(),
-              axis.text = element_blank(), 
-              axis.ticks = element_blank(),
-              axis.title.x = element_blank(),
-              axis.title.y = if (symptom == first_map) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
-              plot.title = if (gplot_title) element_text(hjust = 0.5, size = 17) else element_blank()) +
-        ylab(if (symptom == first_map) y_axis else NULL) +
-        scale_fill_continuous(low="white", 
-                              high="darkblue", 
-                              breaks = break_points,
-                              labels = label,
-                              limits = limits) +
-        guides(fill = guide_legend(nrow = 1, title = "Rates (%)"))
-    
+  
     # Conditionally add labels
     if (labels) {
         map <- map + geom_sf_label(aes(label = fraction), size = 1.8)
@@ -293,6 +316,30 @@ create_map_portrait <-
             
             limits <- c(min_val, max_val)
             
+            filtered_data <- data %>% filter(symptoms == symptom & denom_group == cod)
+            
+            filtered_data <- filtered_data %>% mutate(fraction = glue("{count}/{deaths}"))
+            
+            map <- ggplot(data = filtered_data) +
+                geom_sf(aes(fill=(rates))) +
+                guides(fill = guide_legend()) +
+                ggtitle(paste(symptom)) +
+                theme_minimal() + 
+                theme(panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      axis.text = element_blank(), 
+                      axis.ticks = element_blank(),
+                      axis.title.x = element_blank(),
+                      axis.title.y = if (symptom == first_map) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
+                      plot.title = if (gplot_title) element_text(hjust = 0.5, size = 17) else element_blank()) +
+                ylab(if (symptom == first_map) y_axis else NULL) +
+                scale_fill_continuous(low="white", 
+                                      high="darkblue", 
+                                      breaks = break_points,
+                                      labels = label,
+                                      limits = limits) +
+                guides(fill = guide_legend(nrow = 1, title = "Rates (%)"))
+            
         } else if (break_type == "manual") {
             min_val <- min(data$rates, na.rm = TRUE)
             max_val <- max(data$rates, na.rm = TRUE)
@@ -313,32 +360,32 @@ create_map_portrait <-
                 )
             
             limits <- c(min_val, max_val)
+            
+            filtered_data <- data %>%
+                filter(symptoms == symptom & denom_group == cod) %>%
+                mutate(fraction = glue("{count}/{deaths}"))
+            
+            map <- ggplot(data = filtered_data) +
+                geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
+                scale_fill_gradientn(colors = c("white","darkgreen", "yellow", "darkred"),
+                                     values = scales::rescale(c(0, 10, 55, 100)),
+                                     na.value = "white",  # Handle NA values
+                                     breaks = break_points,
+                                     labels = label,
+                                     limits = limits) +
+                guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
+                ggtitle(gplot_title) +
+                theme_minimal() + 
+                theme(panel.grid.major = element_blank(), 
+                      panel.grid.minor = element_blank(),
+                      axis.text = element_blank(), 
+                      axis.ticks = element_blank(),
+                      axis.title.x = element_blank(),
+                      axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
+                      plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
+                ylab(paste(symptom))
         }
         
-        filtered_data <- data %>%
-            filter(symptoms == symptom & denom_group == cod) %>%
-            mutate(fraction = glue("{count}/{deaths}"))
-        
-        map <- ggplot(data = filtered_data) +
-            geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
-            scale_fill_gradientn(colors = c("white","darkgreen", "yellow", "darkred"),
-                                 values = scales::rescale(c(0, 10, 55, 100)),
-                                 na.value = "white",  # Handle NA values
-                                 breaks = break_points,
-                                 labels = label,
-                                 limits = limits) +
-            guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
-            ggtitle(gplot_title) +
-            theme_minimal() + 
-            theme(panel.grid.major = element_blank(), 
-                  panel.grid.minor = element_blank(),
-                  axis.text = element_blank(), 
-                  axis.ticks = element_blank(),
-                  axis.title.x = element_blank(),
-                  axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
-                  plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
-            ylab(paste(symptom))
-    
     # Conditionally add labels
     if (labels) {
         map <- map + geom_sf_label(aes(label = fraction), size = 1.8)
