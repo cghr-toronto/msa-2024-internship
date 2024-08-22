@@ -374,7 +374,7 @@ create_map_portrait <-
             map <- ggplot(data = filtered_data) +
                 geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
                 scale_fill_gradientn(colors = c("white","lightgreen", "darkgreen", "yellow", "gold", "darkred"),
-                                     values = scales::rescale(c(0, 20, 40, 50, 70, 100)),
+                                     values = scales::rescale(c(0, 20, 40, 50, 60, 100)),
                                      na.value = "white",  # Handle NA values
                                      breaks = break_points,
                                      labels = label,
