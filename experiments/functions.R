@@ -150,7 +150,7 @@ symptom_rate <- function(
     for (symptom in symptoms) {
         rate_column <- paste0(symptom, "_", "rates")
         spatial[[rate_column]] <- (spatial[[symptom]] / spatial[[deaths]]) * 100
-        spatial[[rate_column]] <- round(spatial[[rate_column]], 2)
+        spatial[[rate_column]] <- round(spatial[[rate_column]])
     }
     
     # Print the wide format
@@ -373,27 +373,12 @@ create_map_portrait <-
             
             map <- ggplot(data = filtered_data) +
                 geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
-                scale_fill_gradientn(
-                    colors = c(
-                        "white",
-                        "springgreen",
-                        "lightgreen",
-                        "green",
-                        "darkgreen",
-                        "yellow",
-                        "gold",
-                        "orange",
-                        "darkorange",
-                        "orangered",
-                        "darkred"
-                    ),
-                    values = scales::rescale(c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)),
-                    na.value = "white",
-                    # Handle NA values
-                    breaks = break_points,
-                    labels = label,
-                    limits = limits
-                ) +
+                scale_fill_gradientn(colors = c("white","lightgreen", "darkgreen", "yellow", "gold", "darkred"),
+                                     values = scales::rescale(c(0, 20, 40, 50, 60, 100)),
+                                     na.value = "white",  # Handle NA values
+                                     breaks = break_points,
+                                     labels = label,
+                                     limits = limits) +
                 guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
                 ggtitle(gplot_title) +
                 theme_minimal() + 
