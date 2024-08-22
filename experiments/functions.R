@@ -183,6 +183,12 @@ create_map_landscape <-
              break_type,
              cod) {
         
+        if (insufficient) {
+            data <- data %>%
+                mutate(data_quality = ifelse(deaths < 10, "Insufficient Data", "Sufficient Data"),
+                       rates = ifelse(data_quality == "Insufficient Data", NA, rates))
+        }
+        
         if (break_type == "equal_breaks") {
             min_val <- min(data$rates, na.rm = TRUE)
             max_val <- max(data$rates, na.rm = TRUE)
