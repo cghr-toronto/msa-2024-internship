@@ -351,6 +351,7 @@ create_map_portrait <-
             max_val <- max(data$rates, na.rm = TRUE)
             
             break_points <- c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+            
             label <-
                 c("Insufficient Data",
                     "0-10",
@@ -373,8 +374,15 @@ create_map_portrait <-
             
             map <- ggplot(data = filtered_data) +
                 geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
-                scale_fill_gradientn(colors = c("white","lightgreen", "darkgreen", "yellow", "gold", "darkred"),
-                                     values = scales::rescale(c(0, 20, 40, 50, 60, 100)),
+                scale_fill_gradientn(colors = c("white",
+                                                "lightgreen",
+                                                "green",
+                                                "darkgreen",
+                                                "yellow",
+                                                "orange",
+                                                "red",
+                                                "darkred"),
+                                     values = scales::rescale(c(0, 10, 20, 40, 60, 70, 80, 100)),
                                      na.value = "white",  # Handle NA values
                                      breaks = break_points,
                                      labels = label,
