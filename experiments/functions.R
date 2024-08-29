@@ -348,47 +348,74 @@ create_map_portrait <-
             
         } else if (break_type == "manual") {
             
+            min_val <- min(data$rates, na.rm = TRUE)
+            max_val <- max(data$rates, na.rm = TRUE)
+            
+            break_points <- c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+            
+            label <-
+                c("Insufficient Data",
+                  "0-10",
+                  "10-20",
+                  "20-30",
+                  "30-40",
+                  "40-50",
+                  "50-60",
+                  "60-70",
+                  "70-80",
+                  "80-90",
+                  "90-100"
+                )
+            
+            limits <- c(min_val, max_val)
+            
             filtered_data <- data %>%
                 filter(symptoms == symptom & denom_group == cod) %>%
                 mutate(fraction = glue("{count}/{deaths}"))
             
-            filtered_data$rates <- as.factor(filtered_data$rates)
-            
             map <- ggplot(data = filtered_data) +
                 geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
-                scale_fill_manual(values = c(
-                    "Insufficient Data" = "white",
-                    "0-10" = "lightgreen",
-                    "10-20" = "green",
-                    "20-30" = "darkgreen",
-                    "30-40" = "yellow",
-                    "40-50" = "gold",
-                    "50-60" = "orange",
-                    "60-70" = "red",
-                    "70-80" = "darkred",
-                    "80-90" = "purple",
-                    "90-100" = "black"
-                ),
-                breaks = c(
-                    "Insufficient Data", "0-10", "10-20", "20-30", "30-40",
-                    "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"
-                ),
-                labels = c(
-                    "Insufficient Data", "0-10", "10-20", "20-30", "30-40",
-                    "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"
-                )
+                scale_fill_gradientn(
+                    colors = c(
+                        "white",
+                        "lightgreen",
+                        "green",
+                        "darkgreen",
+                        "yellow",
+                        "orange",
+                        "red",
+                        "darkred"
+                    ),
+                    values = scales::rescale(c(0, 10, 20, 40, 60, 70, 80, 100)),
+                    na.value = "white",
+                    # Handle NA values
+                    breaks = break_points,
+                    labels = label,
+                    limits = limits
                 ) +
                 guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
                 ggtitle(gplot_title) +
-                theme_minimal() + 
-                theme(panel.grid.major = element_blank(), 
-                      panel.grid.minor = element_blank(),
-                      axis.text = element_blank(), 
-                      axis.ticks = element_blank(),
-                      axis.title.x = element_blank(),
-                      axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
-                      plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
-                ylab(paste(symptom)) 
+                theme_minimal() +
+                theme(
+                    panel.grid.major = element_blank(),
+                    panel.grid.minor = element_blank(),
+                    axis.text = element_blank(),
+                    axis.ticks = element_blank(),
+                    axis.title.x = element_blank(),
+                    axis.title.y = if (y_axis)
+                        element_text(
+                            angle = 0,
+                            vjust = 0.5,
+                            size = 20
+                        )
+                    else
+                        element_blank(),
+                    plot.title = if (first_map == symptom)
+                        element_text(hjust = 0.5, size = 17)
+                    else
+                        element_blank()
+                ) +
+                ylab(paste(symptom))
         }
         
     # Conditionally add labels
