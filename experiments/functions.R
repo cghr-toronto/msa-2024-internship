@@ -348,53 +348,36 @@ create_map_portrait <-
             
         } else if (break_type == "manual") {
             
-            data$rate_range <- cut(data$rates, 
-                                  breaks = c(-Inf, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100), 
-                                  labels = c("Insufficient Data",
-                                             "0-10",
-                                             "10-20",
-                                             "20-30",
-                                             "30-40",
-                                             "40-50",
-                                             "50-60",
-                                             "60-70",
-                                             "70-80",
-                                             "80-90",
-                                             "90-100"),
-                                  right = FALSE)
-            
-            data$rate_range <- factor(data$rate_range, 
-                                      levels = c("Insufficient Data", "0-10", "10-20", "20-30", "30-40", 
-                                                 "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"))
-            colour_range = c(
-                "Insufficient Data" = "white",
-                "0-10" = "palegreen",
-                "10-20" = "lightgreen",
-                "20-30" = "forestgreen",
-                "30-40" = "#006400",
-                "40-50" = "yellow",
-                "50-60" = "gold",
-                "60-70" = "orange",
-                "70-80" = "orangered",
-                "80-90" = "red",
-                "90-100" = "darkred"
-            )
-            
-            dummy_data <- data.frame(
-                category = factor(names(colour_range), levels = names(colour_range)),
-                value = 0  # Values do not matter here
-            )
-            
             filtered_data <- data %>%
                 filter(symptoms == symptom & denom_group == cod) %>%
                 mutate(fraction = glue("{count}/{deaths}"))
             
+            filtered_data$rates <- as.factor(filtered_data$rates)
+            
             map <- ggplot(data = filtered_data) +
-                geom_sf(aes(fill = rate_range), color = "gray50", size = 0.2) +
-                scale_fill_manual(values = colour_range,
-                                  limits = names(colour_range),
-                                  na.value = "white",  # Handle NA values
-                                  na.translate = FALSE) +
+                geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
+                scale_fill_manual(values = c(
+                    "Insufficient Data" = "white",
+                    "0-10" = "lightgreen",
+                    "10-20" = "green",
+                    "20-30" = "darkgreen",
+                    "30-40" = "yellow",
+                    "40-50" = "gold",
+                    "50-60" = "orange",
+                    "60-70" = "red",
+                    "70-80" = "darkred",
+                    "80-90" = "purple",
+                    "90-100" = "black"
+                ),
+                breaks = c(
+                    "Insufficient Data", "0-10", "10-20", "20-30", "30-40",
+                    "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"
+                ),
+                labels = c(
+                    "Insufficient Data", "0-10", "10-20", "20-30", "30-40",
+                    "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"
+                )
+                ) +
                 guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
                 ggtitle(gplot_title) +
                 theme_minimal() + 
@@ -405,8 +388,7 @@ create_map_portrait <-
                       axis.title.x = element_blank(),
                       axis.title.y = if (y_axis) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
                       plot.title = if (first_map == symptom) element_text(hjust = 0.5, size = 17) else element_blank()) +
-                ylab(paste(symptom)) +
-                theme(legend.position = "none")
+                ylab(paste(symptom)) 
         }
         
     # Conditionally add labels
