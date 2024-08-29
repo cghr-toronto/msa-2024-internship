@@ -49,56 +49,46 @@ label <-
       "90-100"
     )
 
-limits <- c(min_val, max_val)
-
 filtered_data <- data %>%
     filter(symptoms == "fever" & denom_group == "Malaria") %>%
     mutate(fraction = glue("{count}/{deaths}"))
 
 # Define a function to categorize values
-# categorize_value <- function(value) {
-#     if (is.na(value)) {
-#         return("Insufficient Data")
-#     } else if (value < 10) {
-#         return("0-10")
-#     } else if (value >= 10 & value < 20) {
-#         return("10-20")
-#     } else if (value >= 20 & value < 30) {
-#         return("20-30")
-#     } else if (value >= 30 & value < 40) {
-#         return("30-40")
-#     } else if (value >= 40 & value < 50) {
-#         return("40-50")
-#     } else if (value >= 50 & value < 60) {
-#         return("50-60")
-#     } else if (value >= 60 & value < 70) {
-#         return("60-70")
-#     } else if (value >= 70 & value < 80) {
-#         return("70-80")
-#     } else if (value >= 80 & value < 90) {
-#         return("80-90")
-#     } else if (value >= 90 & value <= 100) {
-#         return("90-100")
-#     } else {
-#         return(NA)
-#     }
-# }
+categorize_value <- function(value) {
+    if (is.na(value)) {
+        return("Insufficient Data")
+    } else if (value < 10) {
+        return("0-10")
+    } else if (value >= 10 & value < 20) {
+        return("10-20")
+    } else if (value >= 20 & value < 30) {
+        return("20-30")
+    } else if (value >= 30 & value < 40) {
+        return("30-40")
+    } else if (value >= 40 & value < 50) {
+        return("40-50")
+    } else if (value >= 50 & value < 60) {
+        return("50-60")
+    } else if (value >= 60 & value < 70) {
+        return("60-70")
+    } else if (value >= 70 & value < 80) {
+        return("70-80")
+    } else if (value >= 80 & value < 90) {
+        return("80-90")
+    } else if (value >= 90 & value <= 100) {
+        return("90-100")
+    } else {
+        return(NA)
+    }
+}
+
+filtered_data$legend_label <- sapply(filtered_data$rates, categorize_value)
 
 map <- ggplot(data = filtered_data) +
-    geom_sf(aes(fill = rates), color = "gray50", size = 0.2) +
-    scale_fill_gradientn(colors = c("white",
-                                    "lightgreen",
-                                    "green",
-                                    "darkgreen",
-                                    "yellow",
-                                    "orange",
-                                    "red",
-                                    "darkred"),
-                         values = scales::rescale(c(0, 10, 20, 40, 60, 70, 80, 100)),
-                         na.value = "white",  # Handle NA values
+    geom_sf(aes(fill = legend_label), color = "gray50", size = 0.2) +
+    scale_fill_discrete( na.value = "white",  # Handle NA values
                          breaks = break_points,
-                         labels = label,
-                         limits = limits) +
+                         labels = label) +
     guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
     ggtitle("Cases\nper 100\nMalaria deaths") +
     theme_minimal() +
@@ -115,7 +105,6 @@ map <- ggplot(data = filtered_data) +
                 size = 20)
     ) +
     ylab("fever")
-
 
 map <-
     map + geom_sf_label(aes(label = fraction), size = 1.8)
