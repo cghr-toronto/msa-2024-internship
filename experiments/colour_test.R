@@ -104,30 +104,18 @@ bbox <- st_bbox(filtered_data)  # Get the bounding box of actual data
 
 # Create dummy data with arbitrary coordinates
 dummy_data <- data.frame(
-    lon = c(mean(bbox["xmin"]), mean(bbox["xmax"])),  # Arbitrary lon values
-    lat = c(mean(bbox["ymin"]), mean(bbox["ymax"])),  # Arbitrary lat values
-    legend_label = c("10-20", "90-100")  # Labels to ensure they appear in the legend
+    lon = rep(mean(bbox["xmin"]), length(labels)),  # Arbitrary lon values
+    lat = rep(mean(bbox["ymin"]), length(labels)),  # Arbitrary lat values
+    legend_label = factor(labels, levels = labels)  # Ensure all labels are included
 )
 
 # Convert dummy data to sf object
 dummy_data_sf <- st_as_sf(dummy_data, coords = c("lon", "lat"), crs = st_crs(filtered_data))
 
-# Example: Transform CRS of `dummy_data` to match `filtered_data`
-dummy_data_sf <- st_transform(dummy_data_sf, st_crs(filtered_data))
-
-dummy_data_sf$gid <- NA
-dummy_data_sf$symptoms <- NA
-dummy_data_sf$rates <- NA
-dummy_data_sf$deaths <- NA
-dummy_data_sf$count <- NA
-dummy_data_sf$distname <- NA
-dummy_data_sf$age_range <- NA
-dummy_data_sf$age_group <- NA
-dummy_data_sf$sex <- NA
-dummy_data_sf$denom_group <- NA
-dummy_data_sf$data_quality <- NA
-dummy_data_sf$fraction <- NA
-dummy_data_sf$legend_label <- NA
+missing_columns <- setdiff(names(filtered_data), names(dummy_data_sf))
+for (col in missing_columns) {
+    dummy_data_sf[[col]] <- NA
+}
 
 # Ensure the same column names and types in both data frames
 dummy_data_sf <- dummy_data_sf %>% 
@@ -140,7 +128,9 @@ map <- ggplot(data = filtered_data) +
     geom_sf(aes(fill = legend_label)) +
     scale_fill_manual(values = values,
                       breaks = labels,
-                      labels = labels) +
+                      labels = labels,
+                      limits = limits(c(0, 100)),
+                      drop = FALSE) +
     guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
     ggtitle("Cases\nper 100\nMalaria deaths") +
     theme_minimal() +
