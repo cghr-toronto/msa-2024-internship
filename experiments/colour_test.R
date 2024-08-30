@@ -33,6 +33,8 @@ data <- group_symptoms %>%
 min_val <- min(data$rates, na.rm = TRUE)
 max_val <- max(data$rates, na.rm = TRUE)
 
+limits <- c(min_val, max_val)
+
 break_points <- c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
 
 label <-
@@ -82,13 +84,25 @@ categorize_value <- function(value) {
     }
 }
 
-filtered_data$legend_label <- sapply(filtered_data$rates, categorize_value)
+filtered_data$legend_label <- factor(sapply(filtered_data$rates, categorize_value),
+                                     levels = label)
 
 map <- ggplot(data = filtered_data) +
     geom_sf(aes(fill = legend_label), color = "gray50", size = 0.2) +
-    scale_fill_discrete( na.value = "white",  # Handle NA values
-                         breaks = break_points,
-                         labels = label) +
+    scale_fill_discrete(breaks = label,
+                        labels = label,
+                        type = c("white",
+                                 "lightgreen",
+                                 "green",
+                                 "forestgreen",
+                                 "darkgreen",
+                                 "yellow",
+                                 "gold",
+                                 "orange",
+                                 "orangered",
+                                 "red",
+                                 "darkred"),
+                        drop = FALSE) +
     guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
     ggtitle("Cases\nper 100\nMalaria deaths") +
     theme_minimal() +
