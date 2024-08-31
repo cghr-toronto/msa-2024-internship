@@ -89,19 +89,19 @@ filtered_data$legend_label <- factor(sapply(filtered_data$rates, categorize_valu
 
 map <- ggplot(data = filtered_data) +
     geom_sf(aes(fill = legend_label), color = "gray50", size = 0.2) +
-    scale_fill_discrete(breaks = label,
-                        labels = label,
-                        type = c("white",
-                                 "lightgreen",
-                                 "green",
-                                 "forestgreen",
-                                 "darkgreen",
-                                 "yellow",
-                                 "gold",
-                                 "orange",
-                                 "orangered",
-                                 "red",
-                                 "darkred"),
+    scale_fill_manual(breaks = label,
+                      labels = label,
+                      values = c("Insufficient Data" = "white",
+                                 "0-10" = "lightgreen",
+                                 "10-20" = "green",
+                                 "20-30" = "forestgreen",
+                                 "30-40" = "darkgreen",
+                                 "40-50" = "yellow",
+                                 "50-60" = "gold",
+                                 "60-70" = "orange",
+                                 "70-80" = "orangered",
+                                 "80-90" = "red",
+                                 "90-100" = "darkred"),
                         drop = FALSE) +
     guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
     ggtitle("Cases\nper 100\nMalaria deaths") +
