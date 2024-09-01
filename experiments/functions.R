@@ -311,7 +311,7 @@ create_plots <-
                 plot.title = element_text(hjust = 0.5, size = 20, face = "bold")
             ) +
             ggtitle(paste(plot_title)) +
-            geom_sf_label(aes(label = fraction), size = 1.8)
+            geom_sf_label(aes(label = fraction), size = 1.8, show.legend = FALSE)
     
     out <- pdf_print(combined_plot, pdf_title, width = width, height = height)
     
