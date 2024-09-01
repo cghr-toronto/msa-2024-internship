@@ -305,53 +305,10 @@ create_map_portrait <-
                 mutate(data_quality = ifelse(deaths < 10, "Insufficient Data", "Sufficient Data"),
                        rates = ifelse(data_quality == "Insufficient Data", NA, rates))
         }
-        
-        if (break_type == "equal_breaks") {
-            min_val <- min(data$rates, na.rm = TRUE)
-            max_val <- max(data$rates, na.rm = TRUE)
-            
-            breaks <- 6
-            
-            # Calculate the interval width
-            interval_width <- max_val / breaks
-            
-            # Generate the sequence of break points
-            break_points <- seq(min_val, max_val, len = 6)
-            
-            label <- scales::number_format(accuracy = 1)
-            
-            limits <- c(min_val, max_val)
-            
-            filtered_data <- data %>% filter(symptoms == symptom & denom_group == cod)
-            
-            filtered_data <- filtered_data %>% mutate(fraction = glue("{count}/{deaths}"))
-            
-            map <- ggplot(data = filtered_data) +
-                geom_sf(aes(fill=(rates))) +
-                guides(fill = guide_legend()) +
-                ggtitle(paste(symptom)) +
-                theme_minimal() + 
-                theme(panel.grid.major = element_blank(), 
-                      panel.grid.minor = element_blank(),
-                      axis.text = element_blank(), 
-                      axis.ticks = element_blank(),
-                      axis.title.x = element_blank(),
-                      axis.title.y = if (symptom == first_map) element_text(angle = 0, vjust = 0.5, size = 20) else element_blank(),
-                      plot.title = if (gplot_title) element_text(hjust = 0.5, size = 17) else element_blank()) +
-                ylab(if (symptom == first_map) y_axis else NULL) +
-                scale_fill_continuous(low="white", 
-                                      high="darkblue", 
-                                      breaks = break_points,
-                                      labels = label,
-                                      limits = limits) +
-                guides(fill = guide_legend(nrow = 1, title = "Rates (%)"))
-            
-        } else if (break_type == "manual") {
             
             filtered_data <- data %>%
                 filter(symptoms == symptom & denom_group == cod) %>%
                 mutate(fraction = glue("{count}/{deaths}"))
-            
             
             # Define a function to categorize values
             categorize_value <- function(value) {
@@ -389,44 +346,8 @@ create_map_portrait <-
                 levels = c("Insufficient Data", "0-10", "10-20", "20-30", "30-40", 
                            "40-50", "50-60", "60-70", "70-80", "80-90", "90-100")
             )
-            
-            map <- ggplot(data = filtered_data) +
-                geom_sf(aes(fill = legend_label), color = "gray50", size = 0.2) +
-                guides(fill = guide_legend(nrow = 1, title = "Rates (%)")) +
-                ggtitle(gplot_title) +
-                theme_minimal() +
-                theme(
-                    panel.grid.major = element_blank(),
-                    panel.grid.minor = element_blank(),
-                    axis.text = element_blank(),
-                    axis.ticks = element_blank(),
-                    axis.title.x = element_blank(),
-                    axis.title.y = if (y_axis)
-                        element_text(
-                            angle = 0,
-                            vjust = 0.5,
-                            size = 20
-                        )
-                    else
-                        element_blank(),
-                    plot.title = if (first_map == symptom)
-                        element_text(hjust = 0.5, size = 17)
-                    else
-                        element_blank()
-                ) +
-                ylab(paste(symptom))
-        }
-        
-    # Conditionally add labels
-    if (labels) {
-        map <- map + geom_sf_label(aes(label = fraction), size = 1.8)
-    }
     
-    if (y_axis) {
-        map <- map + ylab(paste(symptom))
-    }
-    
-    return(map)
+    return(filtered_data)
 }
 
 # Creating grouped plots parameters
@@ -446,80 +367,45 @@ create_plots <-
     
     symptoms <- unique(group_symptoms$symptoms)
     
-    fm <- symptoms[[1]]
-    
     # Portrait layout    
     if (orientation == "portrait") {
-        all_plots <- lapply(symptoms, function(symptom) {
-            malaria_plots <- create_map_portrait(
+        all_data <- lapply(symptoms, function(symptom) {
+            malaria_data <- create_map_portrait(
                 data = group_symptoms,
                 symptom = symptom,
-                y_axis = TRUE,
-                labels = label,
-                first_map = fm,
-                gplot_title = "Cases\nper 100\nMalaria deaths",
-                break_type = "manual",
-                cod = "Malaria",
-                insufficient = TRUE
+                cod = "Malaria"
             )
             
-            infection_plots <- create_map_portrait(
+            infection_data <- create_map_portrait(
                 data = group_symptoms,
                 symptom = symptom,
-                y_axis = FALSE,
-                labels = label,
-                first_map = fm,
-                gplot_title = "Cases\nper 100\nInfection deaths",
-                break_type = "manual",
-                cod = "Infections",
-                insufficient = TRUE
+                cod = "Infections"
             )
             
-            non_infection_plots <- create_map_portrait(
+            non_infection_data <- create_map_portrait(
                 data = group_symptoms,
                 symptom = symptom,
-                y_axis = FALSE,
-                labels = label,
-                first_map = fm,
-                gplot_title = "Cases\nper 100\nNon-Infection deaths",
-                break_type = "manual",
-                cod = "Non-Infections",
-                insufficient = TRUE
+                cod = "Non-Infections"
             )
             
-            list(malaria_plots, infection_plots, non_infection_plots)
+            rbind(malaria_data, infection_data, non_infection_data)
             
         })
         
-        # Flatten the list so that all plots are in a single list
-        all_plots <- unlist(all_plots, recursive = FALSE)
+        # Flatten the list to a single data frame
+        all_data <- do.call(rbind, all_data)
         
-        label <- c("Insufficient Data",
-                   "0-10",
-                   "10-20",
-                   "20-30",
-                   "30-40",
-                   "40-50",
-                   "50-60",
-                   "60-70",
-                   "70-80",
-                   "80-90",
-                   "90-100")
+        # Ensure 'cod' is a factor and order the levels as desired
+        all_data$denom_group <- factor(all_data$denom_group, levels = c("Malaria", "Infections", "Non-Infections"))
         
-        combined_plot <-
-            guide_area() / wrap_plots(all_plots, ncol = 3) +
-            plot_annotation(title = plot_title,
-                            theme = theme(plot.title = element_text(
-                                size = 20,
-                                face = "bold",
-                                hjust = 0.5
-                            ))) +
-            plot_layout(guides = "collect", heights = unit(c(1, 1.8), c("cm", "null"))) &
+        combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
+            geom_sf(color = "gray50", size = 0.2) +
+            facet_grid(symptoms ~ denom_group) +  # Facet by cause of death and symptom
             scale_fill_manual(
                 values = c(
                     "Insufficient Data" = "white",
                     "0-10" = "lightgreen",
-                    "10-20" = "green",
+                    "10-20" = "lawngreen",
                     "20-30" = "forestgreen",
                     "30-40" = "darkgreen",
                     "40-50" = "yellow",
@@ -529,23 +415,22 @@ create_plots <-
                     "80-90" = "red",
                     "90-100" = "darkred"
                 ),
-                breaks = label,
-                # Include all labels in the legend
-                labels = label,
-                # Use custom labels
+                breaks = c("Insufficient Data", "0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"),
                 drop = FALSE
-            ) & 
+            ) +
+            theme_minimal() +
             theme(
+                panel.grid.major = element_blank(),
+                panel.grid.minor = element_blank(),
+                axis.text = element_blank(),
+                axis.ticks = element_blank(),
+                strip.text = element_text(size = 12, face = "bold"),
                 legend.position = 'top',
                 legend.justification = c(0.5, 0),
-                # Centers the legend horizontally
-                legend.box.margin = margin(
-                    t = 0,
-                    r = 190,
-                    b = 0,
-                    l = 0
-                )
-            )
+                legend.box.margin = margin(t = 0, r = 190, b = 0, l = 0)
+            ) +
+            ggtitle("Combined Map with Facets") +
+            geom_sf_label(aes(label = fraction), size = 1.8)
         
     # Landscape layout
     } else if (orientation == "landscape") {
