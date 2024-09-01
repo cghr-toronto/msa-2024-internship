@@ -276,7 +276,7 @@ create_plots <-
         all_data$denom_group <- factor(all_data$denom_group, levels = c("Malaria", "Infections", "Non-Infections"))
         
         combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
-            geom_sf(color = "gray50", size = 0.2) +
+            geom_sf(color = "gray50", size = 0.2, show.legend = TRUE) +
             facet_grid(symptoms ~ denom_group) +  # Facet by cause of death and symptom
             scale_fill_manual(
                 name = "Rates (%)",
