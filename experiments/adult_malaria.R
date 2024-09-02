@@ -448,9 +448,7 @@ adult_non_infections_agg <- spatial_agg(
 )
 
 # Defining symptoms to be plotted----
-adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss",
-                    "chestPain", "unconscious", "paralysis", "looseStools", "urinaryProblem", "oedema", 
-                    "skinProblems", "yellowEyes", "convulsions", "lumps")
+adult_symptoms <- c("paralysis", "looseStools", "urinaryProblem", "oedema", "skinProblems", "yellowEyes", "convulsions", "lumps")
 
 
 # Running symptom_rate for each age group----
@@ -615,7 +613,7 @@ yam_plot <-
         "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 605)",
         "fig-yam-malaria-maps",
         width = 12,
-        height = 42,
+        height = 25,
         age_range = "15-39",
         age_group = "Adult",
         sex = "Male",
@@ -628,7 +626,7 @@ yaf_plot <-
         "Young Adult Female (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 522)",
         "fig-yaf-malaria-maps",
         width = 12,
-        height = 42,
+        height = 25,
         age_range = "15-39",
         age_group = "Adult",
         sex = "Female",
@@ -641,7 +639,7 @@ oam_plot <-
         "Older Adult Male (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 897)",
         "fig-oam-malaria-maps",
         width = 12,
-        height = 42,
+        height = 25,
         age_range = "40-69",
         age_group = "Adult",
         sex = "Male",
@@ -654,7 +652,7 @@ oaf_plot <-
         "Older Adult Female (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 637)",
         "fig-oaf-malaria-maps",
         width = 12,
-        height = 42,
+        height = 25,
         age_range = "40-69",
         age_group = "Adult",
         sex = "Female",
@@ -667,7 +665,7 @@ young_adult_plot <-
         "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 1127)",
         "fig-ya-malaria-maps",
         width = 12,
-        height = 42,
+        height = 25,
         age_range = "15-39",
         age_group = "Adult",
         sex = "Both",
@@ -680,7 +678,7 @@ older_adult_plot <-
         "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 1534)",
         "fig-oa-malaria-maps",
         width = 12,
-        height = 42,
+        height = 25,
         age_range = "40-69",
         age_group = "Adult",
         sex = "Both",
@@ -693,7 +691,7 @@ adult_plot <-
         "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 2661)",
         "fig-adult-malaria-maps",
         width = 12,
-        height = 42,
+        height = 25,
         age_range = "15-69",
         age_group = "Adult",
         sex = "Both",
