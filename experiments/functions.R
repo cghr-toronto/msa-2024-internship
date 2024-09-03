@@ -246,6 +246,16 @@ create_plots <-
     
     symptoms <- unique(group_symptoms$symptoms)
     
+    symptom_sums <- group_symptoms %>%
+        st_drop_geometry(group_symptoms) %>%
+        filter(denom_group == "Malaria") %>%
+        group_by(symptoms) %>%
+        summarise(symp_freq = sum(count, na.rm = TRUE), .groups = 'drop')
+    
+    # Join the symptom sums back to the original data frame
+    group_symptoms <- group_symptoms %>%
+        left_join(symptom_sums, by = "symptoms")
+    
     one_symp <- symptoms[1]
     
     total_sum <- group_symptoms %>%
@@ -303,7 +313,11 @@ create_plots <-
                                            denom_group == "Non-Infections" ~ glue("Non-Infections\n(n={ninf_sum}, {ninf_perc}%)"),)) %>% 
             mutate(denom_group = factor(denom_group, levels = c(glue("Malaria\n(n={mal_sum}, {mal_perc}%)"),
                                                                 glue("Infections\n(n={inf_sum}, {inf_perc}%)"),
-                                                                glue("Non-Infections\n(n={ninf_sum}, {ninf_perc}%)"))))
+                                                                glue("Non-Infections\n(n={ninf_sum}, {ninf_perc}%)"))
+                                        )
+                   )
+       
+        all_data$symptoms <- fct_reorder(all_data$symptoms, all_data$symp_freq, .desc = TRUE)
         
         combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
             geom_sf(color = "gray50", size = 0.2, show.legend = TRUE) +
