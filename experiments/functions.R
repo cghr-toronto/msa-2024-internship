@@ -292,19 +292,18 @@ create_plots <-
             )
             
             rbind(malaria_data, infection_data, non_infection_data)
-            
         })
         
         # Flatten the list to a single data frame
         all_data <- do.call(rbind, all_data)
         
-        # Ensure 'cod' is a factor and order the levels as desired
-        all_data$denom_group <- factor(all_data$denom_group, levels = c("Malaria", "Infections", "Non-Infections"))
-        
         all_data <- all_data %>%
             mutate(denom_group = case_when(denom_group == "Malaria" ~ glue("Malaria\n(n={mal_sum}, {mal_perc}%)"),
                                            denom_group == "Infections" ~ glue("Infections\n(n={inf_sum}, {inf_perc}%)"),
-                                           denom_group == "Non-Infections" ~ glue("Non-Infections\n(n={ninf_sum}, {ninf_perc}%)"),))
+                                           denom_group == "Non-Infections" ~ glue("Non-Infections\n(n={ninf_sum}, {ninf_perc}%)"),)) %>% 
+            mutate(denom_group = factor(denom_group, levels = c(glue("Malaria\n(n={mal_sum}, {mal_perc}%)"),
+                                                                glue("Infections\n(n={inf_sum}, {inf_perc}%)"),
+                                                                glue("Non-Infections\n(n={ninf_sum}, {ninf_perc}%)"))))
         
         combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
             geom_sf(color = "gray50", size = 0.2, show.legend = TRUE) +
