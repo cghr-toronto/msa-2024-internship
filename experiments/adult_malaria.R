@@ -448,8 +448,7 @@ adult_non_infections_agg <- spatial_agg(
 )
 
 # Defining symptoms to be plotted----
-adult_symptoms <- c("paralysis", "looseStools", "urinaryProblem", "oedema", "skinProblems", "yellowEyes", "convulsions", "lumps")
-
+adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss", "chestPain", "unconscious")
 
 # Running symptom_rate for each age group----
 # Young Male Adults

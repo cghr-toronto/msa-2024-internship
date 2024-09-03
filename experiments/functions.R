@@ -194,25 +194,25 @@ create_map <-
             categorize_value <- function(value) {
                 if (is.na(value)) {
                     return("Insufficient Data")
-                } else if (value < 10) {
+                } else if (value <= 10) {
                     return("0-10")
-                } else if (value >= 10 & value < 20) {
+                } else if (value > 10 & value <= 20) {
                     return("10-20")
-                } else if (value >= 20 & value < 30) {
+                } else if (value > 20 & value <= 30) {
                     return("20-30")
-                } else if (value >= 30 & value < 40) {
+                } else if (value > 30 & value <= 40) {
                     return("30-40")
-                } else if (value >= 40 & value < 50) {
+                } else if (value > 40 & value <= 50) {
                     return("40-50")
-                } else if (value >= 50 & value < 60) {
+                } else if (value > 50 & value <= 60) {
                     return("50-60")
-                } else if (value >= 60 & value < 70) {
+                } else if (value > 60 & value <= 70) {
                     return("60-70")
-                } else if (value >= 70 & value < 80) {
+                } else if (value > 70 & value <= 80) {
                     return("70-80")
-                } else if (value >= 80 & value < 90) {
+                } else if (value > 80 & value <= 90) {
                     return("80-90")
-                } else if (value >= 90 & value <= 100) {
+                } else if (value > 90 & value <= 100) {
                     return("90-100")
                 } else {
                     return(NA)
@@ -294,6 +294,7 @@ create_plots <-
                     "90-100" = "darkred"
                 ),
                 breaks = c("Insufficient Data", "0-10", "10-20", "20-30", "30-40", "40-50", "50-60", "60-70", "70-80", "80-90", "90-100"),
+                labels = c("Insufficient Data", "[0-10]", "(10-20]", "(20-30]", "(30-40]", "(40-50]", "(50-60]", "(60-70]", "(70-80]", "(80-90]", "(90-100]"),
                 drop = FALSE,
                 guide = guide_legend(nrow = 1)  
             ) +
