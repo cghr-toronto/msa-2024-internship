@@ -246,6 +246,13 @@ create_plots <-
     
     symptoms <- unique(group_symptoms$symptoms)
     
+    one_symp <- symptoms[1]
+    
+    total_sum <- group_symptoms %>%
+        filter(symptoms == one_symp) %>%
+        summarise(total_deaths = sum(deaths, na.rm = TRUE)) %>%
+        pull(total_deaths)
+    
         all_data <- lapply(symptoms, function(symptom) {
             malaria_data <- create_map(
                 data = group_symptoms,
@@ -311,7 +318,7 @@ create_plots <-
                 strip.placement = "outside",
                 plot.title = element_text(hjust = 0.5, size = 20, face = "bold")
             ) +
-            ggtitle(paste(plot_title)) +
+            ggtitle(glue("{plot_title}\n(n = {total_sum})")) +
             geom_sf_label(aes(label = fraction), size = 1.8, show.legend = FALSE)
     
     out <- pdf_print(combined_plot, pdf_title, width = width, height = height)
