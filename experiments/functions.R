@@ -253,6 +253,25 @@ create_plots <-
         summarise(total_deaths = sum(deaths, na.rm = TRUE)) %>%
         pull(total_deaths)
     
+    mal_sum <- group_symptoms %>%
+        filter(symptoms == one_symp & denom_group == "Malaria") %>%
+        summarise(mal_deaths = sum(deaths, na.rm = TRUE)) %>%
+        pull(mal_deaths)
+    
+    inf_sum <- group_symptoms %>%
+        filter(symptoms == one_symp & denom_group == "Infections") %>%
+        summarise(inf_deaths = sum(deaths, na.rm = TRUE)) %>%
+        pull(inf_deaths)
+    
+    ninf_sum <- group_symptoms %>%
+        filter(symptoms == one_symp & denom_group == "Non-Infections") %>%
+        summarise(ninf_deaths = sum(deaths, na.rm = TRUE)) %>%
+        pull(ninf_deaths)
+    
+    mal_perc <- round(mal_sum / total_sum * 100)
+    inf_perc <- round(inf_sum / total_sum * 100)
+    ninf_perc <- round(ninf_sum / total_sum * 100)
+    
         all_data <- lapply(symptoms, function(symptom) {
             malaria_data <- create_map(
                 data = group_symptoms,
@@ -281,6 +300,11 @@ create_plots <-
         
         # Ensure 'cod' is a factor and order the levels as desired
         all_data$denom_group <- factor(all_data$denom_group, levels = c("Malaria", "Infections", "Non-Infections"))
+        
+        all_data <- all_data %>%
+            mutate(denom_group = case_when(denom_group == "Malaria" ~ glue("Malaria\n(n={mal_sum}, {mal_perc}%)"),
+                                           denom_group == "Infections" ~ glue("Infections\n(n={inf_sum}, {inf_perc}%)"),
+                                           denom_group == "Non-Infections" ~ glue("Non-Infections\n(n={ninf_sum}, {ninf_perc}%)"),))
         
         combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
             geom_sf(color = "gray50", size = 0.2, show.legend = TRUE) +
