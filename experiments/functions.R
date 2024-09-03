@@ -242,19 +242,19 @@ create_plots <-
              sex,
              orientation) {
         
+        symptom_sums <- group_symptoms %>%
+            st_drop_geometry(group_symptoms) %>%
+            filter(denom_group == "Malaria") %>%
+            group_by(symptoms) %>%
+            summarise(symp_freq = sum(count, na.rm = TRUE), .groups = 'drop')
+        
+        # Join the symptom sums back to the original data frame
+        group_symptoms <- group_symptoms %>%
+            left_join(symptom_sums, by = "symptoms")
+        
     group_symptoms <- group_symptoms %>% filter(age_range == !!age_range & age_group == !!age_group & sex == !!sex)
     
     symptoms <- unique(group_symptoms$symptoms)
-    
-    symptom_sums <- group_symptoms %>%
-        st_drop_geometry(group_symptoms) %>%
-        filter(denom_group == "Malaria") %>%
-        group_by(symptoms) %>%
-        summarise(symp_freq = sum(count, na.rm = TRUE), .groups = 'drop')
-    
-    # Join the symptom sums back to the original data frame
-    group_symptoms <- group_symptoms %>%
-        left_join(symptom_sums, by = "symptoms")
     
     one_symp <- symptoms[1]
     
