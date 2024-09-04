@@ -317,7 +317,11 @@ create_plots <-
                                         )
                    )
        
-        all_data$symptoms <- fct_reorder(all_data$symptoms, all_data$symp_freq, .desc = TRUE)
+        all_data$symptoms <- all_data$symptoms %>% 
+            gsub("([A-Z]){1}", " \\1", .)  %>% 
+            str_to_title(.) %>% 
+            fct_reorder(., all_data$symp_freq, .desc = TRUE)
+        
         
         combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
             geom_sf(color = "gray50", size = 0.2, show.legend = TRUE) +
