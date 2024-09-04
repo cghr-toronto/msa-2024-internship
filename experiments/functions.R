@@ -67,7 +67,10 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
         mutate(total_perc = round((total_count / deaths) * 100)) %>%
         mutate(cause_of_death = glue("{cause_of_death}\n(n={deaths})")) 
     
-    heat$symptoms <- factor(heat$symptoms, levels = rev(sort(unique(heat$symptoms))))
+    heat$symptoms <- heat$symptoms %>%
+        gsub("([A-Z]){1}", " \\1", .)  %>% 
+        str_to_title(.) %>% 
+        factor(., levels = rev(sort(unique(.))))
     
     if (desc_order) {
         heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = TRUE)
