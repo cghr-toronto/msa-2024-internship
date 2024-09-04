@@ -321,9 +321,9 @@ create_plots <-
         
         combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
             geom_sf(color = "gray50", size = 0.2, show.legend = TRUE) +
-            facet_grid(symptoms ~ denom_group) +  # Facet by cause of death and symptom
+            facet_grid(symptoms ~ denom_group, switch = "y") +  # Facet by cause of death and symptom
             scale_fill_manual(
-                name = "Rates (%)",
+                name = "Cases per 100 Deaths",
                 values = c(
                     "Insufficient Data" = "white",
                     "0-10" = "lightgreen",
@@ -347,11 +347,14 @@ create_plots <-
                 panel.grid.major = element_blank(),
                 panel.grid.minor = element_blank(),
                 axis.text = element_blank(),
+                axis.title.x = element_blank(),
+                axis.title.y = element_blank(),
                 axis.ticks = element_blank(),
                 strip.text.x = element_text(size = 12, face = "bold"),
-                strip.text.y = element_text(size = 12, face = "bold", angle = 0),
+                strip.text.y.left = element_text(size = 12, face = "bold", angle = 0),
                 legend.position = 'top',
-                legend.justification = c(0.1, 0),
+                legend.justification = c(0.5, 0),
+                legend.title = element_text(size = 10, face = "bold"),
                 strip.placement = "outside",
                 plot.title = element_text(hjust = 0.5, size = 20, face = "bold")
             ) +

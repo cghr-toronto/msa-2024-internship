@@ -365,7 +365,7 @@ all_child_symptom <- bind_rows(child_symptom, cm_symptom, cf_symptom)
 cm_plot <-
     create_plots(
         all_child_symptom,
-        "Child Male (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 1095)",
+        "Child Male (1m-11y) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-cm-malaria-maps",
         width = 12,
         height = 25,
@@ -378,7 +378,7 @@ cm_plot <-
 cf_plot <-
     create_plots(
         all_child_symptom,
-        "Child Female (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 1085)",
+        "Child Female (1m-11y) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-cf-malaria-maps",
         width = 12,
         height = 25,
@@ -391,7 +391,7 @@ cf_plot <-
 child_plot <-
     create_plots(
         all_child_symptom,
-        "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022\n(n = 2180)",
+        "Child (1m-11y) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-child-malaria-maps",
         width = 12,
         height = 25,
