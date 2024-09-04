@@ -52,7 +52,7 @@ non_spatial <- function(age_group, death_type, percentages = TRUE){
 }
 
 # Creating heat map with non-spatial table
-hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) {
+hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, order, custom_order = NULL) {
     
     death_total <- as.numeric(sum(ns_table$deaths)) 
     
@@ -63,23 +63,29 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, desc_order = TRUE) 
         summarise(total_count = sum(counts)) %>%
         left_join(ns_table %>% select(cause_of_death, deaths) %>% distinct(), by = "cause_of_death")
     
-    heat <- heat %>% 
-        mutate(total_perc = round((total_count / deaths) * 100)) %>%
-        mutate(cause_of_death = glue("{cause_of_death}\n(n={deaths})")) 
-    
     heat$symptoms <- heat$symptoms %>%
         gsub("([A-Z]){1}", " \\1", .)  %>% 
         str_to_title(.) %>% 
         factor(., levels = rev(sort(unique(.))))
     
-    if (desc_order) {
-        heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = TRUE)
-    } else {
-        heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = FALSE)
-    }
+    if (order == "manual"){
+        if (is.null(custom_order)) {
+            stop("customer_order must be provided when order is 'manual'")
+        }
+        # Apply the customer_order to reorder the factor levels
+        # Extract levels that match the custom order
+        ordered_levels <- unique(c(custom_order, unique(heat$cause_of_death)))
+        heat$cause_of_death <- factor(heat$cause_of_death, levels = ordered_levels)
+    } else if (order == "desc") { heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = TRUE)
+    } else if (order == "asc") { heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = FALSE)}
+    
+    heat <- heat %>% 
+        mutate(total_perc = round((total_count / deaths) * 100)) %>%
+        mutate(cod_title = glue("{cause_of_death}\n(n={deaths})")) %>%
+        mutate(cod_title = factor(cod_title, levels = unique(cod_title)))
     
     # Create the heatmap with modified axis labels
-    heat_map_plot <- ggplot(heat, aes(cause_of_death, symptoms)) +
+    heat_map_plot <- ggplot(heat, aes(cod_title, symptoms)) +
         geom_tile(aes(fill = total_count)) +
         scale_fill_gradient(low = "white", high = "red", name = "Number\nof deaths",) +
         scale_x_discrete(position = "top") +

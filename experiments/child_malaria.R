@@ -174,10 +174,12 @@ non_spatial_children <- non_spatial(age_group = child, death_type = "type_of_cau
 non_spatial_cm <- non_spatial(age_group = male_child, death_type = "type_of_cause", percentages = FALSE)
 non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_cause", percentages = FALSE)
 
+custom_order <- c("Malaria", "Infections", "Non-infections")
+
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, desc_order = TRUE)
-hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, desc_order = TRUE)
-hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, desc_order = TRUE)
+hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, order = "manual", custom_order = custom_order)
+hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, order = "manual", custom_order = custom_order)
+hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, order = "manual", custom_order = custom_order)
 
 # Set mapping dataframe
 mapping <- data.frame(
