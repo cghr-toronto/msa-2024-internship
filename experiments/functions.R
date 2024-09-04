@@ -353,7 +353,7 @@ create_plots <-
                 strip.text.x = element_text(size = 12, face = "bold"),
                 strip.text.y.left = element_text(size = 12, face = "bold", angle = 0),
                 legend.position = 'top',
-                legend.justification = c(0.5, 0),
+                legend.justification = c(0.75, 0),
                 legend.title = element_text(size = 10, face = "bold"),
                 strip.placement = "outside",
                 plot.title = element_text(hjust = 0.5, size = 20, face = "bold")
