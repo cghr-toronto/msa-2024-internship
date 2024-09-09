@@ -11,7 +11,7 @@ pdf_print <- function(series, title, width, height){
     
     ggsave(pdf_title, plot = series, device = "pdf", width = width, height = height, limitsize = FALSE)
     
-    ggsave(jpeg_title, plot = series, device = "jpeg", width = width, height = height, limitsize = FALSE)
+    ggsave(jpeg_title, plot = series, device = "jpeg", width = width, height = height, limitsize = FALSE, dpi = 600)
     
 }
 
