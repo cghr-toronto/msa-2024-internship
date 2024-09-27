@@ -402,4 +402,3 @@ child_plot <-
         sex = "Both",
         orientation = "portrait"
     )
-
