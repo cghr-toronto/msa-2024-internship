@@ -177,7 +177,7 @@ non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_ca
 custom_order <- c("Malaria", "Infections", "Non-infections")
 
 # Defining symptoms to be plotted
-child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough")
+child_symptoms <- c("cough", "difficultyBreathing", "headache", "fever", "vomit", "weightLoss")
 
 # Creating heat map with non-spatial table
 hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
@@ -369,11 +369,12 @@ cm_plot <-
         "Child Male (1m-11y) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-cm-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "<1-11",
         age_group = "Child",
         sex = "Male",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )
 
 cf_plot <-
@@ -382,11 +383,12 @@ cf_plot <-
         "Child Female (1m-11y) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-cf-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "<1-11",
         age_group = "Child",
         sex = "Female",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )
 
 child_plot <-
@@ -395,9 +397,10 @@ child_plot <-
         "Child (1m-11y) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-child-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "<1-11",
         age_group = "Child",
         sex = "Both",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )

@@ -222,7 +222,7 @@ non_spatial_oaf <- non_spatial(age_group = older_female_adult, death_type = "typ
 custom_order <- c("Malaria", "Infections", "Non-infections")
 
 # Defining symptoms to be plotted----
-adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss")
+adult_symptoms <- c("abdominalProblem", "breathingProblem", "cough", "fever", "vomit", "weightLoss")
 
 # Plotting heatmaps----
 hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
@@ -614,11 +614,12 @@ yam_plot <-
         "Young Adult Male (15-39 Years) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-yam-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "15-39",
         age_group = "Adult",
         sex = "Male",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )
 
 yaf_plot <-
@@ -627,11 +628,12 @@ yaf_plot <-
         "Young Adult Female (15-39 Years) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-yaf-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "15-39",
         age_group = "Adult",
         sex = "Female",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )
 
 oam_plot <-
@@ -640,11 +642,12 @@ oam_plot <-
         "Older Adult Male (40-69 Years) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-oam-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "40-69",
         age_group = "Adult",
         sex = "Male",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )
 
 oaf_plot <-
@@ -653,11 +656,12 @@ oaf_plot <-
         "Older Adult Female (40-69 Years) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-oaf-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "40-69",
         age_group = "Adult",
         sex = "Female",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )
 
 young_adult_plot <-
@@ -666,11 +670,12 @@ young_adult_plot <-
         "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-ya-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "15-39",
         age_group = "Adult",
         sex = "Both",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )
 
 older_adult_plot <-
@@ -679,11 +684,12 @@ older_adult_plot <-
         "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-oa-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "40-69",
         age_group = "Adult",
         sex = "Both",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )
 
 adult_plot <-
@@ -692,10 +698,11 @@ adult_plot <-
         "Adult (15-69 Years) Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-adult-malaria-maps",
         width = 12,
-        height = 25,
+        height = 20,
         age_range = "15-69",
         age_group = "Adult",
         sex = "Both",
-        orientation = "portrait"
+        orientation = "portrait",
+        order = "custom"
     )
 
