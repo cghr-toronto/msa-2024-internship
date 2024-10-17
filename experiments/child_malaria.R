@@ -180,9 +180,9 @@ custom_order <- c("Malaria", "Infections", "Non-infections")
 child_symptoms <- c("fever", "weightLoss", "difficultyBreathing", "vomit", "headache", "cough")
 
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms)
-hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms)
-hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms)
+hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
+hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
+hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
 
 # Set mapping dataframe
 mapping <- data.frame(

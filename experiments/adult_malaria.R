@@ -225,13 +225,13 @@ custom_order <- c("Malaria", "Infections", "Non-infections")
 adult_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss")
 
 # Plotting heatmaps----
-hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms)
-hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms)
-hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms)
-hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms)
-hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms)
-hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms)
-hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms)
+hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
+hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
+hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
+hm_young_male_adult <- hm(non_spatial_yam, "Young Male Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yam-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
+hm_young_female_adult <- hm(non_spatial_yaf, "Young Female Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-yaf-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
+hm_older_male_adult <- hm(non_spatial_oam, "Older Male Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oam-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
+hm_older_female_adult <- hm(non_spatial_oaf, "Older Female Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-oaf-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
 
 # Set mapping dataframe
 mapping <- data.frame(
