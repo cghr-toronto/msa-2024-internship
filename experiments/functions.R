@@ -52,9 +52,13 @@ non_spatial <- function(age_group, death_type, percentages = TRUE){
 }
 
 # Creating heat map with non-spatial table
-hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, order, custom_order = NULL) {
+hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, order, custom_order = NULL, keep_only = TRUE, symptoms) {
     
-    death_total <- as.numeric(sum(ns_table$deaths)) 
+    death_total <- as.numeric(sum(ns_table$deaths))
+    
+    if (keep_only){
+        ns_table <- ns_table %>% select(all_of(symptoms))
+    }
     
     heat <- pivot_longer(ns_table, cols = -c(cause_of_death, deaths),
                          names_to = "symptoms",
