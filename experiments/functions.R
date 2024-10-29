@@ -259,7 +259,7 @@ create_plots <-
              age_group,
              sex,
              orientation,
-             order) {
+             symptom_order = NULL) {
         
         symptom_sums <- group_symptoms %>%
             st_drop_geometry(group_symptoms) %>%
@@ -336,21 +336,16 @@ create_plots <-
                                         )
                    )
        
-        if (order == "descending") {
         all_data$symptoms <- all_data$symptoms %>% 
-            gsub("([A-Z]){1}", " \\1", .)  %>% 
-            str_to_title(.) %>% 
-            fct_reorder(., all_data$symp_freq, .desc = TRUE)
-        } else if (order == "ascending") {
-            all_data$symptoms <- all_data$symptoms %>% 
-                gsub("([A-Z]){1}", " \\1", .)  %>% 
-                str_to_title(.) %>% 
-                fct_reorder(., all_data$symp_freq, .desc = FALSE)
-        } else if (order == "custom") {
-            all_data$symptoms <- all_data$symptoms %>% 
                 gsub("([A-Z]){1}", " \\1", .)  %>% 
                 str_to_title(.)
-        }
+        
+        symptom_order <- symptom_order %>% 
+            gsub("([A-Z]){1}", " \\1", .)  %>% 
+            str_to_title(.)
+        
+        all_data$symptoms <- factor(all_data$symptoms, levels = symptom_order)
+        
         
         combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
             geom_sf(color = "gray50", size = 0.2, show.legend = TRUE) +

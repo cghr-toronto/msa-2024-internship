@@ -619,7 +619,7 @@ yam_plot <-
         age_group = "Adult",
         sex = "Male",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = adult_symptoms
     )
 
 yaf_plot <-
@@ -633,7 +633,7 @@ yaf_plot <-
         age_group = "Adult",
         sex = "Female",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = adult_symptoms
     )
 
 oam_plot <-
@@ -647,7 +647,7 @@ oam_plot <-
         age_group = "Adult",
         sex = "Male",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = adult_symptoms
     )
 
 oaf_plot <-
@@ -661,7 +661,7 @@ oaf_plot <-
         age_group = "Adult",
         sex = "Female",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = adult_symptoms
     )
 
 young_adult_plot <-
@@ -675,7 +675,7 @@ young_adult_plot <-
         age_group = "Adult",
         sex = "Both",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = adult_symptoms
     )
 
 older_adult_plot <-
@@ -689,7 +689,7 @@ older_adult_plot <-
         age_group = "Adult",
         sex = "Both",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = adult_symptoms
     )
 
 adult_plot <-
@@ -703,6 +703,6 @@ adult_plot <-
         age_group = "Adult",
         sex = "Both",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = adult_symptoms
     )
 

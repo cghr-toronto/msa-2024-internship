@@ -374,7 +374,7 @@ cm_plot <-
         age_group = "Child",
         sex = "Male",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = child_symptoms
     )
 
 cf_plot <-
@@ -388,7 +388,7 @@ cf_plot <-
         age_group = "Child",
         sex = "Female",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = child_symptoms
     )
 
 child_plot <-
@@ -402,5 +402,5 @@ child_plot <-
         age_group = "Child",
         sex = "Both",
         orientation = "portrait",
-        order = "custom"
+        symptom_order = child_symptoms
     )
