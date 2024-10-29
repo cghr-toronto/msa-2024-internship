@@ -174,15 +174,15 @@ non_spatial_children <- non_spatial(age_group = child, death_type = "type_of_cau
 non_spatial_cm <- non_spatial(age_group = male_child, death_type = "type_of_cause", percentages = FALSE)
 non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_cause", percentages = FALSE)
 
-custom_order <- c("Malaria", "Infections", "Non-infections")
+cod_custom_order <- c("Malaria", "Infections", "Non-infections")
 
 # Defining symptoms to be plotted
 child_symptoms <- c("cough", "difficultyBreathing", "headache", "fever", "vomit", "weightLoss")
 
 # Creating heat map with non-spatial table
-hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
-hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
-hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, order = "manual", custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
+hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, cod_order = "manual", cod_custom_order = custom_order, symp_order = "manual", symp_custom_order = child_symptoms, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
+hm_male_child <- hm(non_spatial_cm, "Male Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cm-heatmap", labels = TRUE, cod_order = "manual", cod_custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
+hm_female_child <- hm(non_spatial_cf, "Female Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-cf-heatmap", labels = TRUE, cod_order = "manual", cod_custom_order = custom_order, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
 
 # Set mapping dataframe
 mapping <- data.frame(

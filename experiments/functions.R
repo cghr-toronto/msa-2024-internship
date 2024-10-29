@@ -52,7 +52,7 @@ non_spatial <- function(age_group, death_type, percentages = TRUE){
 }
 
 # Creating heat map with non-spatial table
-hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, order, custom_order = NULL, keep_only = TRUE, symptoms, width, height) {
+hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, cod_order, cod_custom_order = NULL, symp_order, symp_custom_order = NULL, keep_only = TRUE, symptoms, width, height) {
     
     death_total <- as.numeric(sum(ns_table$deaths))
     
@@ -69,19 +69,31 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, order, custom_order
     
     heat$symptoms <- heat$symptoms %>%
         gsub("([A-Z]){1}", " \\1", .)  %>% 
-        str_to_title(.) %>% 
-        factor(., levels = rev(sort(unique(.))))
+        str_to_title(.) 
     
-    if (order == "manual"){
-        if (is.null(custom_order)) {
-            stop("customer_order must be provided when order is 'manual'")
+    symp_custom_order <- symp_custom_order %>%
+        gsub("([A-Z]){1}", " \\1", .)  %>% 
+        str_to_title(.) 
+    
+    if (symp_order == "manual"){
+        if (is.null(symp_custom_order)) {
+            stop("symp_order must be provided when order is 'manual'")
         }
-        # Apply the customer_order to reorder the factor levels
+        # Set the factor levels directly using symp_custom_order to enforce ordering
+        heat$symptoms <- factor(heat$symptoms, levels = symp_custom_order)
+    } else if (symp_order == "desc") { heat$symptoms <- fct_reorder(heat$symptoms, heat$deaths, .desc = TRUE)
+    } else if (symp_order == "asc") { heat$symptoms <- fct_reorder(heat$symptoms, heat$deaths, .desc = FALSE)}
+    
+    if (cod_order == "manual"){
+        if (is.null(cod_custom_order)) {
+            stop("cod_order must be provided when order is 'manual'")
+        }
+        # Apply the cod_custom_order to reorder the factor levels
         # Extract levels that match the custom order
-        ordered_levels <- unique(c(custom_order, unique(heat$cause_of_death)))
-        heat$cause_of_death <- factor(heat$cause_of_death, levels = ordered_levels)
-    } else if (order == "desc") { heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = TRUE)
-    } else if (order == "asc") { heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = FALSE)}
+        cod_ordered_levels <- unique(c(cod_custom_order, unique(heat$cause_of_death)))
+        heat$cause_of_death <- factor(heat$cause_of_death, levels = cod_ordered_levels)
+    } else if (cod_order == "desc") { heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = TRUE)
+    } else if (cod_order == "asc") { heat$cause_of_death <- fct_reorder(heat$cause_of_death, heat$deaths, .desc = FALSE)}
     
     heat <- heat %>% 
         mutate(total_perc = round((total_count / deaths) * 100)) %>%
@@ -346,8 +358,6 @@ create_plots <-
                 gsub("([A-Z]){1}", " \\1", .)  %>% 
                 str_to_title(.)
         }
-        
-        
         
         combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
             geom_sf(color = "gray50", size = 0.2, show.legend = TRUE) +
