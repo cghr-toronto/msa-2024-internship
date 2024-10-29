@@ -52,7 +52,7 @@ non_spatial <- function(age_group, death_type, percentages = TRUE){
 }
 
 # Creating heat map with non-spatial table
-hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, cod_order, cod_custom_order = NULL, symp_order, symp_custom_order = NULL, keep_only = TRUE, symptoms, width, height) {
+hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, cod_order, cod_custom_order = NULL, symp_custom_order = NULL, keep_only = TRUE, symptoms, width, height) {
     
     death_total <- as.numeric(sum(ns_table$deaths))
     
@@ -71,18 +71,11 @@ hm <- function(ns_table, hm_title, pdf_title, labels = TRUE, cod_order, cod_cust
         gsub("([A-Z]){1}", " \\1", .)  %>% 
         str_to_title(.) 
     
-    symp_custom_order <- symp_custom_order %>%
+    symp_custom_order <- rev(symp_custom_order %>%
         gsub("([A-Z]){1}", " \\1", .)  %>% 
-        str_to_title(.) 
+        str_to_title(.))
     
-    if (symp_order == "manual"){
-        if (is.null(symp_custom_order)) {
-            stop("symp_order must be provided when order is 'manual'")
-        }
-        # Set the factor levels directly using symp_custom_order to enforce ordering
-        heat$symptoms <- factor(heat$symptoms, levels = symp_custom_order)
-    } else if (symp_order == "desc") { heat$symptoms <- fct_reorder(heat$symptoms, heat$deaths, .desc = TRUE)
-    } else if (symp_order == "asc") { heat$symptoms <- fct_reorder(heat$symptoms, heat$deaths, .desc = FALSE)}
+    heat$symptoms <- factor(heat$symptoms, levels = symp_custom_order)
     
     if (cod_order == "manual"){
         if (is.null(cod_custom_order)) {
