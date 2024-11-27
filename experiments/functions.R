@@ -346,7 +346,6 @@ create_plots <-
         
         all_data$symptoms <- factor(all_data$symptoms, levels = symptom_order)
         
-        
         combined_plot <- ggplot(all_data, aes(fill = legend_label)) +
             geom_sf(color = "gray50", size = 0.2, show.legend = TRUE) +
             facet_grid(symptoms ~ denom_group, switch = "y") +  # Facet by cause of death and symptom
