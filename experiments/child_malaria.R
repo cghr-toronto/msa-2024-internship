@@ -154,6 +154,8 @@ child <- child %>%
     ) 
 
 child[child == "difficultyBreathing"] <- "breathingProblem"
+child[child == "convulsion"] <- "convulsions"
+child[child == "skinRash"] <- "skinProblems"
 
 # Creating filters for young childs by sex, age, and malaria
 male_child <- child %>% filter(sex_death == "Male")
