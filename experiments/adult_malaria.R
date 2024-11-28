@@ -182,6 +182,8 @@ young_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %
 older_adult <- adult %>% filter(death_age_group %in% older_adult_age)
 older_male_adult <- adult %>% filter(sex_death == "Male" & death_age_group %in% older_adult_age)
 older_female_adult <- adult %>% filter(sex_death == "Female" & death_age_group %in% older_adult_age)
+male_adult <- adult %>% filter(sex_death == "Male")
+female_adult <- adult %>% filter(sex_death == "Female")
 
 # Creating filters for adults for malaria
 adult_malaria <- adult %>% filter(type_of_cause == "Malaria")
@@ -212,6 +214,8 @@ older_adult_non_infections <- adult %>% filter(death_age_group %in% older_adult_
 
 # Making non-spatial tables----
 non_spatial_adult <- non_spatial(age_group = adult, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_male_adult <- non_spatial(age_group = male_adult, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_female_adult <- non_spatial(age_group = female_adult, death_type = "type_of_cause", percentages = FALSE)
 non_spatial_young_adult <- non_spatial(age_group = young_adult, death_type = "type_of_cause", percentages = FALSE)
 non_spatial_yam <- non_spatial(age_group = young_male_adult, death_type = "type_of_cause", percentages = FALSE)
 non_spatial_yaf <- non_spatial(age_group = young_female_adult, death_type = "type_of_cause", percentages = FALSE)
@@ -225,6 +229,7 @@ cod_custom_order <- c("Malaria", "Infections", "Non-infections")
 adult_symptoms <- c( "cough", "breathingProblem", "abdominalProblem", "fever", "vomit", "weightLoss")
 
 # Plotting heatmaps----
+hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = TRUE, cod_order = "manual", cod_custom_order = cod_custom_order, symp_custom_order = adult_symptoms, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
 hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = TRUE, cod_order = "manual", cod_custom_order = cod_custom_order, symp_custom_order = adult_symptoms, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
 hm_young_adult <- hm(non_spatial_young_adult, "Young Adult (15-39 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-young-adult-heatmap", labels = TRUE, cod_order = "manual", cod_custom_order = cod_custom_order, symp_custom_order = adult_symptoms, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
 hm_older_adult <- hm(non_spatial_older_adult, "Older Adult (40-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-older-adult-heatmap", labels = TRUE, cod_order = "manual", cod_custom_order = cod_custom_order, symp_custom_order = adult_symptoms, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)
