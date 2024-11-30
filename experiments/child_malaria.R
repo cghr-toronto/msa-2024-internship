@@ -181,7 +181,7 @@ non_spatial_cf <- non_spatial(age_group = female_child, death_type = "type_of_ca
 cod_custom_order <- c("Malaria", "Infections", "Non-infections")
 
 # Defining symptoms to be plotted
-child_symptoms <- c("cough", "breathingProblem", "headache", "fever", "vomit", "weightLoss")
+child_symptoms <- c("cough", "convulsions", "fever", "headache", "vomit", "yellowEyes")
 
 # Creating heat map with non-spatial table
 hm_children <- hm(non_spatial_children, "Child (1m-11y) Deaths by Symptom\nSierra Leone 2019-2022", "fig-child-heatmap", labels = TRUE, cod_order = "manual", cod_custom_order = cod_custom_order, symp_custom_order = child_symptoms, keep_only = TRUE, symptoms = child_symptoms, width = 6, height = 8)
