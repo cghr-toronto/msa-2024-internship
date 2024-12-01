@@ -226,7 +226,7 @@ non_spatial_oaf <- non_spatial(age_group = older_female_adult, death_type = "typ
 cod_custom_order <- c("Malaria", "Infections", "Non-infections")
 
 # Defining symptoms to be plotted----
-adult_symptoms <- c( "cough", "breathingProblem", "abdominalProblem", "fever", "vomit", "weightLoss")
+adult_symptoms <- c("abdominalProblem", "breathingProblem", "cough", "fever", "vomit", "weightLoss")
 
 # Plotting heatmaps----
 hm_adult <- hm(non_spatial_adult, "Adult (15-69 Years) Deaths by Symptom\nSierra Leone 2019-2022", "fig-adult-heatmap", labels = TRUE, cod_order = "manual", cod_custom_order = cod_custom_order, symp_custom_order = adult_symptoms, keep_only = TRUE, symptoms = adult_symptoms, width = 6, height = 8)

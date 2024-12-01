@@ -1,0 +1,18 @@
+source("../src/spatial_agg.R")
+source("../experiments/functions.R")
+
+# Loading packages for being able to manipulate and plot spatial data
+library(sf)
+library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(magrittr)
+library(stringr)
+library(lubridate)
+library(prettymapr)
+library(patchwork)
+library(readxl)
+library(glue)
+library(forcats)
+library(spdep)
+library(scales)
