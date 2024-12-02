@@ -19,7 +19,8 @@ library(scales)
 
 adult_table <- st_read("adult.csv")
 child_table <- st_read("child.csv")
-dist <- st_read("dist.csv")
+# Reading District Boundary file
+dist <- st_read("../tmp/data/sl_dist_17_v2.geojson")
 
 all_ages <- bind_rows(adult_table, child_table)
 
@@ -35,18 +36,18 @@ all_ages_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough",
                     "chestPain", "unconscious", "paralysis", "looseStools", "urinaryProblem", "oedema", 
                     "skinProblems", "yellowEyes", "convulsions", "lumps")
 
-hm_adult <-
+hm_all_ages <-
     hm(
-        non_spatial_adult,
+        non_spatial_all_ages,
         "All Deaths by Symptom\nSierra Leone 2019-2022",
-        "fig-all-heatmap",
+        "fig-all-ages-heatmap",
         labels = TRUE,
         cod_order = "manual",
         cod_custom_order = cod_custom_order,
-        symp_custom_order = adult_symptoms,
+        symp_custom_order = all_ages_symptoms,
         keep_only = TRUE,
-        symptoms = adult_symptoms,
-        width = 12,
+        symptoms = all_ages_symptoms,
+        width = 9,
         height = 42
     )
 
@@ -86,3 +87,54 @@ all_ages_non_infections_agg <- spatial_agg(
     is_spatial_join = FALSE,
     count_col = "deaths"
 )
+
+all_ages_malaria_symptom <- symptom_rate(age_sex_agg = all_ages_malaria_agg,
+                                      cod = "malaria",
+                                      deaths = "deaths",
+                                      symptoms = all_ages_symptoms)
+all_ages_infections_symptom <- symptom_rate(age_sex_agg = all_ages_infections_agg,
+                                         cod = "infections",
+                                         deaths = "deaths",
+                                         symptoms = all_ages_symptoms)
+all_ages_non_infections_symptom <- symptom_rate(age_sex_agg = all_ages_non_infections_agg,
+                                             cod = "non_infections",
+                                             deaths = "deaths",
+                                             symptoms = all_ages_symptoms)
+all_ages_symptom <- bind_rows(all_ages_malaria_symptom, all_ages_infections_symptom, all_ages_non_infections_symptom)
+all_ages_symptom <- all_ages_symptom %>% mutate(
+    age_range = "<1-69",
+    age_group = "All",
+    sex = "Both")
+
+symptom_rate_tables <- c("all_ages_symptom")
+
+for (srt in symptom_rate_tables) {
+    
+    df <- get(srt)
+    
+    df <- df %>%  mutate(symptoms = str_remove(symptoms, "_rate$")) %>% 
+        mutate(denom_group = case_when( 
+            str_ends(symptoms, "_malaria") ~ "Malaria", 
+            str_ends(symptoms, "_non_infections") ~ "Non-Infections",
+            str_ends(symptoms, "_infections") ~ "Infections"
+        )) %>%
+        mutate(symptoms = str_remove(symptoms, "_malaria$|_non_infections$|_infections$")) 
+    
+    df$rates[is.nan(df$rates)] <- 0
+    
+    assign(srt, df)
+}
+
+all_ages_plot <-
+    create_plots(
+        all_ages_symptom,
+        "All Deaths by Symptom\nSierra Leone, 2019-2022",
+        "fig-all-ages-malaria-maps",
+        width = 12,
+        height = 42,
+        age_range = "<1-69",
+        age_group = "All",
+        sex = "Both",
+        orientation = "portrait",
+        symptom_order = all_ages_symptoms
+    )
