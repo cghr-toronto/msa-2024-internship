@@ -28,13 +28,47 @@ all_ages_malaria <- all_ages %>% filter(type_of_cause == "Malaria")
 all_ages_infections <- all_ages %>% filter(type_of_cause == "Infections")
 all_ages_non_infections <- all_ages %>% filter(type_of_cause == "Non-infections")
 
+male_all_ages <- all_ages %>% filter(sex_death == "Male")
+female_all_ages <- all_ages %>% filter(sex_death == "Female")
+
 non_spatial_all_ages <- non_spatial(age_group = all_ages, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_male <- non_spatial(age_group = male_all_ages, death_type = "type_of_cause", percentages = FALSE)
+non_spatial_female <- non_spatial(age_group = female_all_ages, death_type = "type_of_cause", percentages = FALSE)
 
 cod_custom_order <- c("Malaria", "Infections", "Non-infections")
 
-all_ages_symptoms <- c("fever", "abdominalProblem", "breathingProblem", "cough", "vomit", "weightLoss", 
-                    "chestPain", "unconscious", "paralysis", "looseStools", "urinaryProblem", "oedema", 
-                    "skinProblems", "yellowEyes", "convulsions", "lumps")
+all_ages_symptoms <- c("fever", "breathingProblem", "cough", "yellowEyes",
+                       "vomit", "weightLoss", "convulsions", "unconscious")
+
+hm_male <-
+    hm(
+        non_spatial_male,
+        "All Male Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-male-heatmap",
+        labels = TRUE,
+        cod_order = "manual",
+        cod_custom_order = cod_custom_order,
+        symp_custom_order = all_ages_symptoms,
+        keep_only = TRUE,
+        symptoms = all_ages_symptoms,
+        width = 9,
+        height = 25
+    )
+
+hm_female <-
+    hm(
+        non_spatial_female,
+        "All Female Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-female-heatmap",
+        labels = TRUE,
+        cod_order = "manual",
+        cod_custom_order = cod_custom_order,
+        symp_custom_order = all_ages_symptoms,
+        keep_only = TRUE,
+        symptoms = all_ages_symptoms,
+        width = 9,
+        height = 25
+    )
 
 hm_all_ages <-
     hm(
@@ -48,7 +82,7 @@ hm_all_ages <-
         keep_only = TRUE,
         symptoms = all_ages_symptoms,
         width = 9,
-        height = 42
+        height = 25
     )
 
 mapping <- data.frame(
@@ -131,7 +165,7 @@ all_ages_plot <-
         "All Deaths by Symptom\nSierra Leone, 2019-2022",
         "fig-all-ages-malaria-maps",
         width = 12,
-        height = 42,
+        height = 25,
         age_range = "<1-69",
         age_group = "All",
         sex = "Both",
