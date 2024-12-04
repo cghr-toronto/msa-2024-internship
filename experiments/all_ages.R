@@ -21,7 +21,7 @@ adult_table <- st_read("adult.csv")
 child_table <- st_read("child.csv")
 
 # Reading District Boundary file
-dist <- st_read("../tmp/data/sl_dist_17_v2.geojson")
+dist <- st_read("dist.geojson")
 
 all_ages <- bind_rows(adult_table, child_table)
 male_all_ages <- all_ages %>% filter(sex_death == "Male")
@@ -45,38 +45,37 @@ non_spatial_female <- non_spatial(age_group = female_all_ages, death_type = "typ
 
 cod_custom_order <- c("Malaria", "Infections", "Non-infections")
 
-all_ages_symptoms <- c("breathingProblem", "cough", "fever",
-                       "vomit", "weightLoss","yellowEyes")
+all_ages_symptoms <- c("breathingProblem", "cough", "fever", "vomit", "weightLoss","yellowEyes")
 
-# hm_male <-
-#     hm(
-#         non_spatial_male,
-#         "All Male Deaths by Symptom\nSierra Leone 2019-2022",
-#         "fig-male-heatmap",
-#         labels = TRUE,
-#         cod_order = "manual",
-#         cod_custom_order = cod_custom_order,
-#         symp_custom_order = all_ages_symptoms,
-#         keep_only = TRUE,
-#         symptoms = all_ages_symptoms,
-#         width = 9,
-#         height = 25
-#     )
-# 
-# hm_female <-
-#     hm(
-#         non_spatial_female,
-#         "All Female Deaths by Symptom\nSierra Leone 2019-2022",
-#         "fig-female-heatmap",
-#         labels = TRUE,
-#         cod_order = "manual",
-#         cod_custom_order = cod_custom_order,
-#         symp_custom_order = all_ages_symptoms,
-#         keep_only = TRUE,
-#         symptoms = all_ages_symptoms,
-#         width = 9,
-#         height = 25
-#     )
+hm_male <-
+    hm(
+        non_spatial_male,
+        "All Male Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-male-heatmap",
+        labels = TRUE,
+        cod_order = "manual",
+        cod_custom_order = cod_custom_order,
+        symp_custom_order = all_ages_symptoms,
+        keep_only = TRUE,
+        symptoms = all_ages_symptoms,
+        width = 6,
+        height = 8
+    )
+
+hm_female <-
+    hm(
+        non_spatial_female,
+        "All Female Deaths by Symptom\nSierra Leone 2019-2022",
+        "fig-female-heatmap",
+        labels = TRUE,
+        cod_order = "manual",
+        cod_custom_order = cod_custom_order,
+        symp_custom_order = all_ages_symptoms,
+        keep_only = TRUE,
+        symptoms = all_ages_symptoms,
+        width = 6,
+        height = 8
+    )
 
 hm_all_ages <-
     hm(
