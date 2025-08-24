@@ -45,8 +45,7 @@ non_spatial_female <- non_spatial(age_group = female_all_ages, death_type = "typ
 
 cod_custom_order <- c("Malaria", "Infections", "Non-infections")
 
-all_ages_symptoms <- c("fever", "breathingProblem", "cough", "yellowEyes",
-                      "vomit", "weightLoss", "convulsions", "unconscious")
+all_ages_symptoms <- c("breathingProblem", "cough", "fever", "vomit", "weightLoss", "yellowEyes")
 
 
 hm_male <-
@@ -90,8 +89,8 @@ hm_all_ages <-
         symp_custom_order = all_ages_symptoms,
         keep_only = TRUE,
         symptoms = all_ages_symptoms,
-        width = 9,
-        height = 25
+        width = 6,
+        height = 8
     )
 
 mapping <- data.frame(
